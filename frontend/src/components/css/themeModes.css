@@ -1,0 +1,17 @@
+.theme__changer.form-switch .form-check-input {    
+    width: 3em !important;
+    height: 1.6em !important;
+    margin-left: 5px;
+}
+
+.theme__app[data-bs-theme="dark"] {
+    
+    background-color: #1b1b1d !important;
+    
+    
+
+    div {
+        color: var(--bs-secondary-color);
+    }
+    
+}

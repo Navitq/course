@@ -1,0 +1,44 @@
+{
+    "header": {
+        "signIn": "Sign in",
+        "signUp": "Sign up",
+        "logOut": "Log out",
+        "about": "About us"
+    },
+    "footer": {
+        "protection": "© 2024 Company, Inc"
+    },
+
+    "notFound": {
+        "404": "Page wasn't found 404"
+    },
+    "signIn": {
+        "header": "Glad to see you again! Log in!",
+        "email": "Your email",
+        "emailAdd": "We'll never share your email with anyone else.",
+        "password": "Password",
+        "submit": "Submit"
+    },
+    "signUp": {
+        "header": "Register now! Trial period is completely FREE!",
+        "name": "Your Name",
+        "nameAdd": "Enter name",
+        "email": "Your email",
+        "emailAdd": "We'll never share your email with anyone else.",
+        "avatar": "Your avatar",
+        "password": "Password",
+        "submit": "Submit"
+    },
+    "About": {
+        "header": "A magical new way to store and share your collection",
+        "title": "Your personal collection",
+        "subTitle": "In my personal collection, I have a diverse array of items ranging from vintage vinyl records to unique pieces of art. Each item holds a special significance, whether it's a souvenir from a memorable trip or a gift from a dear friend. Organized meticulously, my collection reflects my eclectic tastes and the stories behind each object make it truly special.",
+        "firstSlideTitle":"First slide label",
+        "secondSlideTitle":"Second slide label",
+        "thirdSlideTitle":"Third slide label",
+        "firstSlideTxt":"Nulla vitae elit libero, a pharetra augue mollis interdum.",
+        "secondSlideTxt":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "thirdSlideTxt":"Praesent commodo cursus magna, vel scelerisque nisl consectetur.",
+        "tryFree":"Try it for free"
+    }
+}
