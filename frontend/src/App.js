@@ -13,11 +13,11 @@ import "./components/css/themeModes.css";
 
 function App() {
     let [headerState, setHeaderState] = useState(false);
+    let [adminState, setAdminState] = useState(false);
+
     let { t, i18n } = useTranslation();
 
     let [theme, setTheme] = useState(initState());
-    let [language, setLanguage] = useState();
-
 
     function changeHeader(regState) {
         setHeaderState(regState);
@@ -34,13 +34,17 @@ function App() {
     }
 
     function changeLanguage(newLanguage) {
-        console.log(i18n.language)
-        //i18n.changeLanguage(newLanguage);
+        if (i18n.language != "en") {
+            i18n.changeLanguage("en");
+            localStorage.setItem("language", "en");
+        } else {
+            i18n.changeLanguage("ru");
+            localStorage.setItem("language", "ru");
+        }
     }
 
     useEffect(() => {
         localStorage.setItem("theme", theme);
-        console.log(theme, 3);
     }, [theme]);
 
     return (
@@ -48,27 +52,35 @@ function App() {
             fluid
             data-bs-theme={theme ? "light" : "dark"}
             className="theme__app theme__main"
-            style={{height:"100%"}}
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "100%",
+                flex: "1 1 auto",
+            }}
         >
             <Container
                 style={{
-                    height: "100%",
                     display: "flex",
                     flexDirection: "column",
+                    minHeight: "100%",
+                    flex: "1 1 auto",
                 }}
             >
                 <BrowserRouter>
                     <Header
+                        adminState={adminState}
                         theme={theme}
                         changeTheme={changeTheme}
                         headerState={headerState}
                         changeHeader={changeHeader}
                         changeLanguage={changeLanguage}
-                        currentLanguage = {i18n.language}
+                        currentLanguage={i18n.language}
                         t={t}
                     ></Header>
                     <MainContent
                         t={t}
+                        adminState={adminState}
                         headerState={headerState}
                         changeHeader={changeHeader}
                     ></MainContent>

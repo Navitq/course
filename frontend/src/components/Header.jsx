@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 import { Container, Row, Col, Image } from "react-bootstrap";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
@@ -10,6 +12,30 @@ import AutorisationLinks from "./AutorisationLinks";
 import StoragePageLinks from "./PersonalStoragePage";
 
 function Header(props) {
+    const [radioValue, setRadioValue] = useState(getUserLanguage());
+
+    const radios = [
+        { name: "RU", value: "1" },
+        { name: "EN", value: "2" },
+    ];
+
+    function getUserLanguage() {
+        let localLang = localStorage.getItem("language");
+        if (localLang) {
+            return getAutoLanguage(localLang);
+        } else {
+            return getAutoLanguage();
+        }
+    }
+
+    function getAutoLanguage(currentLanguage = props.currentLanguage) {
+        if (currentLanguage != "en" && currentLanguage != "EN") {
+            return "1";
+        } else {
+            return "2";
+        }
+    }
+
     return (
         <Container>
             <header className="my-4">
@@ -43,10 +69,22 @@ function Header(props) {
                                     {props.t("header.about")}
                                 </NavLink>
                             </Nav.Item>
+                            <Nav.Item>
+                                <NavLink to="/public" className="nav-link">
+                                    {props.t("header.collections")}
+                                </NavLink>
+                            </Nav.Item>
                             {props.headerState ? null : (
                                 <AutorisationLinks
                                     t={props.t}
                                 ></AutorisationLinks>
+                            )}
+                            {!props.adminState ? null : (
+                                <Nav.Item>
+                                    <NavLink to="/admin" className="nav-link">
+                                        {props.t("header.admin")}
+                                    </NavLink>
+                                </Nav.Item>
                             )}
                             {props.headerState ? (
                                 <StoragePageLinks
@@ -54,6 +92,7 @@ function Header(props) {
                                     t={props.t}
                                 ></StoragePageLinks>
                             ) : null}
+
                             <Form className="d-flex text-align-center">
                                 <Form.Check
                                     type="switch"
@@ -66,14 +105,8 @@ function Header(props) {
                                     }
                                 />
                             </Form>
-                            <Button
-                                variant="primary"
-                                onClick={props.changeLanguage}
-                            >
-                                {props.currentLanguage}
-                            </Button>
 
-                            <ButtonGroup>
+                            <ButtonGroup className="ms-3">
                                 {radios.map((radio, idx) => (
                                     <ToggleButton
                                         key={idx}
@@ -81,21 +114,23 @@ function Header(props) {
                                         type="radio"
                                         variant={
                                             idx % 2
-                                                ? "outline-success"
-                                                : "outline-danger"
+                                                ? "outline-primary"
+                                                : "outline-primary"
                                         }
                                         name="radio"
                                         value={radio.value}
                                         checked={radioValue === radio.value}
-                                        onChange={(e) =>
-                                            setRadioValue(e.currentTarget.value)
-                                        }
+                                        onChange={(e) => {
+                                            setRadioValue(
+                                                e.currentTarget.value
+                                            );
+                                            props.changeLanguage();
+                                        }}
                                     >
                                         {radio.name}
                                     </ToggleButton>
                                 ))}
                             </ButtonGroup>
-                            
                         </Nav>
                     </Col>
                 </Row>
