@@ -86,7 +86,6 @@ export default function SignUp(props) {
                     <Form.Label>{props.t("signUp.avatar")}</Form.Label>
                     <Form.Control
                         type="file"
-						required
                         name="img"
                         accept="image/png, image/jpeg"
                     />

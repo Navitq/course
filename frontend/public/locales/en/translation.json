@@ -5,7 +5,8 @@
         "logOut": "Log out",
         "about": "About us",
         "collections":"Collections",
-        "admin":"Admin"
+        "admin":"Admin",
+        "yourCall":"Your collection"
     },
     "footer": {
         "protection": "© 2024 Company, Inc"
@@ -42,5 +43,28 @@
         "secondSlideTxt":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         "thirdSlideTxt":"Praesent commodo cursus magna, vel scelerisque nisl consectetur.",
         "tryFree":"Try it for free"
+    }, 
+    "Filter": {
+        "filter":"Filter",
+        "category":"Category",
+        "calName":"Collection Name",
+        "imgOnly":"With img only",
+        "chseCategory":"Choose category",
+        "stamps":"Stamps",
+        "spoons":"Spoons",
+        "rings":"Rings",
+        "books":"Books",
+        "glasses":"Glasses",
+        "coins":"Coins",
+        "cars":"Cars",
+        "trains":"Trains",
+        "plains":"Plains",
+        "hats":"Hats",
+        "other":"Other"
+    }, 
+    "Search": {
+        "header":"Search",
+        "footer":"Search",
+        "schPlaceholder":"What do I want to find...?"
     }
 }

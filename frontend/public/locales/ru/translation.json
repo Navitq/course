@@ -5,7 +5,8 @@
         "logOut":"Выйти",
         "about":"О нас",
         "collections":"Коллекции",
-        "admin":"Админ"
+        "admin":"Админ",
+        "yourCall":"Ваша коллекция"
     },
     "notFound":{
         "404":"Cтраница не найдена! Ошибка 404"
@@ -41,5 +42,28 @@
         "secondSlideTxt":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         "thirdSlideTxt":"Praesent commodo cursus magna, vel scelerisque nisl consectetur.",
         "tryFree":"Попробовать"
+    }, 
+    "Filter": {
+        "filter":"Фильтровать",
+        "category":"Категории",
+        "calName":"Название коллекции",
+        "imgOnly":"Только с картинками",
+        "chseCategory":"Выберите категорию",
+        "stamps":"Марки",
+        "spoons":"Ложки",
+        "rings":"Кольца",
+        "books":"Книги",
+        "glasses":"Очки",
+        "coins":"Монеты",
+        "cars":"Машины",
+        "trains":"Поезда",
+        "plains":"Самолеты",
+        "hats":"Шляпы",
+        "other":"Другое"
+    }, 
+    "Search": {
+        "header":"Поиск",
+        "footer":"Искать",
+        "schPlaceholder":"Что же я хочу найти...?"
     }
 }
