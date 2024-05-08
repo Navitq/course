@@ -66,5 +66,14 @@
         "header":"Search",
         "footer":"Search",
         "schPlaceholder":"What do I want to find...?"
+    },
+    "CrElem": {
+        "header":"Create Collection",
+        "name": "Collection name",
+        "description": "Collection description",
+        "image": "Collection image",
+        "create": "Create",
+        "addSetting": "Additional settings",
+        "about": "This collection is about..."
     }
 }
