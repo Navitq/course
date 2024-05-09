@@ -25,7 +25,7 @@ function CollectionsPrivate(props) {
                     <Container className="h3 mt-3 text-center">{props.person?.name || "No Name"}</Container>
                 </Col>
                 <Col xs={8} md={8} className="d-flex flex-column justify-content-end">
-                    <CreateCal i18n={props.i18n} t={props.t}></CreateCal>
+                    <CreateCal theme={props.theme} i18n={props.i18n} t={props.t}></CreateCal>
                 </Col>
                 <Col xs={2} md={2}  className="d-flex flex-column justify-content-start">
                     <Filter i18n={props.i18n} t={props.t}></Filter>

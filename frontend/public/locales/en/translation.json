@@ -75,5 +75,16 @@
         "create": "Create",
         "addSetting": "Additional settings",
         "about": "This collection is about..."
+    },
+    "ModalColl": {
+        "headerCol":"Collection settings",
+        "headerItem":"Item settings",
+        "addTextField":"Add text field",
+        "addNumbField":"Add integer field",
+        "addCheckField":"Add logic field",
+        "addTtxAreaField":"Add multiline field",
+        "addField": "Add",
+        "fieldName": "Enter field name",
+        "close":"Close"
     }
 }

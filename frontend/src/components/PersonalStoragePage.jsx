@@ -15,20 +15,17 @@ export default function StoragePageLinks(props) {
 
     return (
         <>
-            <Nav.Item>
-                <NavLink to="/private" className="nav-link">
-                  {props.t("header.yourCall")}
-                </NavLink>
-            </Nav.Item>
-            <Nav.Item>
-                <div
-                    style={{ cursor: "pointer" }}
-                    className="nav-link"
-                    onClick={logOut}
-                >
-                  {props.t("header.logOut")}
-                </div>
-            </Nav.Item>
+            <NavLink to="/private" className="nav-link">
+                {props.t("header.yourCall")}
+            </NavLink>
+
+            <div
+                style={{ cursor: "pointer" }}
+                className="nav-link"
+                onClick={logOut}
+            >
+                {props.t("header.logOut")}
+            </div>
         </>
     );
 }

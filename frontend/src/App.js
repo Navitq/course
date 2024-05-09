@@ -84,6 +84,7 @@ function App() {
                         headerState={headerState}
                         changeHeader={changeHeader}
                         i18n={i18n}
+                        theme={theme}
                     ></MainContent>
                     <Footer t={t}></Footer>
                 </BrowserRouter>

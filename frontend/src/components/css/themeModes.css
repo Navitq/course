@@ -13,5 +13,13 @@
     div {
         color: var(--bs-secondary-color);
     }
+
+
     
+}
+
+.collection__create[data-bs-theme="dark"] {
+    div, lable {
+        color: var(--bs-secondary-color);
+    }
 }

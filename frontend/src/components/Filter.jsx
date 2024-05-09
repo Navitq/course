@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Row from "react-bootstrap/Row";
+import { v4 as uuidv4 } from 'uuid';
 
 import "./css/scroll.css"
 
@@ -24,7 +25,7 @@ function Filter(props) {
         .then((res)=>res.json())
         .then((res)=>{
             let currentCat =  res.map((el)=>{
-                return <Dropdown.Item onClick={(e)=>changeCategory(e)} data-category={el}>{props.t(`Filter.${el}`)}</Dropdown.Item>
+                return <Dropdown.Item key={uuidv4()} onClick={(e)=>changeCategory(e)} data-category={el}>{props.t(`Filter.${el}`)}</Dropdown.Item>
             })
             setCategory(currentCat)
         })
