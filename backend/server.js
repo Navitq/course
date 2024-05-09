@@ -74,7 +74,6 @@ app.post("/sign_up", formidable(), async (req, res) => {
         res.json({ auth: true });
         return;
     }
-    console.log(11111)
     try {
         const result = await db.query(
             `SELECT * from users WHERE email='${req.fields.email}'`

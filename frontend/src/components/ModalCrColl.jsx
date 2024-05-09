@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useRef } from "react";
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -8,34 +8,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 
 import AddField from "./AddField"
 
-
 function ModalCrColl(props) {
-
-    function formDataCreater(form){
-        let invalidatedForm = new FormData(form);
-        let validatedForm = new FormData();
-
-        for (const value of invalidatedForm.entries()) {
-            if(value[1] != "" && typeof(value[1]) != typeof({})){
-                validatedForm.append(value[0], value[1]);
-            } else if(typeof(value[1]) == typeof({}) && value[1].name != ""){
-                validatedForm.append(value[0], value[1]);
-            }
-        }
-
-        return validatedForm;
-    }
-
-    function newCollection(e){
-        e.preventDefault()
-        let formData = formDataCreater(e.currentTarget.closest("form"))
-        let card = createCollCard(formData)
-    }
-
-    function createCollCard(){
-
-    }
-
+    let dropRef = useRef("")
     return (
         <>
             <Modal
@@ -48,7 +22,7 @@ function ModalCrColl(props) {
                     <Modal.Title className="h3">{props.t("CrElem.addSetting")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form>
+                    <Form onSubmit={(e)=>{props.newCollection(e, dropRef.current.textContent)}}>
                         <Container className="px-0 h5">
                             {props.t("ModalColl.headerCol")}
                         </Container>
@@ -79,12 +53,13 @@ function ModalCrColl(props) {
                             />
                         </Form.Group>
 
-                        <Form.Label  className="h6">{props.t("Filter.category")}</Form.Label>
+                        <Form.Label className="h6">{props.t("Filter.category")}</Form.Label>
                         <Dropdown>
                             <Dropdown.Toggle
                                 variant="outline-primary"
                                 data-category-now={props.categoryLabel}
                                 id="main-category"
+                                ref={dropRef}
                             >
                                 {props.categoryLabel}
                             </Dropdown.Toggle>
@@ -126,7 +101,6 @@ function ModalCrColl(props) {
                             <Button
                                 type="submit"
                                 variant="primary"
-                                onClick={newCollection}
                             >
                                 {props.t("CrElem.create")}
                             </Button>

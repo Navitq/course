@@ -85,5 +85,12 @@
         "addField": "Добавить",
         "fieldName": "Введите название поля",
         "close":"Закрыть"
+    },
+    "CollCard":{
+        "open": "Открыть"
+    },
+    "Private": {
+        "collections":"Коллекции",
+        "noCollections":"У вас нет коллекций прямо сейчас..."
     }
 }
