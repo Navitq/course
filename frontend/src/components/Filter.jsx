@@ -77,7 +77,7 @@ function Filter(props) {
                 </Form.Group>
             </Row>
 
-            <Button type="submit">{props.t("Filter.filter")}</Button>
+            <Button type="submit" style={{maxWidth:"fit-content"}}>{props.t("Filter.filter")}</Button>
         </Form>
     );
 }

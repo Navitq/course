@@ -10,6 +10,32 @@ import AddField from "./AddField"
 
 
 function ModalCrColl(props) {
+
+    function formDataCreater(form){
+        let invalidatedForm = new FormData(form);
+        let validatedForm = new FormData();
+
+        for (const value of invalidatedForm.entries()) {
+            if(value[1] != "" && typeof(value[1]) != typeof({})){
+                validatedForm.append(value[0], value[1]);
+            } else if(typeof(value[1]) == typeof({}) && value[1].name != ""){
+                validatedForm.append(value[0], value[1]);
+            }
+        }
+
+        return validatedForm;
+    }
+
+    function newCollection(e){
+        e.preventDefault()
+        let formData = formDataCreater(e.currentTarget.closest("form"))
+        let card = createCollCard(formData)
+    }
+
+    function createCollCard(){
+
+    }
+
     return (
         <>
             <Modal
@@ -98,8 +124,9 @@ function ModalCrColl(props) {
                                 {props.t("ModalColl.close")}
                             </Button>
                             <Button
+                                type="submit"
                                 variant="primary"
-                                onClick={props.modalClose}
+                                onClick={newCollection}
                             >
                                 {props.t("CrElem.create")}
                             </Button>

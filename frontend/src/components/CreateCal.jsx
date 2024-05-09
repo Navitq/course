@@ -59,7 +59,7 @@ function CreateCal(props) {
     });
 
     return (
-        <Container className="d-flex flex-column" >
+        <Container className="d-flex flex-column ps-0" >
             <Container className="ps-0 h4">
                 {props.t("CrElem.header")}
             </Container>
@@ -107,9 +107,9 @@ function CreateCal(props) {
                     </Dropdown.Menu>
                 </Dropdown>
 
-                <Container  className="d-flex justify-content-between px-0 mt-3">
-                    <Button variant="primary">{props.t("CrElem.create")}</Button>
-                    <Button variant="outline-primary" onClick={modalShow}>{props.t("CrElem.addSetting")}</Button>
+                <Container  className="d-flex justify-content-between px-0 mt-3 coll_main">
+                    <Button variant="primary" style={{width:"fit-content"}}>{props.t("CrElem.create")}</Button>
+                    <Button variant="outline-primary" style={{width:"fit-content"}} onClick={modalShow}>{props.t("CrElem.addSetting")}</Button>
                 </Container>
             </Form>
             

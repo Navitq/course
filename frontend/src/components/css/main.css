@@ -1,0 +1,28 @@
+@media (max-width: 992px) {
+    .header__block {
+        flex-direction: column !important;
+    }
+
+    .navbar-collapse.collapse.show .header__lang{
+        margin-left: 5px !important;
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }
+
+    .navbar-collapse.collapse.show .header__search {
+        margin-left: 5px !important;
+        padding-left: 0px;
+    }
+}
+
+@media (max-width: 768px) {
+    .coll_main {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .filter__main {
+        margin-top: 15px !important;
+    }
+}
+
+

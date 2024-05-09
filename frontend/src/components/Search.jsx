@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 
 function Search(props) {
     return (
-        <Container className="pe-0 mx-0" style={{width:"fit-content"}}>
+        <Container className="pe-0 mx-0 header__search" style={{width:"fit-content"}}>
             <Form className="d-flex justify-content-end">
                 <Form.Group
                 className="me-2"
