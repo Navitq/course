@@ -8,9 +8,9 @@ const { createServer } = require("http");
 const cookieParser = require("cookie-parser");
 const { emit } = require("process");
 const { writeFile, readFile } = require("fs");
-const { User, sequelize, Op } = require("./sequelize.js");
 
-console.log(User);
+const { User, sequelize, Op } = require("./sequelize.js");
+const s3 = require("./s3.js")
 
 const app = express();
 const middlware = session({
@@ -35,6 +35,11 @@ app.get("/sign_up", formidable(), async (req, res) => {
     res.json({ auth: false });
     return;
 });
+
+app.get("/s3drop", async (req,res)=>{
+    let url = await s3.generateUrl();
+    res.send({url})
+})
 
 app.get("/sign_in", formidable(), async (req, res) => {
     if (req.session.auth) {
@@ -145,9 +150,9 @@ const io = new Server(server, {
 io.engine.use(middlware);
 
 io.on("connect", (socket) => {
-    console.log(123)
     const req = socket.request;
     socket.on("newColl", (data) => {
+        console.log(req.email)
         let parsedData = JSON.parse(data);
         console.log(parsedData)
     });

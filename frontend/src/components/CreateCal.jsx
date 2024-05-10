@@ -54,13 +54,46 @@ function CreateCal(props) {
         return validatedForm;
     }
 
-    function formObject(validatedForm){
+    async function formObject(validatedForm){
         let data = {}
         for (const value of validatedForm.entries()) {
             data[`${value[0]}`] = value[1];
         }
+        if(data.img){
+            data.img_name = data.img.name
+            let url = await createAndUploadImg(data.img)
+            data.img = url;
+        }
         return data
     }
+
+    async function createImgUrl(){
+        let data = await fetch("/s3drop")
+        let jsonUrl  = await data.json()
+        return jsonUrl.url
+    }
+
+    async function uploadImg(img, url){
+        let formImg = new FormData();
+        formImg.append("img", img, "name.img")
+        await fetch(url,{
+            method:"PUT",
+            headers:{
+                "Content-Type": "multipart/form-data"
+            },
+            body: formImg
+        })
+
+    }
+
+    async function createAndUploadImg(img){
+        let url = await createImgUrl()
+        await uploadImg(img, url)
+        let imgUrl = url.split("?")[0]
+        return imgUrl;
+    }
+
+
 
     async function newCollection(e, dropDown){
         e.preventDefault()
@@ -68,7 +101,11 @@ function CreateCal(props) {
             return;
         }
         let formData = formDataCreater(e.currentTarget, dropDown);
-        let data = formObject(formData)
+        let data = await formObject(formData)
+
+ 
+        console.log(data)
+        return;
         socket.emit("newColl", JSON.stringify(data))
         let card = createCollCard(data)
         props.addNewCard(card)
