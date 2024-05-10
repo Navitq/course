@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,10 +10,13 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import CollCard from "./CollCard"
 import ModalCrColl from "./ModalCrColl"
 
+import { socket } from "./socket";
 
 function CreateCal(props) {
     let [category, setCategory] = useState("");
     let [categoryLabel, setCategoryLabel] = useState(props.t("Filter.chseCategory"));
+
+    let [dataCategory, setDataCategory] = useState("");
 
     let dropRef = useRef("")
 
@@ -28,7 +30,6 @@ function CreateCal(props) {
     const modalShow = () => setShowModal(true);
 
     props.i18n.on('languageChanged', () => {
-        getCategoryData();
         setCategoryLabel(props.t("Filter.chseCategory"))
     });
 
@@ -61,13 +62,14 @@ function CreateCal(props) {
         return data
     }
 
-    function newCollection(e, dropDown){
+    async function newCollection(e, dropDown){
         e.preventDefault()
         if(dropDown == props.t("Filter.chseCategory")){
             return;
         }
-        let formData = formDataCreater(e.currentTarget, dropDown)
+        let formData = formDataCreater(e.currentTarget, dropDown);
         let data = formObject(formData)
+        socket.emit("newColl", JSON.stringify(data))
         let card = createCollCard(data)
         props.addNewCard(card)
     }
@@ -86,6 +88,7 @@ function CreateCal(props) {
     }
 
     function changeCategory(e){
+        setDataCategory(e.currentTarget.dataset.category)
         setCategoryLabel(props.t(`Filter.${e.currentTarget.dataset.category}`))
     }
 
@@ -109,7 +112,7 @@ function CreateCal(props) {
             <Container className="ps-0 h4">
                 {props.t("CrElem.header")}
             </Container>
-            <Form onSubmit={(e)=>{newCollection(e, dropRef.current.textContent)}}>
+            <Form onSubmit={(e)=>{newCollection(e, dropRef.current.dataset.categoryNow)}}>
                 <Form.Group className="mb-3">
                     <Form.Label>{props.t("CrElem.name")}</Form.Label>
                     <Form.Control
@@ -139,7 +142,7 @@ function CreateCal(props) {
                 <Dropdown>
                     <Dropdown.Toggle
                         variant="outline-primary"
-                        data-category-now={categoryLabel}
+                        data-category-now={dataCategory}
                         id="main-category"
                         ref={dropRef}
                     >
@@ -160,7 +163,7 @@ function CreateCal(props) {
                 </Container>
             </Form>
             
-            <ModalCrColl newCollection={newCollection} category={category} categoryLabel={categoryLabel} changeCategory={changeCategory} changeNameField={changeNameField} changeDescField={changeDescField} nameField={nameField} descrField={descrField} theme={props.theme} showModal={showModal} t={props.t} i18n={props.i18n} modalClose={modalClose}></ModalCrColl>
+            <ModalCrColl dataCategory={dataCategory} newCollection={newCollection} category={category} categoryLabel={categoryLabel} changeCategory={changeCategory} changeNameField={changeNameField} changeDescField={changeDescField} nameField={nameField} descrField={descrField} theme={props.theme} showModal={showModal} t={props.t} i18n={props.i18n} modalClose={modalClose}></ModalCrColl>
         </Container>
     );
 }

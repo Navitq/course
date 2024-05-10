@@ -12,6 +12,12 @@
         "protection": "© 2024 Company, Inc"
     },
 
+    "ModalAnswer": {
+        "exist": "User with this email already exist!",
+        "ok": "Ok",
+        "warning":"Warning!"
+    }, 
+
     "notFound": {
         "404": "Page wasn't found 404"
     },

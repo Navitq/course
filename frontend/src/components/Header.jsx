@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 
@@ -101,6 +101,7 @@ function Header(props) {
                                     onChange={(e) => {
                                         setRadioValue(e.currentTarget.value);
                                         props.changeLanguage();
+                                        window.location.reload();
                                     }}
                                 >
                                     {radio.name}

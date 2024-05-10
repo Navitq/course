@@ -4,13 +4,24 @@ import { Container } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-let imgWithoutPerson = ""
+import ModalAnswer from "./ModalAnswer"
+
+let imgWithoutPerson = "";
 
 export default function SignUp(props) {
     let imgRef = useRef(null);
     let [valueEmail, setValueEmail] = useState("");
     let [valuePassWord, setValuePassWord] = useState("");
     let [valueUserName, setValueUserName] = useState("");
+    
+    const [showAnswer, setShowAnswer] = useState(false);
+    const [textAnswer, setTextAnswer] = useState("");
+
+
+    function closeAnswer(value){
+        setShowAnswer(value)
+    }
+
 
     async function sendRequest(e) {
         e.preventDefault();
@@ -24,8 +35,12 @@ export default function SignUp(props) {
                     method: "post",
                     body: formDataReg,
                 });
-
                 let message = await response.json();
+                if(typeof(message.auth) == "string"){
+                    setTextAnswer(message.auth)
+                    setShowAnswer(true)
+                }
+                
 				e.target.closest("form").reset()
 				setValueEmail("")
 				setValuePassWord("")
@@ -39,7 +54,8 @@ export default function SignUp(props) {
     }
 
     return (
-        <Container >
+        <Container>
+            <ModalAnswer t={props.t} closeAnswer={closeAnswer} showAnswer={showAnswer} textAnswer={textAnswer}></ModalAnswer>
             <div
                 className="h3 d-flex justify-content-center my-2 mb-3"
                 style={{ textAlign: "center" }}

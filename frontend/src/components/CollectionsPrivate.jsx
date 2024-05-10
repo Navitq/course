@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -9,6 +9,8 @@ import Filter from "./Filter"
 
 import CreateCal from "./CreateCal"
 
+import { socket } from "./socket";
+
 
 function CollectionsPrivate(props) {
     let [cards, setCards] = useState([]);
@@ -18,6 +20,10 @@ function CollectionsPrivate(props) {
             return [...prev, card]
         })
     }
+
+    useEffect(()=>{
+        socket.emit("get_collections")
+    })
 
     return (
         <Container className="my-5">

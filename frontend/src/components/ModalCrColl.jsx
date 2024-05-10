@@ -22,7 +22,7 @@ function ModalCrColl(props) {
                     <Modal.Title className="h3">{props.t("CrElem.addSetting")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={(e)=>{props.newCollection(e, dropRef.current.textContent)}}>
+                    <Form onSubmit={(e)=>{props.newCollection(e, dropRef.current.dataset.categoryNow)}}>
                         <Container className="px-0 h5">
                             {props.t("ModalColl.headerCol")}
                         </Container>
@@ -57,7 +57,7 @@ function ModalCrColl(props) {
                         <Dropdown>
                             <Dropdown.Toggle
                                 variant="outline-primary"
-                                data-category-now={props.categoryLabel}
+                                data-category-now={props.dataCategory}
                                 id="main-category"
                                 ref={dropRef}
                             >
