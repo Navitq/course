@@ -9,7 +9,7 @@ const cookieParser = require("cookie-parser");
 const { emit } = require("process");
 const { writeFile, readFile } = require("fs");
 
-const { User, sequelize, Op } = require("./sequelize.js");
+const { User, Coll, sequelize, Op } = require("./sequelize.js");
 const s3 = require("./s3.js")
 
 const app = express();

@@ -89,7 +89,10 @@ function ModalCrColl(props) {
                         <AddField t={props.t} type="checkbox"></AddField>
 
                         <Container className="px-0 mt-2 mb-1 h6">{props.t("ModalColl.addTtxAreaField")}</Container>
-                        <AddField t={props.t} type="textArea"></AddField>
+                        <AddField t={props.t} type="textarea"></AddField>
+
+                        <Container className="px-0 mt-2 mb-1 h6">{props.t("ModalColl.addDateField")}</Container>
+                        <AddField t={props.t} type="date"></AddField>
 
                         <Container className="d-flex justify-content-between px-0 mt-3">
                             <Button

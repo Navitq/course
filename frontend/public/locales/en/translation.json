@@ -89,6 +89,7 @@
         "addNumbField":"Add integer field",
         "addCheckField":"Add logic field",
         "addTtxAreaField":"Add multiline field",
+        "addDateField":"Add date field",
         "addField": "Add",
         "fieldName": "Enter field name",
         "close":"Close"

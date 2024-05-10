@@ -75,15 +75,16 @@ function CreateCal(props) {
 
     async function uploadImg(img, url){
         let formImg = new FormData();
-        formImg.append("img", img, "name.img")
-        await fetch(url,{
-            method:"PUT",
-            headers:{
-                "Content-Type": "multipart/form-data"
+        console.log(img)
+        formImg.append("img", img, img.name)
+        await fetch(url, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "multipart/form-data"
             },
-            body: formImg
-        })
-
+            body: img
+          })
+        
     }
 
     async function createAndUploadImg(img){
@@ -105,7 +106,6 @@ function CreateCal(props) {
 
  
         console.log(data)
-        return;
         socket.emit("newColl", JSON.stringify(data))
         let card = createCollCard(data)
         props.addNewCard(card)
