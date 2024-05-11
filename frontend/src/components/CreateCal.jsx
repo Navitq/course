@@ -94,8 +94,6 @@ function CreateCal(props) {
         return imgUrl;
     }
 
-
-
     async function newCollection(e, dropDown){
         e.preventDefault()
         if(dropDown == props.t("Filter.chseCategory")){

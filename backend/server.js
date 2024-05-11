@@ -55,9 +55,9 @@ app.post("/sign_in", formidable(), async (req, res) => {
         res.json({ auth: true });
         return;
     }
-
+    let result;
     try {
-        const result = await User.findAll({
+        result = await User.findAll({
             where: {
                 [Op.and]: [
                     { email: req.fields.email },
@@ -75,7 +75,9 @@ app.post("/sign_in", formidable(), async (req, res) => {
         return;
     }
     req.session.auth = true;
-    req.session.email = req.fields.email;
+    console.log(result[0].dataValues.user_id)
+    req.session.user_id = result[0].dataValues.user_id;
+
     res.json({ auth: true });
     return;
 });
@@ -100,14 +102,16 @@ app.post("/sign_up", formidable(), async (req, res) => {
         es.status(500).send("Internal Server Error");
     }
     try {
-        await User.create({
+        let currentUser = await User.create({
             email: req.fields.email,
             username: req.fields.name,
             password: req.fields.password,
+            img: req.fields.img,
+            img_name: req.fields.img_name,
         });
-
         req.session.auth = true;
-        req.session.email = req.fields.email;
+        req.session.user_id = currentUser.dataValues.user_id;
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Internal Server Error");
@@ -124,6 +128,9 @@ app.delete("/log_out", async (req, res) => {
 });
 
 app.get("/categories", async (req, res) => {
+    if (!req.session.auth) {
+        return;
+    }
     res.json([
         "stamps",
         "spoons",
@@ -151,10 +158,29 @@ io.engine.use(middlware);
 
 io.on("connect", (socket) => {
     const req = socket.request;
+    console.log(7777777777777777777777777777)
     socket.on("newColl", (data) => {
-        console.log(req.email)
+        if (!req.auth) {
+            return;
+        }
         let parsedData = JSON.parse(data);
-        console.log(parsedData)
+    });
+
+    socket.on("get_user_data", async (data) => {
+        if (!req.auth) {
+            return;
+        }
+        console.log(11111111111111111111111111111111111)
+        try{
+            let result = await User.findAll({
+                where: {
+                    user_id: req.user_id
+                },
+            });
+            socket.emit("got_user_data", JSON.stringify(result[0].dataValues))
+        } catch (err) {
+            console.error(err);
+        }
     });
 });
 

@@ -26,7 +26,7 @@ const User = sequelize.define("user", {
         unique: true,
     },
     img_name: DataTypes.STRING,
-    img_id: DataTypes.STRING,
+    img: DataTypes.STRING,
     password: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -253,6 +253,8 @@ const Tag = sequelize.define("tag", {
 module.exports = {
     User,
     Coll,
+    Item,
+    Tag,
     sequelize,
     Op,
 };
