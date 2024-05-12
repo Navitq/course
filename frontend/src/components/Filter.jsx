@@ -37,7 +37,6 @@ function Filter(props) {
     },[])
 
     props.i18n.on('languageChanged', () => {
-        // getCategoryData();
         setCategoryLabel(props.t("Filter.chseCategory"))
     });
 

@@ -30,4 +30,13 @@
     }
 }
 
+@media (max-width: 576px) {
+    .collection__xs {
+        flex-direction: column;
+    }
+    .collection__settings{
+        margin-top: 20px;
+    }
+}
+
 

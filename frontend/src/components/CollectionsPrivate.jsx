@@ -5,8 +5,10 @@ import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
 
-import Filter from "./Filter";
+import { v4 as uuidv4 } from 'uuid';
 
+import CollCard from "./CollCard";
+import Filter from "./Filter";
 import CreateCal from "./CreateCal";
 
 import { socket } from "./socket";
@@ -23,15 +25,24 @@ function CollectionsPrivate(props) {
 
     useEffect(() => {
 
-        props.socket.once("connect", (data) => {
-            console.log("!!!!!!!!!!!!!!!!!!")
-        })
-
-
-        props.socket.on("got_user_data", (data) => {
-            console.log(data);
-            setPerson(JSON.parse(data));
+        socket.on("got_user_data", (data) => {
+            let dataParsed = JSON.parse(data);
+            console.log(dataParsed)
+            setPerson(dataParsed);
         });
+
+        socket.on("got_coll", (dataJson) => {
+            let data = JSON.parse(dataJson);
+            let mewCards = [];
+            for(let i =0; i < data.length;++i){
+                console.log(data[i])
+                mewCards.push(<CollCard key={uuidv4()} t={props.t} data={data[i]}></CollCard>)
+            }
+            setCards(mewCards)
+        });
+
+        socket.emit("get_user_data");
+        socket.emit("get_coll");
     }, []);
 
     return (
@@ -53,7 +64,7 @@ function CollectionsPrivate(props) {
                         />
                     </Container>
                     <Container className="h3 mt-3 text-center">
-                        {person?.name || "No Name"}
+                        {person?.username || "No Name"}
                     </Container>
                 </Col>
                 <Col

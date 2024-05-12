@@ -46,7 +46,7 @@ export default function SignUp(props) {
             setTextAnswer(message.auth);
             setShowAnswer(true);
         } else if (message.auth == true) {
-            props.redirectFun(message.auth);
+            window.location.reload()
         }
         resetForm(e);
     }

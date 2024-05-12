@@ -4,6 +4,8 @@ import { Container } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
+import { socket } from "./socket";
+
 export class SignIn extends Component {
     constructor(props) {
         super(props);
@@ -28,7 +30,7 @@ export class SignIn extends Component {
         let message = await response.json();
 
         if(message.auth == true){
-            this.props.redirectFun(true);
+            window.location.reload()
         }    
     }
 

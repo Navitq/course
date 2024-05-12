@@ -13,15 +13,17 @@ const { User, Coll, sequelize, Op } = require("./sequelize.js");
 const s3 = require("./s3.js")
 
 const app = express();
+
 const middlware = session({
     resave: false,
     saveUninitialized: false,
-    secret: "secretPsswrd",
+    secret: "aaa2C44-4D44-WppQ38Siuyiuy",
+    
 });
 
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-app.use(cookieParser("secretPsswrd"));
+app.use(cookieParser("aaa2C44-4D44-WppQ38Siuyiuy"));
 
 app.use(middlware);
 
@@ -74,10 +76,11 @@ app.post("/sign_in", formidable(), async (req, res) => {
         res.status(500).send("Internal Server Error");
         return;
     }
-    req.session.auth = true;
-    console.log(result[0].dataValues.user_id)
-    req.session.user_id = result[0].dataValues.user_id;
 
+    req.session.auth = true;
+
+    req.session.user_id = result[0].dataValues.user_id;
+    req.session.save()
     res.json({ auth: true });
     return;
 });
@@ -147,7 +150,6 @@ app.get("/categories", async (req, res) => {
 });
 
 const io = new Server(server, {
-    maxHttpBufferSize: 5e7,
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
@@ -156,25 +158,41 @@ const io = new Server(server, {
 
 io.engine.use(middlware);
 
-io.on("connect", (socket) => {
+io.on("connection", (socket) => {
     const req = socket.request;
-    console.log(7777777777777777777777777777)
-    socket.on("newColl", (data) => {
-        if (!req.auth) {
+    console.log("hhhhhhhhhhhhh",socket.request.session.auth)
+
+    socket.on("newColl", async (data) => {
+        if (!req.session.auth) {
             return;
         }
+        console.log(111111)
         let parsedData = JSON.parse(data);
+        parsedData.uuid = socket.request.session.user_id
+        let currentUser = await Coll.create(parsedData);
+    });
+
+    socket.on("get_coll", async (data) => {
+        if (!req.session.auth) {
+            return;
+        }
+        let result = await Coll.findAll({
+            where: {
+                uuid: req.session.user_id
+            },
+        });
+        console.log(result)
+        socket.emit("got_coll", JSON.stringify(result))
     });
 
     socket.on("get_user_data", async (data) => {
-        if (!req.auth) {
+        if (!req.session.auth) {
             return;
         }
-        console.log(11111111111111111111111111111111111)
         try{
             let result = await User.findAll({
                 where: {
-                    user_id: req.user_id
+                    user_id: req.session.user_id
                 },
             });
             socket.emit("got_user_data", JSON.stringify(result[0].dataValues))
@@ -182,8 +200,8 @@ io.on("connect", (socket) => {
             console.error(err);
         }
     });
+    
 });
 
 server.listen(4000, async (req, res) => {
-    console.log("start");
 });

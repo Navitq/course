@@ -100,5 +100,12 @@
     "Private": {
         "collections":"Collections",
         "noCollections":"You don't have collection right now..."
+    },
+    "Collection":{
+        "edit":"Edit",
+        "delete":"Delete",
+        "settings":"Setting", 
+        "addNewItem":"Create element",
+        "items":"Working with items"
     }
 }

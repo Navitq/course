@@ -244,11 +244,11 @@ const Tag = sequelize.define("tag", {
     tag_amount: DataTypes.INTEGER
 });
 
-(async () => {
-    await sequelize.sync({ force: true });
-    let user = await User.build({ username: "1", email: "1@1", password: "1" });
-    await user.save();
-})();
+// (async () => {
+//     await sequelize.sync({ force: true });
+//     let user = await User.build({ username: "1", email: "1@1", password: "1" });
+//     await user.save();
+// })();
 
 module.exports = {
     User,

@@ -8,10 +8,12 @@ import Container from "react-bootstrap/esm/Container";
 import Header from "./components/Header";
 import MainContent from "./components/MainContent";
 import Footer from "./components/Footer";
+import { socket } from "./components/socket";
 
 import "./components/css/themeModes.css";
 
 function App() {
+    console.log(process.env.REACT_APP_PUBLIC_URL, "??????????????????????????????????")
     let [headerState, setHeaderState] = useState(false);
     let [adminState, setAdminState] = useState(false);
 
@@ -43,9 +45,17 @@ function App() {
         }
     }
 
+    useEffect(()=>{
+        if(!socket.connected){
+            socket.connect();
+        }
+    },[])
+
+
     useEffect(() => {
         localStorage.setItem("theme", theme);
     }, [theme]);
+
 
     return (
         <Container
