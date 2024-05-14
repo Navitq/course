@@ -87,7 +87,6 @@ export default function SignUp(props) {
 
     async function uploadImg(img, url) {
         let formImg = new FormData();
-        console.log(img);
         formImg.append("img", img, img.name);
         await fetch(url, {
             method: "PUT",

@@ -9,7 +9,7 @@ const cookieParser = require("cookie-parser");
 const { emit } = require("process");
 const { writeFile, readFile } = require("fs");
 
-const { User, Coll, sequelize, Op } = require("./sequelize.js");
+const { User, Coll, sequelize, Op, Item } = require("./sequelize.js");
 const s3 = require("./s3.js")
 
 const app = express();
@@ -200,6 +200,20 @@ io.on("connection", (socket) => {
             console.error(err);
         }
     });
+    socket.on("get_col_items", async (dataJSON)=>{
+        let data = JSON.parse(dataJSON)
+        let resultColl = await Coll.findAll({
+            where: {
+                col_id: data.col_id
+            },
+        });
+        let resultItems = await Item.findAll({
+            where: {
+                col_id: data.col_id
+            },
+        });
+        socket.emit("got_col_items", JSON.stringify(resultColl), JSON.stringify(resultItems))
+    })
     
 });
 

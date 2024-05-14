@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { useParams } from "react-router-dom";
 
@@ -10,25 +10,69 @@ import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
 
+import { v4 as uuidv4 } from 'uuid';
+
 import { socket } from "./socket";
 import TableCell from "./TableCell";
 import Filter from "./Filter";
-import CreateItem from "./CreateItem";
+// import CreateItem from "./CreateItem";
+import ModalNewItem from "./ModalNewItem"
 
 function Collection(props) {
-    let [theader, setTheader] = useState([]);
+    const [refUser, setRefUser] = useState("");
+
+    let [theader, setTheader, useRef] = useState([]);
     let [tbody, setBody] = useState([]);
-    let [col, setCol] = useState({});
+    let [colCurrent, setColCurrent] = useState({});
+
+    const [modalShow, setModalShow] = useState(false);
 
     let { col_id } = useParams();
 
+    function formDataCreater(form){
+        let validatedForm = new FormData(form);
+        return validatedForm;
+    }
+
+    async function formObject(validatedForm){
+        let data = {}
+        for (const value of validatedForm.entries()) {
+            data[`${value[0]}`] = value[1];
+        }
+        return data
+    }
+
+
+
+    async function newItem(e){
+        e.preventDefault()
+
+        let formData = formDataCreater(e.currentTarget);
+        let data = await formObject(formData)
+        data.col_id = col_id;
+        // socket.emit("newItem", JSON.stringify(data))
+        // let card = createItemCard(data)
+        // props.addNewCard(card)
+    }
+
+    let showModal = () => {
+        setModalShow(true)
+    }
+
+    let closeModal = () => {
+        setModalShow(false)
+    }
+
+
     useEffect(() => {
-        socket.emit("get_col_items", JSON.stringify({ get_col: col_id }));
+        socket.emit("get_col_items", JSON.stringify({ col_id }));
         socket.on("got_col_items", (colJson, dataJson) => {
             let col = JSON.parse(colJson),
                 data = JSON.parse(dataJson);
-            let head = <TableCell elem={col} type="header"></TableCell>;
-            let body = <TableCell elem={data} type="body"></TableCell>;
+            setRefUser(col[0]);
+            setColCurrent(col[0])
+            let head = <TableCell t={props.t} key={uuidv4()} elem={col} type="header"></TableCell>;
+            let body = <TableCell theme={props.theme} t={props.t} key={uuidv4()} elem={data} type="body"></TableCell>;
             setTheader((prev) => {
                 return [head];
             });
@@ -36,14 +80,14 @@ function Collection(props) {
                 return [body];
             });
         });
-    });
+    },[]);
 
     return (
         <Container className="my-5">
             <Row className="user__main">
                 <Col
-                    xl={6}
-                    lg={6}
+                    xl={7}
+                    lg={7}
                     md={12}
                     sm={12}
                     xs={12}
@@ -53,7 +97,7 @@ function Collection(props) {
                         <Container className="d-flex justify-content-center">
                             <Image
                                 src={
-                                    col?.img ||
+                                    colCurrent?.img ||
                                     process.env.PUBLIC_URL + "/img/noName.svg"
                                 }
                                 rounded
@@ -62,7 +106,7 @@ function Collection(props) {
                         </Container>
                         <Container className="h3 mt-3 text-center">
                             <Form.Control
-                                value={col?.username || "No Name"}
+                                value={colCurrent?.name || "No Name"}
                                 type="text"
                                 size="lg"
                                 className="text-center h4"
@@ -79,7 +123,7 @@ function Collection(props) {
                                 {props.t("CrElem.description")}
                             </Form.Label>
                             <Form.Control
-                                value={col?.description}
+                                value={colCurrent?.description}
                                 style={{ resize: "none" }}
                                 as="textarea"
                                 rows={9}
@@ -90,8 +134,8 @@ function Collection(props) {
                     </Container>
                 </Col>
                 <Col
-                    xl={6}
-                    lg={6}
+                    xl={5}
+                    lg={5}
                     md={12}
                     sm={12}
                     xs={12}
@@ -127,6 +171,7 @@ function Collection(props) {
                                 <Button
                                     className="mb-2"
                                     style={{ maxWidth: "fit-content" }}
+                                    onClick={showModal}
                                 >
                                     {props.t("Collection.addNewItem")}
                                 </Button>
@@ -134,13 +179,13 @@ function Collection(props) {
                     </Container>
                 </Col>
             </Row>
-            <Container style={{ overflow: "auto" }}>
-                <Table striped bordered hover>
+            <Container className="filter__scroll" style={{ overflow: "auto" }}>
+                <Table striped bordered hover className='mt-3 '>
                     <thead>{theader}</thead>
                     <tbody>{tbody}</tbody>
                 </Table>
             </Container>
-        </Container>
+            <ModalNewItem key={uuidv4()} newItem={newItem} modalClose={closeModal} showModal={showModal} modalShow={modalShow} t={props.t} col={refUser}></ModalNewItem>        </Container>
     );
 }
 

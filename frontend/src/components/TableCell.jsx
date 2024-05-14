@@ -1,74 +1,99 @@
-import React, {useState} from 'react'
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 
-function TableCell(props) {
-    let [elements,setElements] = useState(createElem())
-    let fieldsTypes = ["date","text", "number", "textarea", "checkbox"];
+import { v4 as uuidv4 } from "uuid";
 
-    function createHeader(){
+function TableCell(props) {
+    let [elements, setElements] = useState([]);
+    let fieldsTypes = ["date", "text", "number", "checkbox"];
+
+    useEffect(() => {
+        createElem();
+    }, []);
+
+    function createHeader() {
         let headerFields = props.elem.map((el) => {
-            let fields = []; 
-            fieldsTypes.map((type)=>{
-                for(let i = 0; i < 3 ; i++){
-                    if(typeof(el[`${type}`+i]) != "undefined"){
-                        fields.push((<th>{el[`${type}`+i]}</th>))
+            let fields = [];
+            fieldsTypes.map((type) => {
+                for (let i = 0; i < 3; i++) {
+                    if (typeof el[`${type}` + i] != "object") {
+                        fields.push(
+                            <th key={uuidv4()}>{el[`${type}` + i]}</th>
+                        );
                     }
                 }
-            })
+            });
             return (
-                <tr data-col_id={el.col_id}>
-                    <th>{props.t("TableCell.Id")}</th>
+                <tr data-col_id={el.col_id} key={uuidv4()}>
+                    <th>{props.t("TableCell.id")}</th>
                     <th>{props.t("TableCell.name")}</th>
-                    <th>{props.t("TableCell.description")}</th>
+                    {/* <th>{props.t("TableCell.description")}</th> */}
                     <th>{props.t("TableCell.tags")}</th>
                     {fields}
                 </tr>
-            )
-        })
-        setElements(headerFields)
+            );
+        });
+        setElements(headerFields);
     }
 
-    function createBody(){
-        let headerFields = props.elem.map((el, index)=>{
-            let fields = []; 
-            fieldsTypes.map((type)=>{
-                for(let i = 0; i < 3 ; i++){
-                    if(typeof(el[`${type}`+i]) != "undefined"){
-                        if(type == "checkbox"){
-                            fields.push((<th>
-                            <Form.Check // prettier-ignore
-                                type="checkbox"
-                                checked={el[`${type}`+i] == "true" ? true : false}
-                            />
-                            
-                            </th>))
-                            continue
+    function createBody() {
+        let headerFields = props.elem.map((el, index) => {
+            let fields = [];
+            fieldsTypes.map((type) => {
+                for (let i = 0; i < 3; i++) {
+                    if (typeof el[`${type}` + i] != "undefined") {
+                        if (type == "checkbox") {
+                            fields.push(
+                                <th>
+                                    <Form.Check // prettier-ignore
+                                        type="checkbox"
+                                        checked={
+                                            el[`${type}` + i] == "true"
+                                                ? true
+                                                : false
+                                        }
+                                        key={uuidv4()}
+                                    />
+                                </th>
+                            );
+                            continue;
                         }
-                        fields.push((<th>{el[`${type}`+i]}</th>))
+                        fields.push(
+                            <td key={uuidv4()}>{el[`${type}` + i]}</td>
+                        );
                     }
                 }
-            })
+            });
             return (
-                <tr data-item_id={el.item_id} data-col_id={el.col_id}>
-                    <th>{index+1}</th>
-                    <th>{props.el.name}</th>
-                    <th>{props.el.description}</th>
-                    <th>{props.el.tags}</th>
+                <tr
+                    data-item_id={el.item_id}
+                    data-col_id={el.col_id}
+                    key={uuidv4()}
+                >
+                    <td>{index + 1}</td>
+                    <td>{props.el.name}</td>
+                    {/* <th>{props.el.description}</th> */}
+                    <td>{props.el.tags}</td>
                     {fields}
                 </tr>
-            )
-        })
-        setElements(headerFields)
+            );
+        });
+        if (headerFields.length < 1) {
+            headerFields = (
+                <tr>
+                    <td id="tb-cell__no-element" className="text-center" colSpan={"100%"}>{props.t("TableCell.noElemt")}</td>
+                </tr>
+            );
+        }
+        setElements(headerFields);
     }
 
-    function createElem(){
-        let elements = props.type == "header" ? createHeader() : createBody();
-        setElements(props.elem)
+    function createElem() {
+        props.type == "header" ? createHeader() : createBody();
     }
 
-    return (
-        {elements}
-    )
+    return <>{elements}</>;
 }
 
-export default TableCell
+export default TableCell;

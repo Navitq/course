@@ -107,5 +107,18 @@
         "settings":"Setting", 
         "addNewItem":"Create element",
         "items":"Working with items"
+    },
+    "TableCell":{
+        "id": "Id",
+        "name":"Name",
+        "description":"Description",
+        "tags":"Tags",
+        "noElemt":"You don't have items right now..."
+    },
+    "ModalItem":{
+        "headerItem":"Item settings",
+        "name":"Item name",
+        "description":"Item description",
+        "itemManagement":"Element Control"
     }
 }

@@ -27,7 +27,6 @@ function CollectionsPrivate(props) {
 
         socket.on("got_user_data", (data) => {
             let dataParsed = JSON.parse(data);
-            console.log(dataParsed)
             setPerson(dataParsed);
         });
 
@@ -35,7 +34,6 @@ function CollectionsPrivate(props) {
             let data = JSON.parse(dataJson);
             let mewCards = [];
             for(let i =0; i < data.length;++i){
-                console.log(data[i])
                 mewCards.push(<CollCard key={uuidv4()} t={props.t} data={data[i]}></CollCard>)
             }
             setCards(mewCards)
