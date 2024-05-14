@@ -12,7 +12,7 @@ import CollectionsPrivate from "./CollectionsPrivate"
 import CollectionsPublic from "./CollectionsPublic"
 import Collection from "./Collection"
 import { socket } from "./socket";
-import { connect } from 'socket.io-client';
+import ItemTemplate from "./ItemTemplate"
 
 
 export default class MainContent extends Component {
@@ -42,6 +42,7 @@ export default class MainContent extends Component {
 					<Route exact path="/private" element={this.props.headerState?<CollectionsPrivate socket={socket} theme={this.props.theme} i18n={this.props.i18n} t={this.props.t} />:<Navigate to="/sign_in"/>}></Route>
 					<Route exact path="/public" element={<CollectionsPublic t={this.props.t}/>}></Route>
 					<Route exact path="/collection/:col_id" element={<Collection theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
+					<Route exact path="/collection/:col_id/:item_id" element={<ItemTemplate theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
 					<Route path="*" element={<NotFound t={this.props.t}></NotFound>} ></Route>
 				</Routes >
 			</Container>

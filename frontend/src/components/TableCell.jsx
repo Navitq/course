@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 
+import { NavLink } from "react-router-dom";
+
 import { v4 as uuidv4 } from "uuid";
 
 function TableCell(props) {
@@ -25,7 +27,11 @@ function TableCell(props) {
                 }
             });
             return (
-                <tr className="tb-cell__index"  data-col_id={el.col_id} key={uuidv4()}>
+                <tr
+                    className="tb-cell__index"
+                    data-col_id={el.col_id}
+                    key={uuidv4()}
+                >
                     <th>{props.t("TableCell.id")}</th>
                     <th>{props.t("TableCell.name")}</th>
                     {/* <th>{props.t("TableCell.description")}</th> */}
@@ -39,7 +45,7 @@ function TableCell(props) {
 
     function createBody() {
         let headerFields = props.elem.map((el, index) => {
-            console.log(el)
+            console.log(el, 555555);
 
             let fields = [];
             fieldsTypes.map((type) => {
@@ -48,22 +54,40 @@ function TableCell(props) {
                         if (type == "checkbox") {
                             fields.push(
                                 <th>
-                                    <Form.Check // prettier-ignore
-                                        type="checkbox"
-                                        checked={
-                                            el[`${type}` + i] == "true"
-                                                ? true
-                                                : false
-                                        }
-                                        readOnly
-                                        key={uuidv4()}
-                                    />
+                                    <NavLink
+                                        className="nav-link active"
+                                        data-item_id={el.item_id}
+                                        variant="primary"
+                                        to={`/collection/${el.col_id}/${el.item_id}`}
+                                        style={{ width: "100%" }}
+                                    >
+                                       { <Form.Check 
+                                            type="checkbox"
+                                            checked={
+                                                el[`${type}` + i] == "true"
+                                                    ? true
+                                                    : false
+                                            }
+                                            readOnly
+                                            key={uuidv4()}
+                                        />}
+                                    </NavLink>
                                 </th>
                             );
                             continue;
                         }
                         fields.push(
-                            <td key={uuidv4()}>{el[`${type}` + i]}</td>
+                            <td key={uuidv4()}>
+                                <NavLink
+                                    className="nav-link active"
+                                    data-item_id={el.item_id}
+                                    variant="primary"
+                                    to={`/collection/${el.col_id}/${el.item_id}`}
+                                    style={{ width: "100%" }}
+                                >
+                                    {el[`${type}` + i]}
+                                </NavLink>
+                            </td>
                         );
                     }
                 }
@@ -75,10 +99,40 @@ function TableCell(props) {
                     data-col_id={el.col_id}
                     key={uuidv4()}
                 >
-                    <td>{index + 1}</td>
-                    <td>{el.name}</td>
+                    <td>
+                        <NavLink
+                            className="nav-link active"
+                            data-item_id={el.item_id}
+                            variant="primary"
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                        >
+                            {index + 1}
+                        </NavLink>
+                    </td>
+                    <td>
+                        <NavLink
+                            className="nav-link active"
+                            data-item_id={el.item_id}
+                            variant="primary"
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                        >
+                            {el.name}
+                        </NavLink>
+                    </td>
                     {/* <th>{props.el.description}</th> */}
-                    <td>{el.tags}</td>
+                    <td>
+                        <NavLink
+                            className="nav-link active"
+                            data-item_id={el.item_id}
+                            variant="primary"
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                        >
+                            {el.tags}
+                        </NavLink>
+                    </td>
                     {fields}
                 </tr>
             );
@@ -86,7 +140,13 @@ function TableCell(props) {
         if (headerFields.length < 1) {
             headerFields = (
                 <tr>
-                    <td id="tb-cell__no-element" className="text-center" colSpan={"100%"}>{props.t("TableCell.noElemt")}</td>
+                    <td
+                        id="tb-cell__no-element"
+                        className="text-center"
+                        colSpan={"100%"}
+                    >
+                        {props.t("TableCell.noElemt")}
+                    </td>
                 </tr>
             );
         }

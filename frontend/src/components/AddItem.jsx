@@ -4,13 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 
 import Form from "react-bootstrap/Form";
 
+import { NavLink } from "react-router-dom";
+
 function AddItem(props) {
     let [line, setLine] = useState([]);
 
     let fieldsTypes = ["date", "text", "number", "checkbox"];
 
     function createBody() {
-        console.log(props.data)
+        console.log(props.data);
         let headerFields = props.data.map((el, index) => {
             let fields = [];
             fieldsTypes.map((type) => {
@@ -19,22 +21,40 @@ function AddItem(props) {
                         if (type == "checkbox") {
                             fields.push(
                                 <th>
-                                    <Form.Check // prettier-ignore
-                                        type="checkbox"
-                                        checked={
-                                            el[`${type}` + i] == "true"
-                                                ? true
-                                                : false
-                                        }
-                                        readOnly
-                                        key={uuidv4()}
-                                    />
+                                    <NavLink
+                                        className="nav-link active"
+                                        data-item_id={el.item_id}
+                                        variant="primary"
+                                        to={`/collection/${el.col_id}/${el.item_id}`}
+                                        style={{ width: "100%" }}
+                                    >
+                                        {<Form.Check // prettier-ignore
+                                            type="checkbox"
+                                            checked={
+                                                el[`${type}` + i] == "true"
+                                                    ? true
+                                                    : false
+                                            }
+                                            readOnly
+                                            key={uuidv4()}
+                                        />}
+                                    </NavLink>
                                 </th>
                             );
                             continue;
                         }
                         fields.push(
-                            <td key={uuidv4()}>{el[`${type}` + i]}</td>
+                            <td key={uuidv4()}>
+                                <NavLink
+                                    className="nav-link active"
+                                    data-item_id={el.item_id}
+                                    variant="primary"
+                                    to={`/collection/${el.col_id}/${el.item_id}`}
+                                    style={{ width: "100%" }}
+                                >
+                                    {el[`${type}` + i]}
+                                </NavLink>
+                            </td>
                         );
                     }
                 }
@@ -46,10 +66,44 @@ function AddItem(props) {
                     data-col_id={el.col_id}
                     key={uuidv4()}
                 >
-                    <td>{document.getElementsByClassName("tb-cell__index").length}</td>
-                    <td>{el.name}</td>
+                    <td>
+                        <NavLink
+                            className="nav-link active"
+                            data-item_id={el.item_id}
+                            variant="primary"
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                        >
+                            {
+                                document.getElementsByClassName(
+                                    "tb-cell__index"
+                                ).length
+                            }
+                        </NavLink>
+                    </td>
+                    <td>
+                        <NavLink
+                            className="nav-link active"
+                            data-item_id={el.item_id}
+                            variant="primary"
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                        >
+                            {el.name}
+                        </NavLink>
+                    </td>
                     {/* <th>{props.el.description}</th> */}
-                    <td>{el.tags}</td>
+                    <td>
+                        <NavLink
+                            className="nav-link active"
+                            data-item_id={el.item_id}
+                            variant="primary"
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                        >
+                            {el.tags}{" "}
+                        </NavLink>
+                    </td>
                     {fields}
                 </tr>
             );
@@ -59,15 +113,10 @@ function AddItem(props) {
     }
 
     useEffect(() => {
-        
         let newFileds = createBody();
         setLine(newFileds);
-    },[]);
-    return (
-    <>
-        {line}
-    </>
-    )
+    }, []);
+    return <>{line}</>;
 }
 
 export default AddItem;

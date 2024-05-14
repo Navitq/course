@@ -30,7 +30,14 @@ function Collection(props) {
     let { col_id } = useParams();
 
     function formDataCreater(form){
+        let checkboxes = form.querySelectorAll(".form-check-input[type=checkbox]")
         let validatedForm = new FormData(form);
+        for(let i = 0;i < checkboxes.length;++i){
+            if(checkboxes[i].checked == false){
+                validatedForm.append([checkboxes[i].name], "false")
+            }
+        }
+        console.log(validatedForm.get("checkbox0"))
         return validatedForm;
     }
 
@@ -38,7 +45,7 @@ function Collection(props) {
         let data = {}
         for (const value of validatedForm.entries()) {
             if(value[0].includes("checkbox")){
-                if(value[1]){
+                if(value[1] != "false"){
                     data[`${value[0]}`] = true
                 } else {
                     data[`${value[0]}`] = false
