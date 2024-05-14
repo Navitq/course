@@ -107,6 +107,18 @@ function ModalNewItem(props) {
                             />
                         </Form.Group>
 
+                        <Form.Group className="mb-3">
+                            <Form.Label className="h6">
+                                {props.t("ModalItem.itemTags")}
+                            </Form.Label>
+                            <Form.Control
+                                name="tags"
+                                required
+                                type="text"
+                                placeholder={props.t("ModalItem.tagsPlaceholder")}
+                            />
+                        </Form.Group>
+
                         {modalFields}
 
                         <Container className="d-flex justify-content-between px-0 mt-3">

@@ -119,6 +119,8 @@
         "headerItem":"Item settings",
         "name":"Item name",
         "description":"Item description",
-        "itemManagement":"Element Control"
+        "itemManagement":"Element Control",
+        "itemTags":"Tags",
+        "tagsPlaceholder":"Tags"
     }
 }

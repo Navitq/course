@@ -13,7 +13,7 @@ function TableCell(props) {
     }, []);
 
     function createHeader() {
-        let headerFields = props.elem.map((el) => {
+        let headerFields = props.elem.map((el, index) => {
             let fields = [];
             fieldsTypes.map((type) => {
                 for (let i = 0; i < 3; i++) {
@@ -25,7 +25,7 @@ function TableCell(props) {
                 }
             });
             return (
-                <tr data-col_id={el.col_id} key={uuidv4()}>
+                <tr className="tb-cell__index"  data-col_id={el.col_id} key={uuidv4()}>
                     <th>{props.t("TableCell.id")}</th>
                     <th>{props.t("TableCell.name")}</th>
                     {/* <th>{props.t("TableCell.description")}</th> */}
@@ -39,10 +39,12 @@ function TableCell(props) {
 
     function createBody() {
         let headerFields = props.elem.map((el, index) => {
+            console.log(el)
+
             let fields = [];
             fieldsTypes.map((type) => {
                 for (let i = 0; i < 3; i++) {
-                    if (typeof el[`${type}` + i] != "undefined") {
+                    if (typeof el[`${type}` + i] != "object") {
                         if (type == "checkbox") {
                             fields.push(
                                 <th>
@@ -53,6 +55,7 @@ function TableCell(props) {
                                                 ? true
                                                 : false
                                         }
+                                        readOnly
                                         key={uuidv4()}
                                     />
                                 </th>
@@ -67,14 +70,15 @@ function TableCell(props) {
             });
             return (
                 <tr
+                    className="tb-cell__index"
                     data-item_id={el.item_id}
                     data-col_id={el.col_id}
                     key={uuidv4()}
                 >
                     <td>{index + 1}</td>
-                    <td>{props.el.name}</td>
+                    <td>{el.name}</td>
                     {/* <th>{props.el.description}</th> */}
-                    <td>{props.el.tags}</td>
+                    <td>{el.tags}</td>
                     {fields}
                 </tr>
             );

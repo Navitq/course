@@ -172,12 +172,6 @@ const Item = sequelize.define("item", {
         type: DataTypes.INTEGER, 
     },
 
-
-    category: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-
     text0: {
         type: DataTypes.STRING,
     },

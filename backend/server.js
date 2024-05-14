@@ -162,14 +162,15 @@ io.on("connection", (socket) => {
     const req = socket.request;
     console.log("hhhhhhhhhhhhh",socket.request.session.auth)
 
-    socket.on("newColl", async (data) => {
+    socket.on("get_new_coll", async (data) => {
         if (!req.session.auth) {
             return;
         }
-        console.log(111111)
         let parsedData = JSON.parse(data);
         parsedData.uuid = socket.request.session.user_id
         let currentUser = await Coll.create(parsedData);
+        socket.emit("got_new_coll", JSON.stringify(currentUser))
+
     });
 
     socket.on("get_coll", async (data) => {
@@ -181,9 +182,22 @@ io.on("connection", (socket) => {
                 uuid: req.session.user_id
             },
         });
-        console.log(result)
         socket.emit("got_coll", JSON.stringify(result))
     });
+
+    socket.on("get_item", async (dataJSON)=>{
+        // if (!req.session.auth) {
+        //     return;
+        // }
+        let data = JSON.parse(dataJSON);
+        console.log(data,6666666666666666666666)
+        try{
+            let result = await Item.create(data);
+            socket.emit("got_item", JSON.stringify(result))
+        } catch (err) {
+            console.error(err);
+        }
+    })
 
     socket.on("get_user_data", async (data) => {
         if (!req.session.auth) {

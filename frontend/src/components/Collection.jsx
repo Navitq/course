@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { socket } from "./socket";
 import TableCell from "./TableCell";
 import Filter from "./Filter";
-// import CreateItem from "./CreateItem";
+import AddItem from "./AddItem";
 import ModalNewItem from "./ModalNewItem"
 
 function Collection(props) {
@@ -37,6 +37,14 @@ function Collection(props) {
     async function formObject(validatedForm){
         let data = {}
         for (const value of validatedForm.entries()) {
+            if(value[0].includes("checkbox")){
+                if(value[1]){
+                    data[`${value[0]}`] = true
+                } else {
+                    data[`${value[0]}`] = false
+                }
+                continue;
+            }
             data[`${value[0]}`] = value[1];
         }
         return data
@@ -46,13 +54,11 @@ function Collection(props) {
 
     async function newItem(e){
         e.preventDefault()
-
         let formData = formDataCreater(e.currentTarget);
         let data = await formObject(formData)
+        console.log(data)
         data.col_id = col_id;
-        // socket.emit("newItem", JSON.stringify(data))
-        // let card = createItemCard(data)
-        // props.addNewCard(card)
+        socket.emit("get_item", JSON.stringify(data))
     }
 
     let showModal = () => {
@@ -66,11 +72,13 @@ function Collection(props) {
 
     useEffect(() => {
         socket.emit("get_col_items", JSON.stringify({ col_id }));
+
         socket.on("got_col_items", (colJson, dataJson) => {
             let col = JSON.parse(colJson),
                 data = JSON.parse(dataJson);
             setRefUser(col[0]);
             setColCurrent(col[0])
+            console.log(col[0])
             let head = <TableCell t={props.t} key={uuidv4()} elem={col} type="header"></TableCell>;
             let body = <TableCell theme={props.theme} t={props.t} key={uuidv4()} elem={data} type="body"></TableCell>;
             setTheader((prev) => {
@@ -80,6 +88,22 @@ function Collection(props) {
                 return [body];
             });
         });
+
+        socket.on("got_item",(dataJSON)=>{
+            let data = JSON.parse(dataJSON)
+            let card = <AddItem key={uuidv4()} data={[data]} t={props.t}></AddItem>
+            let noElements = document.getElementById("tb-cell__no-element");
+            
+            if(noElements){
+                noElements.remove()
+                setBody([card])
+                return;
+            } else {
+                setBody((prev)=>{
+                    return [ ...prev, card]
+                })
+            }
+        })
     },[]);
 
     return (
@@ -185,7 +209,7 @@ function Collection(props) {
                     <tbody>{tbody}</tbody>
                 </Table>
             </Container>
-            <ModalNewItem key={uuidv4()} newItem={newItem} modalClose={closeModal} showModal={showModal} modalShow={modalShow} t={props.t} col={refUser}></ModalNewItem>        </Container>
+            <ModalNewItem key={uuidv4()} theme={props.theme} newItem={newItem} modalClose={closeModal} showModal={showModal} modalShow={modalShow} t={props.t} col={refUser}></ModalNewItem>        </Container>
     );
 }
 

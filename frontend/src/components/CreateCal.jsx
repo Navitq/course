@@ -35,6 +35,11 @@ function CreateCal(props) {
 
 
     useEffect(()=>{
+        socket.on("got_new_coll",(dataJSON)=>{
+            let data = JSON.parse(dataJSON)
+            let card = createCollCard(data)
+            props.addNewCard(card)
+        })
         getCategoryData()
     },[])
 
@@ -102,9 +107,8 @@ function CreateCal(props) {
         let data = await formObject(formData)
 
  
-        socket.emit("newColl", JSON.stringify(data))
-        let card = createCollCard(data)
-        props.addNewCard(card)
+        socket.emit("get_new_coll", JSON.stringify(data))
+  
     }
 
     function createCollCard(data){

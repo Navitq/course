@@ -118,6 +118,8 @@
         "headerItem":"Настройки элемента",
         "name":"Название элемента",
         "description":"Описание элемента",
-        "itemManagement":"Управление элементом"
+        "itemManagement":"Управление элементом",
+        "itemTags":"Теги",
+        "tagsPlaceholder":"Теги"
     }
 }
