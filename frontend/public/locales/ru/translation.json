@@ -111,7 +111,7 @@
         "id": "Id",
         "name":"Название",
         "description":"Описание",
-        "tags":"Тэги",
+        "tags":"Теги",
         "noElemt":"У вас нет элементов прямо сейчас..."
     },
     "ModalItem":{
@@ -120,6 +120,18 @@
         "description":"Описание элемента",
         "itemManagement":"Управление элементом",
         "itemTags":"Теги",
-        "tagsPlaceholder":"Теги"
+        "tagsPlaceholder":"Теги..."
+    },
+    "ItemTemplate":{
+        "edit":"Редактировать",
+        "delete":"Удалить",
+        "settings":"Настройки элемента",
+        "id": "Id",
+        "name":"Название",
+        "description":"Описание",
+        "tags":"Теги",
+        "tagsPlaceholder":"Теги...",
+        "setting":"Настройки",
+        "save":"Сохранить"
     }
 }

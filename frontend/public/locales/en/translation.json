@@ -121,6 +121,18 @@
         "description":"Item description",
         "itemManagement":"Element Control",
         "itemTags":"Tags",
-        "tagsPlaceholder":"Tags"
+        "tagsPlaceholder":"Tags..."
+    },
+    "ItemTemplate":{
+        "edit":"Edit",
+        "delete":"Delete",
+        "settings":"Item settings",
+        "id": "Id",
+        "name":"Name",
+        "description":"Description",
+        "tags":"Tags",
+        "tagsPlaceholder":"Tags...",
+        "setting":"Settings",
+        "save":"Save"
     }
 }

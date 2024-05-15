@@ -26,7 +26,21 @@ function ModalNewItem(props) {
                                 key={uuidv4()}
                             />
                         );
-                    } else {
+                    } else if (type == "textarea") {
+                        newFieldElem.push(
+                            <Form.Control
+                                name={`${type + i}`}
+                                as="textarea"
+                                id={type + i}
+                                required
+                                key={uuidv4()}
+                                value={props.col[`${type}` + i]}
+                                readOnly
+                                className="filter__scroll"
+                                rows={3}
+                            />
+                        );
+                    }  else {
                         newFieldElem.push (
                             <Form.Control
                                 name={`${type + i}`}

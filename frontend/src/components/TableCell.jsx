@@ -53,7 +53,7 @@ function TableCell(props) {
                     if (typeof el[`${type}` + i] != "object") {
                         if (type == "checkbox") {
                             fields.push(
-                                <th>
+                                <th  key={uuidv4()}>
                                     <NavLink
                                         className="nav-link active"
                                         data-item_id={el.item_id}
@@ -77,7 +77,7 @@ function TableCell(props) {
                             continue;
                         }
                         fields.push(
-                            <td key={uuidv4()}>
+                            <td  key={uuidv4()}>
                                 <NavLink
                                     className="nav-link active"
                                     data-item_id={el.item_id}
@@ -99,7 +99,7 @@ function TableCell(props) {
                     data-col_id={el.col_id}
                     key={uuidv4()}
                 >
-                    <td>
+                    <td >
                         <NavLink
                             className="nav-link active"
                             data-item_id={el.item_id}
@@ -139,7 +139,7 @@ function TableCell(props) {
         });
         if (headerFields.length < 1) {
             headerFields = (
-                <tr>
+                <tr  key={uuidv4()}>
                     <td
                         id="tb-cell__no-element"
                         className="text-center"

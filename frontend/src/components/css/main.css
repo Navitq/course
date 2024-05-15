@@ -3,6 +3,10 @@
     border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
+.item-tp__user-settings div:first-child{
+    margin-top: 0px !important;
+}
+
 @media (max-width: 992px) {
     .header__block {
         flex-direction: column !important;
@@ -21,6 +25,9 @@
 }
 
 @media (max-width: 768px) {
+    .item-tp__fields{
+        flex-direction: column;
+    }
     .coll_main {
         flex-direction: column;
         gap: 10px;
@@ -36,6 +43,17 @@
     }
     .collection__settings{
         margin-top: 20px;
+    }
+    .item-tp__main {
+        flex-direction: column;
+    }
+    .item-tp__main  .item-tp__default{
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    .item-tp__buttons{
+        margin-top: 20px;
+        margin-left: 0px;
     }
 }
 

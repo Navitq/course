@@ -199,6 +199,22 @@ io.on("connection", (socket) => {
         }
     })
 
+    socket.on("get_item_info", async (dataJSON)=>{
+        let data = JSON.parse(dataJSON)
+        let resultColl = await Coll.findAll({
+            where: {
+                col_id: data.col_id
+            },
+        });
+        let resultItems = await Item.findAll({
+            where: {
+                item_id: data.item_id
+            },
+        });
+        socket.emit("got_item_info", JSON.stringify(resultColl[0]), JSON.stringify(resultItems[0]))
+    
+    })
+
     socket.on("get_user_data", async (data) => {
         if (!req.session.auth) {
             return;
