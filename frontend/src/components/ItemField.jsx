@@ -21,8 +21,8 @@ function ItemField(props) {
                                 type="checkbox"
                                 id={type + i}
                                 key={uuidv4()}
-                                checked={props.col[`${type}` + i]=="true" ? true : false}
-                                readOnly
+                                defaultChecked={props.col[`${type}` + i]=="true" ? true : false}
+                                disabled
                             />
                         );
                     } else if (type == "textarea") {
@@ -33,7 +33,7 @@ function ItemField(props) {
                                 id={type + i}
                                 required
                                 key={uuidv4()}
-                                value={props.col[`${type}` + i]}
+                                defaultValue={props.col[`${type}` + i]}
                                 readOnly
                                 className="filter__scroll"
                                 rows={5}
@@ -46,7 +46,7 @@ function ItemField(props) {
                                 type={type}
                                 required
                                 key={uuidv4()}
-                                value={props.col[`${type}` + i]}
+                                defaultValue={props.col[`${type}` + i]}
                                 readOnly
                             />
                         );
@@ -62,7 +62,7 @@ function ItemField(props) {
                 }
             }
         });
-        return fields;
+            return fields;
     }
 
     useEffect(() => {

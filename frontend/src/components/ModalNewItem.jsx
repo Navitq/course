@@ -34,8 +34,6 @@ function ModalNewItem(props) {
                                 id={type + i}
                                 required
                                 key={uuidv4()}
-                                value={props.col[`${type}` + i]}
-                                readOnly
                                 className="filter__scroll"
                                 rows={3}
                             />
