@@ -239,18 +239,37 @@ io.on("connection", (socket) => {
         });
     });
 
+    socket.on("delete_item", async (dataJSON) => {
+        let data = JSON.parse(dataJSON);
+        console.log(data, 666666666666666666666666666666)
+        if (
+            !req.session.auth ||
+            !(await checkAccess(req.session.user_id, data))
+        ) {
+            return;
+        }
+        await Item.destroy( {
+            where: {
+                item_id: data.item_id,
+            },
+        });
+    });
+
     socket.on("get_item_info", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
+        
         let resultColl = await Coll.findAll({
             where: {
                 col_id: data.col_id,
             },
         });
+
         let resultItems = await Item.findAll({
             where: {
                 item_id: data.item_id,
             },
         });
+
         socket.emit(
             "got_item_info",
             JSON.stringify(resultColl[0]),

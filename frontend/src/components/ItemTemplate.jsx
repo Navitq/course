@@ -37,6 +37,8 @@ function ItemTemplate(props) {
         return formObj;
     }
 
+
+
     function saveChanges(e) {
         e.preventDefault();
         let fields = findFields(e);
@@ -46,6 +48,12 @@ function ItemTemplate(props) {
         object.col_id = e.currentTarget.dataset.col_id
         socket.emit("change_item", JSON.stringify(object))
         changeState(true, fields);
+    }
+
+    async function deleteItem(e){
+        let form = e.currentTarget.closest("form");
+        socket.emit("delete_item", JSON.stringify({item_id: form.dataset.item_id, col_id:  form.dataset.col_id}))
+        window.location.reload();
     }
 
     function changeState(newState, fields) {
@@ -77,6 +85,7 @@ function ItemTemplate(props) {
         socket.on("got_item_info", (headerJSON, dataJSON) => {
             let data = JSON.parse(dataJSON),
                 header = JSON.parse(headerJSON);
+                console.log(data)
             console.log(data, 666666666666666);
             let field = [
                 <ItemField
@@ -194,7 +203,7 @@ function ItemTemplate(props) {
                         {props.t("ItemTemplate.save")}
                     </Button>
 
-                    <Button style={{ maxWidth: "fit-content" }}>
+                    <Button onClick={deleteItem} style={{ maxWidth: "fit-content" }}>
                         {props.t("ItemTemplate.delete")}
                     </Button>
                 </Container>
