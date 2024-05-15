@@ -241,40 +241,55 @@ io.on("connection", (socket) => {
 
     socket.on("delete_item", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-        console.log(data, 666666666666666666666666666666)
+        console.log(data, 666666666666666666666666666666);
         if (
             !req.session.auth ||
             !(await checkAccess(req.session.user_id, data))
         ) {
             return;
         }
-        await Item.destroy( {
+        await Item.destroy({
             where: {
                 item_id: data.item_id,
             },
         });
+        socket.emit("delete_item");
     });
 
     socket.on("get_item_info", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-        
-        let resultColl = await Coll.findAll({
-            where: {
-                col_id: data.col_id,
-            },
-        });
+        let resultColl, resultItems;
+        try {
+            resultColl = await Coll.findAll({
+                where: {
+                    col_id: data.col_id,
+                },
+            });
 
-        let resultItems = await Item.findAll({
-            where: {
-                item_id: data.item_id,
-            },
-        });
+            resultItems = await Item.findAll({
+                where: {
+                    item_id: data.item_id,
+                },
+            });
+            if(resultItems.length<1){
+                socket.emit(
+                    "got_item_info",
+                    JSON.stringify({err:true})
+                );
+                return;
+            }
 
-        socket.emit(
-            "got_item_info",
-            JSON.stringify(resultColl[0]),
-            JSON.stringify(resultItems[0])
-        );
+            socket.emit(
+                "got_item_info",
+                JSON.stringify(resultColl[0]),
+                JSON.stringify(resultItems[0])
+            );
+        } catch (err) {
+            socket.emit(
+                "got_item_info",
+                JSON.stringify({err:true})
+            );
+        }
     });
 
     socket.on("get_user_data", async (data) => {

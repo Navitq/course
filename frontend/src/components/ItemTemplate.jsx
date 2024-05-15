@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
@@ -16,45 +17,55 @@ function ItemTemplate(props) {
     let [itemFields, setItemFields] = useState([]);
     let { col_id, item_id } = useParams();
 
-    function createFormData(form){
-        let formData = new FormData(form)
-        let checkboxes = form.querySelectorAll(".form-check-input[type=checkbox]")
-        for(let i = 0;i < checkboxes.length;++i){
-            if(checkboxes[i].checked == false){
-                formData.set([checkboxes[i].name], "false")
+    const navigate = useNavigate();
+
+
+    function createFormData(form) {
+        let formData = new FormData(form);
+        let checkboxes = form.querySelectorAll(
+            ".form-check-input[type=checkbox]"
+        );
+        for (let i = 0; i < checkboxes.length; ++i) {
+            if (checkboxes[i].checked == false) {
+                formData.set([checkboxes[i].name], "false");
             } else {
-                formData.set([checkboxes[i].name], "true")
+                formData.set([checkboxes[i].name], "true");
             }
         }
         return formData;
     }
 
-    function createObject(form){
-        let formObj = {}
-        for (const value of form.entries()){
+    function createObject(form) {
+        let formObj = {};
+        for (const value of form.entries()) {
             formObj[`${value[0]}`] = value[1];
         }
         return formObj;
     }
 
-
-
     function saveChanges(e) {
         e.preventDefault();
         let fields = findFields(e);
-        let formData = createFormData(e.currentTarget)
-        let object = createObject(formData)
-        object.item_id = e.currentTarget.dataset.item_id
-        object.col_id = e.currentTarget.dataset.col_id
-        socket.emit("change_item", JSON.stringify(object))
+        let formData = createFormData(e.currentTarget);
+        let object = createObject(formData);
+        object.item_id = e.currentTarget.dataset.item_id;
+        object.col_id = e.currentTarget.dataset.col_id;
+        socket.emit("change_item", JSON.stringify(object));
         changeState(true, fields);
     }
 
-    async function deleteItem(e){
+    async function deleteItem(e) {
         let form = e.currentTarget.closest("form");
-        socket.emit("delete_item", JSON.stringify({item_id: form.dataset.item_id, col_id:  form.dataset.col_id}))
-        window.location.reload();
+        socket.emit(
+            "delete_item",
+            JSON.stringify({
+                item_id: form.dataset.item_id,
+                col_id: form.dataset.col_id,
+            })
+        );
     }
+
+
 
     function changeState(newState, fields) {
         fields.forEach((element) => {
@@ -83,10 +94,13 @@ function ItemTemplate(props) {
 
     useEffect(() => {
         socket.on("got_item_info", (headerJSON, dataJSON) => {
-            let data = JSON.parse(dataJSON),
-                header = JSON.parse(headerJSON);
-                console.log(data)
-            console.log(data, 666666666666666);
+            let header = JSON.parse(headerJSON);
+            if (header.err) {
+                navigate("/not_found");
+                return;
+            }
+            let data = JSON.parse(dataJSON);
+
             let field = [
                 <ItemField
                     header={header}
@@ -108,6 +122,9 @@ function ItemTemplate(props) {
                 );
             }
         });
+        socket.on("delete_item",()=>{
+            window.location.reload();
+        })
         socket.emit("get_item_info", JSON.stringify({ col_id, item_id }));
     }, []);
 
@@ -203,7 +220,10 @@ function ItemTemplate(props) {
                         {props.t("ItemTemplate.save")}
                     </Button>
 
-                    <Button onClick={deleteItem} style={{ maxWidth: "fit-content" }}>
+                    <Button
+                        onClick={deleteItem}
+                        style={{ maxWidth: "fit-content" }}
+                    >
                         {props.t("ItemTemplate.delete")}
                     </Button>
                 </Container>
