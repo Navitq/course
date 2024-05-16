@@ -45,8 +45,6 @@ function TableCell(props) {
 
     function createBody() {
         let headerFields = props.elem.map((el, index) => {
-            console.log(el, 555555);
-
             let fields = [];
             fieldsTypes.map((type) => {
                 for (let i = 0; i < 3; i++) {

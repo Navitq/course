@@ -107,7 +107,6 @@ function ItemTemplate(props) {
                 element.disabled = newState;
             } else {
                 element.readOnly = newState;
-                console.log(element.readOnly);
             }
         });
     }
@@ -130,7 +129,7 @@ function ItemTemplate(props) {
         socket.on("got_item_info", (headerJSON, dataJSON) => {
             let header = JSON.parse(headerJSON);
             if (header.err) {
-                navigate("/not_found");
+                navigate(`/collection/${col_id}`);
                 return;
             }
             let data = JSON.parse(dataJSON);
@@ -144,7 +143,6 @@ function ItemTemplate(props) {
                 ></ItemField>,
             ];
             setItemData(data);
-            console.log(field);
             if (field.length > 0) {
                 setItemFields(
                     <Container

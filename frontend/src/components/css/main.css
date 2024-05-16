@@ -40,12 +40,12 @@
     .filter__main {
         margin-top: 15px !important;
     }
-}
-
-@media (max-width: 576px) {
     .collection__xs {
         flex-direction: column;
     }
+}
+
+@media (max-width: 576px) {
     .collection__settings{
         margin-top: 20px;
     }

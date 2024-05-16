@@ -12,7 +12,6 @@ function AddItem(props) {
     let fieldsTypes = ["date", "text", "number", "checkbox"];
 
     function createBody() {
-        console.log(props.data);
         let headerFields = props.data.map((el, index) => {
             let fields = [];
             fieldsTypes.map((type) => {

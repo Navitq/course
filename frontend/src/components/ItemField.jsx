@@ -9,7 +9,6 @@ function ItemField(props) {
     let [modalFields, setModalFields] = useState("");
     function createItemFileds() {
         let fields = [];
-        console.log(props.col);
         fieldsTypes.map((type) => {
             for (let i = 0; i < 3; ++i) {
                 if (typeof props.col[`${type}` + i] != "object") {

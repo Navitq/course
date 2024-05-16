@@ -170,6 +170,22 @@ io.on("connection", (socket) => {
         socket.emit("got_new_coll", JSON.stringify(currentUser));
     });
 
+    socket.on("change_col_data", async (dataJSON) => {
+        let data = JSON.parse(dataJSON);
+        if (
+            !req.session.auth ||
+            !(await checkAccess(req.session.user_id, data))
+        ) {
+            return;
+        }
+        console.log(666666666666666666, data.col_id);
+        await Coll.update(data, {
+            where: {
+                col_id: data.col_id,
+            },
+        });
+    });
+
     socket.on("get_coll", async (data) => {
         if (!req.session.auth) {
             return;
@@ -224,6 +240,30 @@ io.on("connection", (socket) => {
         }
     }
 
+    socket.on("delete_col_data", async (dataJSON) => {
+        let data = JSON.parse(dataJSON);
+        if (
+            !req.session.auth ||
+            !(await checkAccess(req.session.user_id, data))
+        ) {
+            return;
+        }
+
+        await Coll.destroy({
+            where: {
+                col_id: data.col_id,
+            },
+        });
+
+        await Item.destroy({
+            where: {
+                col_id: data.col_id,
+            },
+        });
+
+        socket.emit("delete_col_data");
+    });
+
     socket.on("change_item", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
         if (
@@ -241,7 +281,6 @@ io.on("connection", (socket) => {
 
     socket.on("delete_item", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-        console.log(data, 666666666666666666666666666666);
         if (
             !req.session.auth ||
             !(await checkAccess(req.session.user_id, data))
@@ -259,12 +298,12 @@ io.on("connection", (socket) => {
     socket.on("old_comment", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
         let newComment = await Comment.findAll({
-            where:{
-                item_id: data.item_id
-            }
+            where: {
+                item_id: data.item_id,
+            },
         });
         socket.emit(`${data.item_id}`, JSON.stringify(newComment));
-    })
+    });
 
     socket.on("get_item_info", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
@@ -333,21 +372,29 @@ io.on("connection", (socket) => {
     });
     socket.on("get_col_items", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-        let resultColl = await Coll.findAll({
-            where: {
-                col_id: data.col_id,
-            },
-        });
-        let resultItems = await Item.findAll({
-            where: {
-                col_id: data.col_id,
-            },
-        });
-        socket.emit(
-            "got_col_items",
-            JSON.stringify(resultColl),
-            JSON.stringify(resultItems)
-        );
+        try {
+            let resultColl = await Coll.findAll({
+                where: {
+                    col_id: data.col_id,
+                },
+            });
+            if (resultColl.length < 1) {
+                socket.emit("got_col_items", JSON.stringify({ err: true }));
+                return;
+            }
+            let resultItems = await Item.findAll({
+                where: {
+                    col_id: data.col_id,
+                },
+            });
+            socket.emit(
+                "got_col_items",
+                JSON.stringify(resultColl),
+                JSON.stringify(resultItems)
+            );
+        } catch (err) {
+            socket.emit("got_col_items", JSON.stringify({ err: true }));
+        }
     });
 });
 

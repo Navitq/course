@@ -52,7 +52,7 @@ function Filter(props) {
     return (
         <Form style={{height:"100%"}} noValidate validated={validated} onSubmit={handleSubmit} className="d-flex flex-column justify-content-between">
             <Row className="mb-3 d-flex ">
-                <Container className="h4 ps-2">{props.t("Filter.filter")}</Container>
+                <Container className="h4">{props.t("Filter.filter")}</Container>
 
                 <Form.Label>{props.t("Filter.calName")}</Form.Label>
                 <Dropdown>

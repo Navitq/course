@@ -168,6 +168,7 @@ function CreateCal(props) {
                         name="description"
                         required
                         as="textarea"
+                        className="filter__scroll"
                         placeholder={props.t("CrElem.about")}
                         rows={1}
                         value={descrField}
