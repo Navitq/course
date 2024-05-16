@@ -238,11 +238,52 @@ const Tag = sequelize.define("tag", {
     tag_amount: DataTypes.INTEGER
 });
 
-// (async () => {
-//     await sequelize.sync({ force: true });
-//     let user = await User.build({ username: "1", email: "1@1", password: "1" });
-//     await user.save();
-// })();
+const Comment = sequelize.define("comment", {
+    comment_id: {
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
+    },
+
+    user_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+
+    col_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+
+    item_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+
+    comment: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+
+    date: {
+        type: DataTypes.STRING,
+        allowNull: false,
+
+    },
+
+
+});
+
+(async () => {
+    //await sequelize.sync();//{ force: true }
+    // let user = await User.build({ username: "1", email: "1@1", password: "1" });
+    // await user.save();
+})();
 
 module.exports = {
     User,
@@ -251,4 +292,5 @@ module.exports = {
     Tag,
     sequelize,
     Op,
+    Comment
 };

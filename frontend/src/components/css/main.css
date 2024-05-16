@@ -7,6 +7,11 @@
     margin-top: 0px !important;
 }
 
+.item-tp__main-comment{
+    max-width: 800px;
+    width: 100%;
+}
+
 @media (max-width: 992px) {
     .header__block {
         flex-direction: column !important;

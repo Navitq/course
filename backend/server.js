@@ -9,7 +9,7 @@ const cookieParser = require("cookie-parser");
 const { emit } = require("process");
 const { writeFile, readFile } = require("fs");
 
-const { User, Coll, sequelize, Op, Item } = require("./sequelize.js");
+const { User, Coll, sequelize, Op, Item, Comment } = require("./sequelize.js");
 const s3 = require("./s3.js");
 
 const app = express();
@@ -256,6 +256,16 @@ io.on("connection", (socket) => {
         socket.emit("delete_item");
     });
 
+    socket.on("old_comment", async (dataJSON) => {
+        let data = JSON.parse(dataJSON);
+        let newComment = await Comment.findAll({
+            where:{
+                item_id: data.item_id
+            }
+        });
+        socket.emit(`${data.item_id}`, JSON.stringify(newComment));
+    })
+
     socket.on("get_item_info", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
         let resultColl, resultItems;
@@ -271,11 +281,8 @@ io.on("connection", (socket) => {
                     item_id: data.item_id,
                 },
             });
-            if(resultItems.length<1){
-                socket.emit(
-                    "got_item_info",
-                    JSON.stringify({err:true})
-                );
+            if (resultItems.length < 1) {
+                socket.emit("got_item_info", JSON.stringify({ err: true }));
                 return;
             }
 
@@ -285,10 +292,27 @@ io.on("connection", (socket) => {
                 JSON.stringify(resultItems[0])
             );
         } catch (err) {
-            socket.emit(
-                "got_item_info",
-                JSON.stringify({err:true})
-            );
+            socket.emit("got_item_info", JSON.stringify({ err: true }));
+        }
+    });
+
+    socket.on("get_comment", async (dataJSON) => {
+        if (!req.session.auth) {
+            return;
+        }
+        let data = JSON.parse(dataJSON);
+        try {
+            let result = await User.findAll({
+                where: {
+                    user_id: req.session.user_id,
+                },
+            });
+            data.username = result[0].dataValues.username;
+            data.user_id = req.session.user_id;
+            let newComment = await Comment.create(data);
+            io.emit(`${data.item_id}`, JSON.stringify([newComment]));
+        } catch (err) {
+            console.error(err);
         }
     });
 

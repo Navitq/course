@@ -133,6 +133,10 @@
         "tags":"Tags",
         "tagsPlaceholder":"Tags...",
         "setting":"Settings",
-        "save":"Save"
+        "save":"Save",
+        "comments":"Comments",
+        "post": "Post",
+        "publicationDate": "Publication date(UTC):  ",
+        "commentPlholder":"Here you can leave your comment..."
     }
 }
