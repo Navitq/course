@@ -73,7 +73,13 @@
     "FilterItems":{
         "addSettings":"Settings",
         "searchValue":"Search value",
-        "searchField":"Enter the search value..."
+        "searchField":"Enter the search value...",
+        "addFilter":"Advanced filtering",
+        "filters": "Filters",
+        "name": "Name",
+        "description": "Description",
+        "about":"These items...",
+        "namePlaceHolder":"Items names..."
     }, 
     "Search": {
         "header":"Search",
@@ -145,5 +151,8 @@
         "post": "Post",
         "publicationDate": "Publication date(UTC):  ",
         "commentPlholder":"Here you can leave your comment..."
+    },
+    "Additional":{
+        "description":"Item description"
     }
 }

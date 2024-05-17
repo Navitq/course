@@ -22,7 +22,7 @@ function ModalCrColl(props) {
                     <Modal.Title className="h3">{props.t("CrElem.addSetting")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={(e)=>{props.newCollection(e, dropRef.current.dataset.categoryNow)}}>
+                    <Form onSubmit={(e)=>{props.newCollection(e, dropRef.current.dataset.categoryNow); props.modalClose()}}>
                         <Container className="px-0 h5">
                             {props.t("ModalColl.headerCol")}
                         </Container>
@@ -32,7 +32,7 @@ function ModalCrColl(props) {
                                 name="name"
                                 required
                                 type="text"
-                                placeholder="Some_name"
+                                placeholder={props.t("CrElem.name")}
                                 value={props.nameField}
                                 onChange={props.changeNameField}
                             />

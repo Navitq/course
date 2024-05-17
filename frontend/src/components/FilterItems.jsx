@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
+import { useParams} from "react-router-dom";
+
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -10,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { socket } from "./socket";
 import "./css/scroll.css";
+import ModalItemFilter from "./ModalItemFilter"
 
 function Filter(props) {
     let [category, setCategory] = useState("");
@@ -19,6 +22,58 @@ function Filter(props) {
     let fieldsTypes = ["date", "text", "number", "checkbox", "textarea"];
 
     let mainCategory = useRef(props.t("Filter.chseCategory"));
+
+    const [modalShow, setModalShow] = useState(false);
+
+
+    let { col_id } = useParams();
+
+    async function newItem(e) {
+        e.preventDefault();
+        let formData = formDataCreater(e.currentTarget);
+        let data = await formObject(formData);
+        data.col_id = col_id;
+        socket.emit("get_item", JSON.stringify(data));
+    }
+
+    let showModal = () => {
+        setModalShow(true);
+    };
+
+    let closeModal = () => {
+        setModalShow(false);
+    };
+
+    function formDataCreater(form) {
+        let checkboxes = form.querySelectorAll(
+            ".form-check-input[type=checkbox]"
+        );
+        let validatedForm = new FormData(form);
+        for (let i = 0; i < checkboxes.length; ++i) {
+            if (checkboxes[i].checked == false) {
+                validatedForm.set([checkboxes[i].name], "false");
+            } else {
+                validatedForm.set([checkboxes[i].name], "true");
+            }
+        }
+        return validatedForm;
+    }
+
+    async function formObject(validatedForm) {
+        let data = {};
+        for (const value of validatedForm.entries()) {
+            if (value[0].includes("checkbox")) {
+                if (value[1] != "false") {
+                    data[`${value[0]}`] = true;
+                } else {
+                    data[`${value[0]}`] = false;
+                }
+                continue;
+            }
+            data[`${value[0]}`] = value[1];
+        }
+        return data;
+    }
 
     function changeCategory(e) {
         mainCategory.current = e.currentTarget.dataset.category;
@@ -154,6 +209,7 @@ function Filter(props) {
                             className="mb-1"
                             style={{ maxWidth: "fit-content" }}
                             size="sm"
+                            onClick={showModal}
                         >
                             {props.t("FilterItems.addSettings")}
                         </Button>
@@ -168,7 +224,7 @@ function Filter(props) {
                     </Button>
                 </Container>
             </Form>
-            <ModalNewItem
+            <ModalItemFilter
                 key={uuidv4()}
                 theme={props.theme}
                 newItem={newItem}
@@ -176,8 +232,8 @@ function Filter(props) {
                 showModal={showModal}
                 modalShow={modalShow}
                 t={props.t}
-                col={refUser}
-            ></ModalNewItem>
+                col={props.col}
+            ></ModalItemFilter>
         </>
     );
 }

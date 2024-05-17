@@ -72,7 +72,13 @@
     "FilterItems":{
         "addSettings":"Настройки",
         "searchValue":"Искомое значение",
-        "searchField":"Введите искомое значение..."
+        "searchField":"Введите искомое значение...",
+        "addFilter":"Расширенная фильтрация",
+        "filters": "Фильтры",
+        "name": "Название",
+        "description": "Описание",
+        "about":"Эти элементы...",
+        "namePlaceHolder":"Название элементов..."
     },  
     "Search": {
         "header":"Поиск",
@@ -144,5 +150,8 @@
         "post": "Опубликовать",
         "publicationDate": "Дата публикации(UTC):  ",
         "commentPlholder":"Здесь вы можете оставить свой комментарий..."
+    },
+    "Additional":{
+        "description":"Описание элемента"
     }
 }

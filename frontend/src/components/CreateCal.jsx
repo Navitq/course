@@ -140,10 +140,6 @@ function CreateCal(props) {
         })
     }
 
-
-
-    
-
     return (
         <Container className="d-flex flex-column ps-0" >
             <Container className="ps-0 h4">
@@ -156,7 +152,7 @@ function CreateCal(props) {
                         name="name"
                         required
                         type="text"
-                        placeholder="Some_name"
+                        placeholder={props.t("CrElem.name")}
                         value={nameField}
                         onChange={changeNameField}
                     />

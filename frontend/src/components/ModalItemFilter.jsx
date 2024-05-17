@@ -82,39 +82,40 @@ function ModalNewItem(props) {
             >
                 <Modal.Header closeButton>
                     <Modal.Title className="h3">
-                        {props.t("CrElem.addSetting")}
+                        {props.t("FilterItems.addFilter")}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form
                         onSubmit={(e) => {
+                            props.modalClose();
                             props.newItem(e);
                         }}
                     >
                         <Container className="px-0 h5">
-                            {props.t("ModalItem.headerItem")}
+                            {props.t("FilterItems.filters")}
                         </Container>
                         <Form.Group className="mb-3">
                             <Form.Label className="h6">
-                                {props.t("ModalItem.name")}
+                                {props.t("FilterItems.name")}
                             </Form.Label>
                             <Form.Control
                                 name="name"
                                 required
                                 type="text"
-                                placeholder="Some_name"
+                                placeholder={props.t("FilterItems.namePlaceHolder")}
                             />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label className="h6">
-                                {props.t("CrElem.description")}
+                                {props.t("FilterItems.description")}
                             </Form.Label>
                             <Form.Control
                                 name="description"
                                 required
                                 as="textarea"
-                                placeholder={props.t("CrElem.about")}
+                                placeholder={props.t("FilterItems.about")}
                                 rows={3}
                             />
                         </Form.Group>

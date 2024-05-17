@@ -88,6 +88,7 @@ function ModalNewItem(props) {
                 <Modal.Body>
                     <Form
                         onSubmit={(e) => {
+                            props.modalClose();
                             props.newItem(e);
                         }}
                     >
@@ -102,19 +103,19 @@ function ModalNewItem(props) {
                                 name="name"
                                 required
                                 type="text"
-                                placeholder="Some_name"
+                                placeholder={props.t("FilterItems.namePlaceHolder")}
                             />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label className="h6">
-                                {props.t("CrElem.description")}
+                                {props.t("Additional.description")}
                             </Form.Label>
                             <Form.Control
                                 name="description"
                                 required
                                 as="textarea"
-                                placeholder={props.t("CrElem.about")}
+                                placeholder={props.t("FilterItems.about")}
                                 rows={3}
                             />
                         </Form.Group>
