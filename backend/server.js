@@ -387,6 +387,24 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on("filter_items", async (dataJSON) => {
+        let data = JSON.parse(dataJSON);
+            if(data.checkbox_img_only == true){
+                data.img = { [Op.ne]: null }
+            } 
+            delete data.checkbox_img_only;
+
+        try {
+            let result = await Item.findAll({
+                where: data
+            }); 
+            console.log(result)
+            socket.emit("filtered_items", JSON.stringify(result))
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
     socket.on("get_col_items", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
         try {

@@ -36,7 +36,7 @@ function Filter(props) {
                 if (data[`${el + i}`] != null) {
                     array.push({
                         value: data[`${el + i}`],
-                        type: data[`${el + i}`],
+                        type: `${el + i}`,
                     });
                 }
             }
@@ -73,11 +73,9 @@ function Filter(props) {
 
     function createFormData(form) {
         let formData = new FormData(form);
-        if (mainCategory.current != props.t("Filter.chseCategory")) {
-            formData.append("category", `${mainCategory.current}`);
-        }
-
-        formData.append("uuid", `${props.uuid}`);
+        formData.append(`${mainCategory.current}`, formData.get("filter_items"));
+        formData.delete("filter_items")
+        formData.append("col_id", `${props.col.col_id}`);
         return formData;
     }
 
@@ -86,13 +84,17 @@ function Filter(props) {
         for (const value of formData.entries()) {
             data[`${value[0]}`] = value[1];
         }
+        console.log(data)
         return data;
     }
 
     function getFilteredCol(event) {
         event.preventDefault();
+        if (mainCategory.current == props.t("Filter.chseCategory")) {
+            return
+        }
         let data = createObject(createFormData(event.currentTarget));
-        socket.emit("filter_coll", JSON.stringify(data));
+        socket.emit("filter_items", JSON.stringify(data));
     }
 
     return (
@@ -166,6 +168,16 @@ function Filter(props) {
                     </Button>
                 </Container>
             </Form>
+            <ModalNewItem
+                key={uuidv4()}
+                theme={props.theme}
+                newItem={newItem}
+                modalClose={closeModal}
+                showModal={showModal}
+                modalShow={modalShow}
+                t={props.t}
+                col={refUser}
+            ></ModalNewItem>
         </>
     );
 }

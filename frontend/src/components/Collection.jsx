@@ -115,7 +115,21 @@ function Collection(props) {
 
     useEffect(() => {
         socket.emit("get_col_items", JSON.stringify({ col_id }));
-
+        socket.on("filtered_items",(dataJSON)=>{
+            let data = JSON.parse(dataJSON);
+            let body = (
+                <TableCell
+                    theme={props.theme}
+                    t={props.t}
+                    key={uuidv4()}
+                    elem={data}
+                    type="body"
+                ></TableCell>
+            );
+            setBody((prev) => {
+                return [body];
+            });
+        })
         socket.on("got_col_items", (colJson, dataJson) => {
             let col = JSON.parse(colJson);
             console.log(col)
@@ -242,7 +256,7 @@ function Collection(props) {
                     className="filter__main d-flex justify-content-start align-items-center collection__xs"
                 >
                     <Container className="mb-3">
-                        <FilterItems col={refUser} i18n={props.i18n} t={props.t}></FilterItems>
+                        <FilterItems theme={props.theme} col={refUser} i18n={props.i18n} t={props.t}></FilterItems>
                     </Container>
                     <Container
                         style={{ height: "-webkit-fill-available" }}
@@ -305,7 +319,7 @@ function Collection(props) {
                 modalShow={modalShow}
                 t={props.t}
                 col={refUser}
-            ></ModalNewItem>{" "}
+            ></ModalNewItem>
         </Container>
     );
 }
