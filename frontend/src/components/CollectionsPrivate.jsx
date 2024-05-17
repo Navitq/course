@@ -88,7 +88,7 @@ function CollectionsPrivate(props) {
                     xs={12}
                     className="filter__main d-flex flex-column justify-content-start"
                 >
-                    <Filter i18n={props.i18n} t={props.t}></Filter>
+                    <Filter uuid={person?.user_id} i18n={props.i18n} t={props.t}></Filter>
                 </Col>
             </Row>
             <Container>

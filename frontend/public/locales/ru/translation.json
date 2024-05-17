@@ -65,8 +65,15 @@
         "trains":"Поезда",
         "plains":"Самолеты",
         "hats":"Шляпы",
-        "other":"Другое"
-    }, 
+        "other":"Другое",
+        "catName":"Категория",
+        "clean":"Очистить фильтры"
+    },
+    "FilterItems":{
+        "addSettings":"Настройки",
+        "searchValue":"Искомое значение",
+        "searchField":"Введите искомое значение..."
+    },  
     "Search": {
         "header":"Поиск",
         "footer":"Искать",

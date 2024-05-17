@@ -178,7 +178,6 @@ io.on("connection", (socket) => {
         ) {
             return;
         }
-        console.log(666666666666666666, data.col_id);
         await Coll.update(data, {
             where: {
                 col_id: data.col_id,
@@ -370,6 +369,24 @@ io.on("connection", (socket) => {
             console.error(err);
         }
     });
+
+    socket.on("filter_coll", async (dataJSON) => {
+        let data = JSON.parse(dataJSON);
+            if(data.checkbox_img_only == true){
+                data.img = { [Op.ne]: null }
+            } 
+            delete data.checkbox_img_only;
+
+        try {
+            let result = await Coll.findAll({
+                where: data
+            });
+            socket.emit("got_coll", JSON.stringify(result))
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
     socket.on("get_col_items", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
         try {

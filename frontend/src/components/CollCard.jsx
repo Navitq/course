@@ -22,7 +22,7 @@ function CollCard(props) {
                 <div className="d-flex flex-column">
                     <Card.Title>{props.data.name}</Card.Title>
                     <Card.Subtitle className="mb-2">
-                        {props.t("Filter.spoons")}
+                        {props.t(`Filter.${props.data.category}`)}
                     </Card.Subtitle>
                     <ReactMarkdown className="card-text">
                         {props.data.description}

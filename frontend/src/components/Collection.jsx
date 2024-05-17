@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { socket } from "./socket";
 import TableCell from "./TableCell";
-import Filter from "./Filter";
+import FilterItems from "./FilterItems";
 import AddItem from "./AddItem";
 import ModalNewItem from "./ModalNewItem";
 
@@ -216,7 +216,6 @@ function Collection(props) {
                         <Container className="d-flex flex-column justify-content-center">
                             <Form.Group
                                 className="mb-3"
-                                controlId="exampleForm.ControlTextarea1"
                             >
                                 <Form.Label className="h6">
                                     {props.t("CrElem.description")}
@@ -243,7 +242,7 @@ function Collection(props) {
                     className="filter__main d-flex justify-content-start align-items-center collection__xs"
                 >
                     <Container className="mb-3">
-                        <Filter i18n={props.i18n} t={props.t}></Filter>
+                        <FilterItems col={refUser} i18n={props.i18n} t={props.t}></FilterItems>
                     </Container>
                     <Container
                         style={{ height: "-webkit-fill-available" }}
