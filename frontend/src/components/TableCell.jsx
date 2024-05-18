@@ -62,7 +62,7 @@ function TableCell(props) {
                                        { <Form.Check 
                                             type="checkbox"
                                             checked={
-                                                el[`${type}` + i] == "true"
+                                                el[`${type}` + i] == true
                                                     ? true
                                                     : false
                                             }

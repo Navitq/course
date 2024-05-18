@@ -206,6 +206,7 @@ io.on("connection", (socket) => {
         //     return;
         // }
         let data = JSON.parse(dataJSON);
+        console.log(data)
         try {
             let result = await Item.create(data);
             socket.emit("got_item", JSON.stringify(result));
@@ -393,12 +394,12 @@ io.on("connection", (socket) => {
                 data.img = { [Op.ne]: null }
             } 
             delete data.checkbox_img_only;
-
+            console.log(data)
         try {
             let result = await Item.findAll({
                 where: data
             }); 
-            console.log(result)
+            console.log(result, 7777777777777777777777)
             socket.emit("filtered_items", JSON.stringify(result))
         } catch (err) {
             console.error(err);

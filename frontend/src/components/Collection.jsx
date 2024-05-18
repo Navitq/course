@@ -38,9 +38,9 @@ function Collection(props) {
         let validatedForm = new FormData(form);
         for (let i = 0; i < checkboxes.length; ++i) {
             if (checkboxes[i].checked == false) {
-                validatedForm.set([checkboxes[i].name], "false");
+                validatedForm.set([checkboxes[i].name], false);
             } else {
-                validatedForm.set([checkboxes[i].name], "true");
+                validatedForm.set([checkboxes[i].name], true);
             }
         }
         return validatedForm;

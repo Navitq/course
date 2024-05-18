@@ -29,9 +29,9 @@ function ItemTemplate(props) {
         );
         for (let i = 0; i < checkboxes.length; ++i) {
             if (checkboxes[i].checked == false) {
-                formData.set([checkboxes[i].name], "false");
+                formData.set([checkboxes[i].name], false);
             } else {
-                formData.set([checkboxes[i].name], "true");
+                formData.set([checkboxes[i].name], true);
             }
         }
         return formData;

@@ -33,7 +33,7 @@ function Filter(props) {
         let formData = formDataCreater(e.currentTarget);
         let data = await formObject(formData);
         data.col_id = col_id;
-        socket.emit("get_item", JSON.stringify(data));
+        socket.emit("filter_items", JSON.stringify(data));
     }
 
     let showModal = () => {
@@ -51,9 +51,9 @@ function Filter(props) {
         let validatedForm = new FormData(form);
         for (let i = 0; i < checkboxes.length; ++i) {
             if (checkboxes[i].checked == false) {
-                validatedForm.set([checkboxes[i].name], "false");
+                validatedForm.set([checkboxes[i].name], false);
             } else {
-                validatedForm.set([checkboxes[i].name], "true");
+                validatedForm.set([checkboxes[i].name], true);
             }
         }
         return validatedForm;
@@ -68,6 +68,9 @@ function Filter(props) {
                 } else {
                     data[`${value[0]}`] = false;
                 }
+                continue;
+            }
+            if( value[1] == ""){
                 continue;
             }
             data[`${value[0]}`] = value[1];

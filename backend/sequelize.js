@@ -197,15 +197,15 @@ const Item = sequelize.define("item", {
     },
 
     checkbox0: {
-        type: DataTypes.STRING,
+        type: DataTypes.BOOLEAN,
     },
 
     checkbox1: {
-        type: DataTypes.STRING,
+        type: DataTypes.BOOLEAN,
     },
 
     checkbox2: {
-        type: DataTypes.STRING,
+        type: DataTypes.BOOLEAN,
     },
 
     textarea0: {
@@ -280,7 +280,7 @@ const Comment = sequelize.define("comment", {
 });
 
 (async () => {
-    //await sequelize.sync();//{ force: true }
+    // await sequelize.sync({ force: true });//{ force: true }
     // let user = await User.build({ username: "1", email: "1@1", password: "1" });
     // await user.save();
 })();

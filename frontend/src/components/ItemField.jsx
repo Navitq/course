@@ -14,13 +14,14 @@ function ItemField(props) {
                 if (typeof props.col[`${type}` + i] != "object") {
                     let newFieldElem = [];
                     if (type == "checkbox") {
+                        console.log(props.col[`${type}` + i])
                         newFieldElem.push(
                             <Form.Check
                                 name={`${type + i}`}
                                 type="checkbox"
                                 id={type + i}
                                 key={uuidv4()}
-                                defaultChecked={props.col[`${type}` + i]=="true" ? true : false}
+                                defaultChecked={props.col[`${type}` + i]==true ? true : false}
                                 disabled
                             />
                         );

@@ -30,7 +30,7 @@ function AddItem(props) {
                                         {<Form.Check // prettier-ignore
                                             type="checkbox"
                                             checked={
-                                                el[`${type}` + i] == "true"
+                                                el[`${type}` + i] == true
                                                     ? true
                                                     : false
                                             }

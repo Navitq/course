@@ -32,7 +32,6 @@ function ModalNewItem(props) {
                                 name={`${type + i}`}
                                 as="textarea"
                                 id={type + i}
-                                required
                                 key={uuidv4()}
                                 className="filter__scroll"
                                 rows={3}
@@ -43,7 +42,6 @@ function ModalNewItem(props) {
                             <Form.Control
                                 name={`${type + i}`}
                                 type={type}
-                                required
                                 key={uuidv4()}
                             />
                         );
@@ -101,7 +99,6 @@ function ModalNewItem(props) {
                             </Form.Label>
                             <Form.Control
                                 name="name"
-                                required
                                 type="text"
                                 placeholder={props.t("FilterItems.namePlaceHolder")}
                             />
@@ -113,7 +110,6 @@ function ModalNewItem(props) {
                             </Form.Label>
                             <Form.Control
                                 name="description"
-                                required
                                 as="textarea"
                                 placeholder={props.t("FilterItems.about")}
                                 rows={3}
@@ -126,7 +122,6 @@ function ModalNewItem(props) {
                             </Form.Label>
                             <Form.Control
                                 name="tags"
-                                required
                                 type="text"
                                 placeholder={props.t("ModalItem.tagsPlaceholder")}
                             />
@@ -142,7 +137,7 @@ function ModalNewItem(props) {
                                 {props.t("ModalColl.close")}
                             </Button>
                             <Button type="submit" variant="primary">
-                                {props.t("CrElem.create")}
+                                {props.t("Additional.filter")}
                             </Button>
                         </Container>
                     </Form>

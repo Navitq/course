@@ -153,6 +153,7 @@
         "commentPlholder":"Here you can leave your comment..."
     },
     "Additional":{
-        "description":"Item description"
+        "description":"Item description",
+        "filter":"Filter"
     }
 }
