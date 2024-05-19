@@ -19,13 +19,14 @@ function AddItem(props) {
                     if (typeof el[`${type}` + i] != "object") {
                         if (type == "checkbox") {
                             fields.push(
-                                <th>
+                                <th key={uuidv4()}> 
                                     <NavLink
                                         className="nav-link active"
                                         data-item_id={el.item_id}
                                         variant="primary"
                                         to={`/collection/${el.col_id}/${el.item_id}`}
                                         style={{ width: "100%" }}
+                                        key={uuidv4()}
                                     >
                                         {<Form.Check // prettier-ignore
                                             type="checkbox"
@@ -45,6 +46,7 @@ function AddItem(props) {
                         fields.push(
                             <td key={uuidv4()}>
                                 <NavLink
+                                    key={uuidv4()}
                                     className="nav-link active"
                                     data-item_id={el.item_id}
                                     variant="primary"
@@ -67,6 +69,7 @@ function AddItem(props) {
                 >
                     <td>
                         <NavLink
+                            key={uuidv4()}
                             className="nav-link active"
                             data-item_id={el.item_id}
                             variant="primary"
@@ -82,6 +85,7 @@ function AddItem(props) {
                     </td>
                     <td>
                         <NavLink
+                            key={uuidv4()}
                             className="nav-link active"
                             data-item_id={el.item_id}
                             variant="primary"
@@ -94,6 +98,7 @@ function AddItem(props) {
                     {/* <th>{props.el.description}</th> */}
                     <td>
                         <NavLink
+                            key={uuidv4()}
                             className="nav-link active"
                             data-item_id={el.item_id}
                             variant="primary"
