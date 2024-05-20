@@ -155,5 +155,11 @@
     "Additional":{
         "description":"Item description",
         "filter":"Filter"
+    },
+    "Public":{
+        "lastItems":"List of recently added items",
+        "author":"Author",
+        "collName":"Collection name",
+        "itemName":"Item Name"
     }
 }

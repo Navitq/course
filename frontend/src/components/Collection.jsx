@@ -21,7 +21,7 @@ import ModalNewItem from "./ModalNewItem";
 function Collection(props) {
     const [refUser, setRefUser] = useState("");
 
-    let [theader, setTheader, useRef] = useState([]);
+    let [theader, setTheader] = useState([]);
     let [tbody, setBody] = useState([]);
     let [colCurrent, setColCurrent] = useState({});
 

@@ -206,7 +206,7 @@ io.on("connection", (socket) => {
         //     return;
         // }
         let data = JSON.parse(dataJSON);
-        console.log(data)
+        console.log(data);
         try {
             let result = await Item.create(data);
             socket.emit("got_item", JSON.stringify(result));
@@ -373,16 +373,16 @@ io.on("connection", (socket) => {
 
     socket.on("filter_coll", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-            if(data.checkbox_img_only == true){
-                data.img = { [Op.ne]: null }
-            } 
-            delete data.checkbox_img_only;
+        if (data.checkbox_img_only == true) {
+            data.img = { [Op.ne]: null };
+        }
+        delete data.checkbox_img_only;
 
         try {
             let result = await Coll.findAll({
-                where: data
+                where: data,
             });
-            socket.emit("got_coll", JSON.stringify(result))
+            socket.emit("got_coll", JSON.stringify(result));
         } catch (err) {
             console.error(err);
         }
@@ -390,17 +390,17 @@ io.on("connection", (socket) => {
 
     socket.on("filter_items", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-            if(data.checkbox_img_only == true){
-                data.img = { [Op.ne]: null }
-            } 
-            delete data.checkbox_img_only;
-            console.log(data)
+        if (data.checkbox_img_only == true) {
+            data.img = { [Op.ne]: null };
+        }
+        delete data.checkbox_img_only;
+        console.log(data);
         try {
             let result = await Item.findAll({
-                where: data
-            }); 
-            console.log(result, 7777777777777777777777)
-            socket.emit("filtered_items", JSON.stringify(result))
+                where: data,
+            });
+            console.log(result, 7777777777777777777777);
+            socket.emit("filtered_items", JSON.stringify(result));
         } catch (err) {
             console.error(err);
         }
@@ -431,6 +431,67 @@ io.on("connection", (socket) => {
         } catch (err) {
             socket.emit("got_col_items", JSON.stringify({ err: true }));
         }
+    });
+
+    socket.on("get_last_items", async () => {
+        let items = await Item.findAll({
+            attributes: ["id", "col_id", "name", "item_id"],
+            limit: 10,
+            order: [["id", "DESC"]],
+        });
+        let colData = [];
+        let compareData = [];
+        for (let i = 0; i < items.length; ++i) {
+            items[i].dataValues.nameItem = items[i].dataValues.name;
+            delete items[i].dataValues.name;
+            if (!colData.includes(items[i].dataValues.col_id)) {
+                colData.push(items[i].dataValues.col_id);
+                compareData.push({ col_id: items[i].dataValues.col_id });
+            }
+        }
+        let collections = await Coll.findAll({
+            attributes: ["uuid", "name", "col_id"],
+            where: {
+                [Op.or]: compareData,
+            },
+        });
+        colData = [];
+        compareData = [];
+        for (let i = 0; i < collections.length; ++i) {
+            collections[i].dataValues.nameColl = collections[i].dataValues.name;
+            delete collections[i].dataValues.name;
+            if (!colData.includes(collections[i].dataValues.uuid)) {
+                colData.push(collections[i].dataValues.uuid);
+                compareData.push({ user_id: collections[i].dataValues.uuid });
+            }
+        }
+        let users = await User.findAll({
+            attributes: ["user_id", "username"],
+            where: {
+                [Op.or]: compareData,
+            },
+        });
+        collections.forEach((el) => {
+            for (let i = 0; i < users.length; ++i) {
+                if (el.dataValues.uuid == users[i].dataValues.user_id) {
+                    delete el.dataValues.uuid;
+                    for (const [key, value] of Object.entries(users[i].dataValues)) {
+                        el.dataValues[`${key}`] = value;
+                    }
+                }
+            }
+        });
+        items.forEach((el) => {
+            for (let i = 0; i < collections.length; ++i) {
+                if (el.dataValues.col_id == collections[i].dataValues.col_id) {
+                    for (const [key, value] of Object.entries(collections[i].dataValues)) {
+                        el.dataValues[`${key}`] = value;
+                    }
+                }
+            }
+        });
+        console.log(items)
+        socket.emit("got_last_items",(JSON.stringify(items)))
     });
 });
 
