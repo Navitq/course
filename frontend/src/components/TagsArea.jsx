@@ -44,22 +44,25 @@ function TagsArea(props) {
                     break;
                 } else {
                     position = i;
+
                     break;
                 }
             }
         }
         if (position) {
-
             for (let i = position; i >= 0; i--) {
-                if (value[i] == "#") {
-                    position = i ;
+                if (value[i] == "#" && newData[i+1] != "#") {
+                    position = i;
                     break;
                 }
             }
+            let startPosition = position,
+                endPosition = null;
 
             for (let i = position; i >= 0; i++) {
                 if (value[i] != undefined) {
-                    if(i != position && value[i] == "#"){
+                    if (i != position && value[i] == "#") {
+                        endPosition = i;
                         break;
                     }
                     word.push(value[i]);
@@ -68,13 +71,13 @@ function TagsArea(props) {
                 break;
             }
 
-            console.log(word)
+            console.log(word.join(""));
 
             //let text = getCheckedWord(value);
 
             let data = tags
                 .filter((el) => {
-                    if (el.tag.indexOf(e.currentTarget.value) > -1) {
+                    if (el.tag.indexOf(word.join("")) > -1) {
                         return el;
                     }
                 })
@@ -85,7 +88,13 @@ function TagsArea(props) {
                             action
                             onClick={(e) => {
                                 e.preventDefault();
-                                setNewData(e.currentTarget.textContent);
+                                let sliced = null;                                
+                                if(endPosition){
+                                    sliced = tagsArea.current.value.slice(0, startPosition+1) + e.currentTarget.textContent.slice(1) + tagsArea.current.value.slice(endPosition);
+                                } else {
+                                    sliced = tagsArea.current.value.slice(0, startPosition+1) + e.currentTarget.textContent.slice(1);
+                                }
+                                setNewData(sliced);
                                 setNewHint([]);
                             }}
                         >
