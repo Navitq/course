@@ -6,7 +6,7 @@ import { NavLink } from "react-router-dom";
 
 import { v4 as uuidv4 } from "uuid";
 
-function LastItemCell(props) {
+function LargestColl(props) {
     let [elements, setElements] = useState([]);
 
     function createElem() {
@@ -18,7 +18,9 @@ function LastItemCell(props) {
             <tr className="tb-cell__index" key={uuidv4()}>
                 <th>{props.t("Public.author")}</th>
                 <th>{props.t("Public.collName")}</th>
-                <th>{props.t("Public.itemName")}</th>
+                <th>{props.t("Public.description")}</th>
+                <th>{props.t("Public.category")}</th>
+                <th>{props.t("Public.count")}</th>
             </tr>
         );
         setElements([header]);
@@ -34,7 +36,7 @@ function LastItemCell(props) {
                 >
                     <td>
                         <NavLink
-                            to={`/people/${el.user_id}`}
+                            to={`/collection/${el.col_id}`}
                             style={{ width: "100%" }}
                             variant="primary"
                             className="nav-link active"
@@ -50,17 +52,37 @@ function LastItemCell(props) {
                             className="nav-link active"
                         >
                             
-                            {el.nameColl}
+                            {el.name}
                         </NavLink>
                     </td>
                     <td>
                         <NavLink
-                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            to={`/collection/${el.col_id}`}
                             style={{ width: "100%" }}
                             variant="primary"
                             className="nav-link active"
                         >
-                            {el.nameItem}
+                            {el.description}
+                        </NavLink>
+                    </td>
+                    <td>
+                        <NavLink
+                            to={`/collection/${el.col_id}`}
+                            style={{ width: "100%" }}
+                            variant="primary"
+                            className="nav-link active"
+                        >
+                            {props.t(`Filter.${el.category}`)}
+                        </NavLink>
+                    </td>
+                    <td>
+                        <NavLink
+                            to={`/collection/${el.col_id}`}
+                            style={{ width: "100%" }}
+                            variant="primary"
+                            className="nav-link active"
+                        >
+                            {el.count}
                         </NavLink>
                     </td>
                 </tr>
@@ -75,4 +97,4 @@ function LastItemCell(props) {
     return <>{elements}</>;
 }
 
-export default LastItemCell;
+export default LargestColl;

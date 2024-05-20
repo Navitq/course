@@ -160,6 +160,11 @@
         "lastItems":"List of recently added items",
         "author":"Author",
         "collName":"Collection name",
-        "itemName":"Item Name"
+        "itemName":"Item Name",
+        "tagsCloud":"Tags cloud",
+        "collLargest": "Largest collections",
+        "description":"Description",
+        "category":"Category",
+        "count":"Count"
     }
 }

@@ -475,7 +475,9 @@ io.on("connection", (socket) => {
             for (let i = 0; i < users.length; ++i) {
                 if (el.dataValues.uuid == users[i].dataValues.user_id) {
                     delete el.dataValues.uuid;
-                    for (const [key, value] of Object.entries(users[i].dataValues)) {
+                    for (const [key, value] of Object.entries(
+                        users[i].dataValues
+                    )) {
                         el.dataValues[`${key}`] = value;
                     }
                 }
@@ -484,14 +486,70 @@ io.on("connection", (socket) => {
         items.forEach((el) => {
             for (let i = 0; i < collections.length; ++i) {
                 if (el.dataValues.col_id == collections[i].dataValues.col_id) {
-                    for (const [key, value] of Object.entries(collections[i].dataValues)) {
+                    for (const [key, value] of Object.entries(
+                        collections[i].dataValues
+                    )) {
                         el.dataValues[`${key}`] = value;
                     }
                 }
             }
         });
-        console.log(items)
-        socket.emit("got_last_items",(JSON.stringify(items)))
+        socket.emit("got_last_items", JSON.stringify(items));
+    });
+
+    socket.on("get_largest_coll", async () => {
+        let items = await Item.findAll({
+            limit: 5,
+            attributes: [
+                "col_id",
+                [sequelize.fn("COUNT", sequelize.col("col_id")), "count"],
+            ],
+            group: ["col_id"],
+            having: sequelize.literal("count(col_id) > 0"),
+            order: [[sequelize.fn("COUNT", sequelize.col("col_id")), "DESC"]],
+        });
+        let collectionId = [];
+        let userId = [];
+        for (let i = 0; i < items.length; ++i) {
+            collectionId.push({ col_id: items[i].dataValues.col_id });
+        }
+        let collections = await Coll.findAll({
+            where: {
+                [Op.or]: collectionId,
+            },
+        });
+        for (let i = 0; i < collections.length; ++i) {
+            userId.push({ user_id: collections[i].dataValues.uuid });
+        }
+
+        collections.forEach((el) => {
+            for (let i = 0; i < items.length; ++i) {
+                if (el.dataValues.col_id == items[i].dataValues.col_id) {
+                    el.dataValues.count = items[i].dataValues.count;
+                    break;
+                }
+            }
+        });
+        let users = await User.findAll({
+            attributes: ["user_id", "username"],
+            where: {
+                [Op.or]: userId,
+            },
+        });
+
+        collections.forEach((el) => {
+            for (let i = 0; i < users.length; ++i) {
+                if (el.dataValues.uuid == users[i].dataValues.user_id) {
+                    for (const [key, value] of Object.entries(
+                        users[i].dataValues
+                    )) {
+                        el.dataValues[`${key}`] = value;
+                    }
+                }
+            }
+        });
+
+        socket.emit("got_largest_coll", JSON.stringify(collections));
     });
 });
 
