@@ -234,8 +234,7 @@ const Item = sequelize.define("item", {
 });
 
 const Tag = sequelize.define("tag", {
-    tag: DataTypes.STRING,
-    tag_amount: DataTypes.INTEGER
+    tag: DataTypes.STRING
 });
 
 const Comment = sequelize.define("comment", {

@@ -9,7 +9,7 @@ const cookieParser = require("cookie-parser");
 const { emit } = require("process");
 const { writeFile, readFile } = require("fs");
 
-const { User, Coll, sequelize, Op, Item, Comment } = require("./sequelize.js");
+const { User, Coll, sequelize, Op, Item, Comment, Tag } = require("./sequelize.js");
 const s3 = require("./s3.js");
 
 const app = express();
@@ -206,10 +206,16 @@ io.on("connection", (socket) => {
         //     return;
         // }
         let data = JSON.parse(dataJSON);
-        console.log(data);
         try {
             let result = await Item.create(data);
             socket.emit("got_item", JSON.stringify(result));
+            let tags = data.tags.split("#");
+            tags.shift()
+            tags = tags.map((el)=>{
+                return {tag:`#${el}`}
+            })
+            console.log(tags)
+            Tag.bulkCreate(tags);
         } catch (err) {
             console.error(err);
         }
@@ -551,6 +557,23 @@ io.on("connection", (socket) => {
 
         socket.emit("got_largest_coll", JSON.stringify(collections));
     });
+
+    socket.on("get_tags_cloud", async () =>{
+        let tags = await Tag.findAll({
+            limit: 100,
+            attributes: [
+                "tag",
+                [sequelize.fn("COUNT", sequelize.col("tag")), "count"],
+            ],
+            group: ["tag"],
+            having: sequelize.literal("count(tag) > 0"),
+            order: [[sequelize.fn("COUNT", sequelize.col("tag")), "DESC"]],
+        });
+        // let data = tags.map((el)=>{
+        //     return el.dataValues
+        // })
+        socket.emit("got_tags_cloud", JSON.stringify(tags))
+    })
 });
 
 server.listen(4000, async (req, res) => {});
