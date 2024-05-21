@@ -203,7 +203,7 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("get_person_coll", async (data)=>{
+    socket.on("get_person_coll", async (data) => {
         try {
             let result = await Coll.findAll({
                 where: {
@@ -214,7 +214,7 @@ io.on("connection", (socket) => {
         } catch (err) {
             console.error(err);
         }
-    })
+    });
 
     socket.on("get_item", async (dataJSON) => {
         // if (!req.session.auth) {
@@ -257,6 +257,18 @@ io.on("connection", (socket) => {
             }
         } catch (err) {
             console.error(err);
+        }
+    }
+    async function checkUser(user_id) {
+        let adminChecker = await User.findAll({
+            where: {
+                user_id: user_id,
+            },
+        });
+        if (adminChecker[0].dataValues.status == "admin") {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -392,20 +404,32 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_person_data", async (data) => {
-        if (!req.session.auth) {
-            return;
-        }
+        let owner = { owner: false };
         try {
             let result = await User.findAll({
                 where: {
                     user_id: data,
                 },
             });
-            socket.emit("got_person_data", JSON.stringify(result[0].dataValues));
+            if(result.length < 1){
+                socket.emit(
+                    "got_person_data",
+                    JSON.stringify({err:true}),
+                );
+            }
+            
+            if ((data == req.session.user_id && req.session.auth) || (req.session.auth && await checkUser(req.session.user_id))) {
+                owner = { owner: true };
+            }
+            socket.emit(
+                "got_person_data",
+                JSON.stringify(result[0].dataValues),
+                JSON.stringify(owner)
+            );
         } catch (err) {
             console.error(err);
         }
-    })
+    });
 
     socket.on("filter_coll", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
@@ -606,8 +630,8 @@ io.on("connection", (socket) => {
                 [Op.or]: [
                     {
                         tags: {
-                            [Op.like]: `%${"#" +data+ "#"}%`,
-                        }
+                            [Op.like]: `%${"#" + data + "#"}%`,
+                        },
                     },
                     {
                         tags: {
@@ -616,14 +640,13 @@ io.on("connection", (socket) => {
                     },
                 ],
             },
-
         });
 
         let collectionId = [];
         for (let i = 0; i < items.length; ++i) {
             items[i].dataValues.nameItem = items[i].dataValues.name;
             delete items[i].dataValues.name;
-            if(!collectionId.includes(items[i].dataValues.col_id)){
+            if (!collectionId.includes(items[i].dataValues.col_id)) {
                 collectionId.push({ col_id: items[i].dataValues.col_id });
             }
         }
@@ -638,7 +661,7 @@ io.on("connection", (socket) => {
         for (let i = 0; i < collections.length; ++i) {
             collections[i].dataValues.nameColl = collections[i].dataValues.name;
             delete collections[i].dataValues.name;
-            if(!userId.includes(collections[i].dataValues.col_id)){
+            if (!userId.includes(collections[i].dataValues.col_id)) {
                 userId.push({ user_id: collections[i].dataValues.uuid });
             }
         }
@@ -673,8 +696,7 @@ io.on("connection", (socket) => {
                 }
             }
         });
-        socket.emit("items_by_tag", JSON.stringify(items))
-
+        socket.emit("items_by_tag", JSON.stringify(items));
     });
 });
 

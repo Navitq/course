@@ -11,6 +11,7 @@ export default function StoragePageLinks(props) {
         if (mess.auth === false) {
             props.changeHeader(mess.auth);
         }
+        window.location.reload()
     }
 
     return (

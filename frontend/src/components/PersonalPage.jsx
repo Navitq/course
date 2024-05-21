@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,7 +18,9 @@ import { socket } from "./socket";
 function PersonalPage(props) {
     let [cards, setCards] = useState([]);
     let [person, setPerson] = useState({});
+    let [mainOwner, setMainOwner] = useState({owner: false})
     let { user_id } = useParams();
+    const navigate = useNavigate();
 
     function addNewCard(card) {
         setCards((prev) => {
@@ -28,9 +30,16 @@ function PersonalPage(props) {
 
     useEffect(() => {
 
-        socket.on("got_person_data", (data) => {
-            let dataParsed = JSON.parse(data);
-            setPerson(dataParsed);
+        socket.on("got_person_data", (dataJSON, ownerJSON) => {
+            let data = JSON.parse(dataJSON);
+            if(data.err){
+                navigate(`/public`);
+                return;
+            }
+            let owner = JSON.parse(ownerJSON)
+            console.log(data,owner)
+            setMainOwner(owner)
+            setPerson(data);
         });
 
         socket.on("got_person_coll", (dataJson) => {
@@ -81,6 +90,7 @@ function PersonalPage(props) {
                         theme={props.theme}
                         i18n={props.i18n}
                         t={props.t}
+                        owner={mainOwner}
                     ></CreateCal>
                 </Col>
                 <Col

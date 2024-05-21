@@ -78,6 +78,7 @@ function CollectionsPrivate(props) {
                         theme={props.theme}
                         i18n={props.i18n}
                         t={props.t}
+                        owner={{owner:true}}
                     ></CreateCal>
                 </Col>
                 <Col

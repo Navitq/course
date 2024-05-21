@@ -155,6 +155,7 @@ function CreateCal(props) {
                         placeholder={props.t("CrElem.name")}
                         value={nameField}
                         onChange={changeNameField}
+                        readOnly={!props.owner.owner}
                     />
                 </Form.Group>
 
@@ -169,6 +170,7 @@ function CreateCal(props) {
                         rows={1}
                         value={descrField}
                         onChange={changeDescField}
+                        readOnly={!props.owner.owner}
                     />
                 </Form.Group>
 
@@ -192,8 +194,8 @@ function CreateCal(props) {
                 </Dropdown>
 
                 <Container  className="d-flex justify-content-between px-0 mt-3 coll_main">
-                    <Button type="submit" variant="primary" style={{width:"fit-content"}}>{props.t("CrElem.create")}</Button>
-                    <Button variant="outline-primary" style={{width:"fit-content"}} onClick={modalShow}>{props.t("CrElem.addSetting")}</Button>
+                    {props.owner.owner == true ?<Button type="submit" variant="primary" style={{width:"fit-content"}}>{props.t("CrElem.create")}</Button>:""}
+                    {props.owner.owner == true ?<Button variant="outline-primary" style={{width:"fit-content"}} onClick={modalShow}>{props.t("CrElem.addSetting")}</Button>:""}
                 </Container>
             </Form>
             
