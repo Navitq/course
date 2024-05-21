@@ -99,7 +99,6 @@ function Filter(props) {
                 }
             }
         });
-        console.log(array);
         return array;
     }
 
@@ -142,7 +141,6 @@ function Filter(props) {
         for (const value of formData.entries()) {
             data[`${value[0]}`] = value[1];
         }
-        console.log(data)
         return data;
     }
 

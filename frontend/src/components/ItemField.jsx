@@ -14,7 +14,6 @@ function ItemField(props) {
                 if (typeof props.col[`${type}` + i] != "object") {
                     let newFieldElem = [];
                     if (type == "checkbox") {
-                        console.log(props.col[`${type}` + i])
                         newFieldElem.push(
                             <Form.Check
                                 name={`${type + i}`}

@@ -26,8 +26,6 @@ function ListAddGroup(props) {
                         action
                         onClick={(e) => {
                             e.preventDefault();
-                            console.log(e.currentTarget.textContent)
-                            //props.hint()
                             setData([])
                         }}
                     >

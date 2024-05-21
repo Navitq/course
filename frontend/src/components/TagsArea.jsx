@@ -70,9 +70,6 @@ function TagsArea(props) {
                 }
                 break;
             }
-
-            console.log(word.join(""));
-
             //let text = getCheckedWord(value);
 
             let data = tags

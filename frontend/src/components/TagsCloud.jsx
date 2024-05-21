@@ -20,7 +20,6 @@ function TagsCloud() {
                     value: Math.round((Math.random() * 100 + 25) * 25),
                 };
             });
-            console.log(newData);
             setData(newData);
         });
     }, []);

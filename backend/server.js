@@ -222,7 +222,6 @@ io.on("connection", (socket) => {
             tags = tags.map((el) => {
                 return { tag: `#${el}` };
             });
-            console.log(tags);
             Tag.bulkCreate(tags);
         } catch (err) {
             console.error(err);
@@ -408,12 +407,10 @@ io.on("connection", (socket) => {
             data.img = { [Op.ne]: null };
         }
         delete data.checkbox_img_only;
-        console.log(data);
         try {
             let result = await Item.findAll({
                 where: data,
             });
-            console.log(result, 7777777777777777777777);
             socket.emit("filtered_items", JSON.stringify(result));
         } catch (err) {
             console.error(err);
@@ -581,7 +578,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("items_by_tag", async (data) => {
-        console.log(`${"#" + data + "#"}`)
         let items = await Item.findAll({
             where: {
                 [Op.or]: [
@@ -654,7 +650,6 @@ io.on("connection", (socket) => {
                 }
             }
         });
-        console.log(items)
         socket.emit("items_by_tag", JSON.stringify(items))
 
     });

@@ -19,7 +19,6 @@ function TagPage(props) {
         socket.emit("items_by_tag", tag);
         socket.on("items_by_tag", (dataJson) => {
             let data = JSON.parse(dataJson);
-            console.log(data);
             if (data.length == 0) {
                 let body = (
                     <tr>
@@ -40,7 +39,6 @@ function TagPage(props) {
                     type="body"
                 ></ItemByTag>,
             ];
-            console.log(body);
 
             setBody((prev) => {
                 return body;

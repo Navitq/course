@@ -132,7 +132,6 @@ function Collection(props) {
         })
         socket.on("got_col_items", (colJson, dataJson) => {
             let col = JSON.parse(colJson);
-            console.log(col)
             if(col.err){
                 navigate(`/private`);
                 return;

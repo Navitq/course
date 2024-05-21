@@ -74,9 +74,6 @@ function ModalNewItem(props) {
         });
         return fields;
     }
-    useEffect(()=>{
-        console.log(11111111111)
-    }, [])
 
     function tagCheckerKey(event) {
         if (specialCharsRegex.test(event.key)) {
