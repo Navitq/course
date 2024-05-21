@@ -259,6 +259,7 @@ io.on("connection", (socket) => {
             console.error(err);
         }
     }
+
     async function checkUser(user_id) {
         let adminChecker = await User.findAll({
             where: {
@@ -338,6 +339,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_item_info", async (dataJSON) => {
+        let owner = {owner: false}
+
         let data = JSON.parse(dataJSON);
         let resultColl, resultItems;
         try {
@@ -357,10 +360,15 @@ io.on("connection", (socket) => {
                 return;
             }
 
+            if (await checkAccess(req.session.user_id, data)) {
+                owner = { owner: true };
+            }
+
             socket.emit(
                 "got_item_info",
                 JSON.stringify(resultColl[0]),
-                JSON.stringify(resultItems[0])
+                JSON.stringify(resultItems[0]),
+                JSON.stringify(owner)
             );
         } catch (err) {
             socket.emit("got_item_info", JSON.stringify({ err: true }));

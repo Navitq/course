@@ -17,6 +17,7 @@ function ItemTemplate(props) {
     let [itemData, setItemData] = useState({});
     let [itemFields, setItemFields] = useState([]);
     let [comments, setComments] = useState([]);
+    let [mainOwner, setMainOwner] = useState({owner: true})
 
     let { col_id, item_id } = useParams();
 
@@ -126,13 +127,14 @@ function ItemTemplate(props) {
     }
 
     useEffect(() => {
-        socket.on("got_item_info", (headerJSON, dataJSON) => {
+        socket.on("got_item_info", (headerJSON, dataJSON, ownerJSON) => {
             let header = JSON.parse(headerJSON);
             if (header.err) {
                 navigate(`/collection/${col_id}`);
                 return;
             }
             let data = JSON.parse(dataJSON);
+            let owner = JSON.parse(ownerJSON);
 
             let field = [
                 <ItemField
@@ -142,6 +144,7 @@ function ItemTemplate(props) {
                     t={props.t}
                 ></ItemField>,
             ];
+            setMainOwner(owner)
             setItemData(data);
             if (field.length > 0) {
                 setItemFields(
@@ -182,7 +185,7 @@ function ItemTemplate(props) {
                 >
                     <Container
                         style={{ width: "fit-content", columnGap: "20px" }}
-                        className="item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields"
+                        className={mainOwner.owner == false ?"item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields me-auto":"item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields"}
                     >
                         <Container
                             className="d-flex flex-column ms-0 ps-0 pe-0 px-0"
@@ -238,7 +241,8 @@ function ItemTemplate(props) {
                         </Container>
                         {itemFields}
                     </Container>
-                    <Container
+                    
+                    {mainOwner.owner == true?<Container
                         className="d-flex flex-column ms-0 item-tp__buttons px-0"
                         style={{ width: "fit-content" }}
                     >
@@ -267,7 +271,8 @@ function ItemTemplate(props) {
                         >
                             {props.t("ItemTemplate.delete")}
                         </Button>
-                    </Container>
+                    </Container>:""}
+
                 </Container>
             </Form>
             <Form
