@@ -467,6 +467,7 @@ io.on("connection", (socket) => {
     socket.on("get_col_items", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
         try {
+            let owner = {owner: false}
             let resultColl = await Coll.findAll({
                 where: {
                     col_id: data.col_id,
@@ -481,10 +482,14 @@ io.on("connection", (socket) => {
                     col_id: data.col_id,
                 },
             });
+            if (await checkAccess(req.session.user_id, data)) {
+                owner = { owner: true };
+            }
             socket.emit(
                 "got_col_items",
                 JSON.stringify(resultColl),
-                JSON.stringify(resultItems)
+                JSON.stringify(resultItems),
+                JSON.stringify(owner)
             );
         } catch (err) {
             socket.emit("got_col_items", JSON.stringify({ err: true }));

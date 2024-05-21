@@ -24,6 +24,8 @@ function Collection(props) {
     let [theader, setTheader] = useState([]);
     let [tbody, setBody] = useState([]);
     let [colCurrent, setColCurrent] = useState({});
+    let [mainOwner, setMainOwner] = useState({owner: false})
+
 
     const [modalShow, setModalShow] = useState(false);
 
@@ -130,12 +132,14 @@ function Collection(props) {
                 return [body];
             });
         })
-        socket.on("got_col_items", (colJson, dataJson) => {
+        socket.on("got_col_items", (colJson, dataJson, ownerJSON) => {
             let col = JSON.parse(colJson);
+            
             if(col.err){
                 navigate(`/private`);
                 return;
             }
+            let owner = JSON.parse(ownerJSON);
             let data = JSON.parse(dataJson);
             setRefUser(col[0]);
             setColCurrent(col[0]);
@@ -156,6 +160,9 @@ function Collection(props) {
                     type="body"
                 ></TableCell>
             );
+            console.log(owner)
+            setMainOwner(owner)
+
             setTheader((prev) => {
                 return [head];
             });
@@ -257,7 +264,10 @@ function Collection(props) {
                     <Container className="mb-3">
                         <FilterItems theme={props.theme} col={refUser} i18n={props.i18n} t={props.t}></FilterItems>
                     </Container>
-                    <Container
+
+
+
+                   {mainOwner.owner == true ?<Container
                         style={{ height: "-webkit-fill-available" }}
                         className="d-flex flex-column collection__settings"
                     >
@@ -300,7 +310,10 @@ function Collection(props) {
                                 {props.t("Collection.addNewItem")}
                             </Button>
                         </Container>
-                    </Container>
+                    </Container>:""}
+
+
+
                 </Col>
             </Row>
             <Container className="filter__scroll" style={{ overflow: "auto" }}>
