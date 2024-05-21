@@ -137,9 +137,6 @@ app.delete("/log_out", async (req, res) => {
 });
 
 app.get("/categories", async (req, res) => {
-    if (!req.session.auth) {
-        return;
-    }
     res.json([
         "stamps",
         "spoons",
@@ -194,9 +191,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_coll", async (data) => {
-        if (!req.session.auth) {
-            return;
-        }
         try {
             let result = await Coll.findAll({
                 where: {
@@ -208,6 +202,19 @@ io.on("connection", (socket) => {
             console.error(err);
         }
     });
+
+    socket.on("get_person_coll", async (data)=>{
+        try {
+            let result = await Coll.findAll({
+                where: {
+                    uuid: data,
+                },
+            });
+            socket.emit("got_person_coll", JSON.stringify(result));
+        } catch (err) {
+            console.error(err);
+        }
+    })
 
     socket.on("get_item", async (dataJSON) => {
         // if (!req.session.auth) {
@@ -383,6 +390,22 @@ io.on("connection", (socket) => {
             console.error(err);
         }
     });
+
+    socket.on("get_person_data", async (data) => {
+        if (!req.session.auth) {
+            return;
+        }
+        try {
+            let result = await User.findAll({
+                where: {
+                    user_id: data,
+                },
+            });
+            socket.emit("got_person_data", JSON.stringify(result[0].dataValues));
+        } catch (err) {
+            console.error(err);
+        }
+    })
 
     socket.on("filter_coll", async (dataJSON) => {
         let data = JSON.parse(dataJSON);

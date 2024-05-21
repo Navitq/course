@@ -38,7 +38,7 @@ function AboutUs(props) {
             <Carousel>
                 <Carousel.Item>
                     <Image
-                        src="./img/1.jpg"
+                        src={process.env.PUBLIC_URL+"/img/1.jpg"}
                         text="First slide"
                         style={{ maxHeight: "700px" }}
                     />
@@ -49,7 +49,7 @@ function AboutUs(props) {
                 </Carousel.Item>
                 <Carousel.Item>
                     <Image
-                        src="./img/1.jpg"
+                        src={process.env.PUBLIC_URL+"/img/1.jpg"}
                         text="Second slide"
                         style={{ maxHeight: "700px" }}
                     />
@@ -60,7 +60,7 @@ function AboutUs(props) {
                 </Carousel.Item>
                 <Carousel.Item>
                     <Image
-                        src="./img/1.jpg"
+                        src={process.env.PUBLIC_URL+"/img/1.jpg"}
                         text="Third slide"
                         style={{ maxHeight: "700px" }}
                     />

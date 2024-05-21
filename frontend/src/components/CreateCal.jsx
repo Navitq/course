@@ -130,7 +130,7 @@ function CreateCal(props) {
     }
 
     function getCategoryData(){
-        fetch("./categories")
+        fetch("/categories")
         .then((res)=>res.json())
         .then((res)=>{
             let currentCat =  res.map((el)=>{

@@ -11,9 +11,6 @@ import ItemByTag from "./ItemByTag";
 
 function TagPage(props) {
     let [tbody, setBody] = useState([]);
-
-    const navigate = useNavigate();
-
     let { tag } = useParams();
     useEffect(() => {
         socket.emit("items_by_tag", tag);

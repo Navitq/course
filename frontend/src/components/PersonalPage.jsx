@@ -5,6 +5,8 @@ import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
 
+import { useParams } from "react-router-dom";
+
 import { v4 as uuidv4 } from 'uuid';
 
 import CollCard from "./CollCard";
@@ -13,9 +15,10 @@ import CreateCal from "./CreateCal";
 
 import { socket } from "./socket";
 
-function CollectionsPrivate(props) {
+function PersonalPage(props) {
     let [cards, setCards] = useState([]);
     let [person, setPerson] = useState({});
+    let { user_id } = useParams();
 
     function addNewCard(card) {
         setCards((prev) => {
@@ -25,12 +28,12 @@ function CollectionsPrivate(props) {
 
     useEffect(() => {
 
-        socket.on("got_user_data", (data) => {
+        socket.on("got_person_data", (data) => {
             let dataParsed = JSON.parse(data);
             setPerson(dataParsed);
         });
 
-        socket.on("got_coll", (dataJson) => {
+        socket.on("got_person_coll", (dataJson) => {
             let data = JSON.parse(dataJson);
             let mewCards = [];
             for(let i =0; i < data.length;++i){
@@ -39,8 +42,8 @@ function CollectionsPrivate(props) {
             setCards(mewCards)
         });
 
-        socket.emit("get_user_data");
-        socket.emit("get_coll");
+        socket.emit("get_person_data", `${user_id}`);
+        socket.emit("get_person_coll", `${user_id}`);
     }, []);
 
     return (
@@ -108,4 +111,4 @@ function CollectionsPrivate(props) {
     );
 }
 
-export default CollectionsPrivate;
+export default PersonalPage
