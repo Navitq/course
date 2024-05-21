@@ -203,7 +203,7 @@ function Collection(props) {
                     md={12}
                     sm={12}
                     xs={12}
-                    className="d-flex collection__xs"
+                    className="d-flex collection__xs pe-0"
                 >
                     <Form
                         data-col_id={`${colCurrent.col_id}`}
@@ -233,7 +233,7 @@ function Collection(props) {
                                 />
                             </Container>
                         </Container>
-                        <Container className="d-flex flex-column justify-content-center">
+                        <Container className="d-flex px-0 flex-column justify-content-center">
                             <Form.Group
                                 className="mb-3"
                             >
@@ -259,9 +259,9 @@ function Collection(props) {
                     md={12}
                     sm={12}
                     xs={12}
-                    className="filter__main d-flex justify-content-start align-items-center collection__xs"
+                    className=" px-0 filter__main d-flex justify-content-start align-items-center collection__xs"
                 >
-                    <Container className="mb-3">
+                    <Container className="mb-3 ms-0" style={{maxWidth:"340px"}}>
                         <FilterItems theme={props.theme} col={refUser} i18n={props.i18n} t={props.t}></FilterItems>
                     </Container>
 
