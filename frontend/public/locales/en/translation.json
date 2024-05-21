@@ -165,6 +165,8 @@
         "collLargest": "Largest collections",
         "description":"Description",
         "category":"Category",
-        "count":"Count"
+        "count":"Count",
+        "tags":"Tags",
+        "noTags":"There are no items with this tag"
     }
 }

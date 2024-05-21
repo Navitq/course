@@ -30,7 +30,7 @@ function TagsCloud() {
             <WordCloud
                 data={data}
                 onWordClick={(event, d) => {
-                    navigate(`/tags/${d.text}`);
+                    navigate(`/tags/${d.text.slice(1)}`);
                 }}
             />
         </>

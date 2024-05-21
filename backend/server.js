@@ -9,7 +9,15 @@ const cookieParser = require("cookie-parser");
 const { emit } = require("process");
 const { writeFile, readFile } = require("fs");
 
-const { User, Coll, sequelize, Op, Item, Comment, Tag } = require("./sequelize.js");
+const {
+    User,
+    Coll,
+    sequelize,
+    Op,
+    Item,
+    Comment,
+    Tag,
+} = require("./sequelize.js");
 const s3 = require("./s3.js");
 
 const app = express();
@@ -210,11 +218,11 @@ io.on("connection", (socket) => {
             let result = await Item.create(data);
             socket.emit("got_item", JSON.stringify(result));
             let tags = data.tags.split("#");
-            tags.shift()
-            tags = tags.map((el)=>{
-                return {tag:`#${el}`}
-            })
-            console.log(tags)
+            tags.shift();
+            tags = tags.map((el) => {
+                return { tag: `#${el}` };
+            });
+            console.log(tags);
             Tag.bulkCreate(tags);
         } catch (err) {
             console.error(err);
@@ -558,7 +566,7 @@ io.on("connection", (socket) => {
         socket.emit("got_largest_coll", JSON.stringify(collections));
     });
 
-    socket.on("get_tags_cloud", async () =>{
+    socket.on("get_tags_cloud", async () => {
         let tags = await Tag.findAll({
             limit: 100,
             attributes: [
@@ -569,11 +577,87 @@ io.on("connection", (socket) => {
             having: sequelize.literal("count(tag) > 0"),
             order: [[sequelize.fn("COUNT", sequelize.col("tag")), "DESC"]],
         });
-        // let data = tags.map((el)=>{
-        //     return el.dataValues
-        // })
-        socket.emit("got_tags_cloud", JSON.stringify(tags))
-    })
+        socket.emit("got_tags_cloud", JSON.stringify(tags));
+    });
+
+    socket.on("items_by_tag", async (data) => {
+        console.log(`${"#" + data + "#"}`)
+        let items = await Item.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        tags: {
+                            [Op.like]: `%${"#" +data+ "#"}%`,
+                        }
+                    },
+                    {
+                        tags: {
+                            [Op.endsWith]: `${"#" + data}`,
+                        },
+                    },
+                ],
+            },
+
+        });
+
+        let collectionId = [];
+        for (let i = 0; i < items.length; ++i) {
+            items[i].dataValues.nameItem = items[i].dataValues.name;
+            delete items[i].dataValues.name;
+            if(!collectionId.includes(items[i].dataValues.col_id)){
+                collectionId.push({ col_id: items[i].dataValues.col_id });
+            }
+        }
+
+        let collections = await Coll.findAll({
+            attributes: ["uuid", "name", "col_id"],
+            where: {
+                [Op.or]: collectionId,
+            },
+        });
+        let userId = [];
+        for (let i = 0; i < collections.length; ++i) {
+            collections[i].dataValues.nameColl = collections[i].dataValues.name;
+            delete collections[i].dataValues.name;
+            if(!userId.includes(collections[i].dataValues.col_id)){
+                userId.push({ user_id: collections[i].dataValues.uuid });
+            }
+        }
+
+        let users = await User.findAll({
+            attributes: ["user_id", "username"],
+            where: {
+                [Op.or]: userId,
+            },
+        });
+
+        collections.forEach((el) => {
+            for (let i = 0; i < users.length; ++i) {
+                if (el.dataValues.uuid == users[i].dataValues.user_id) {
+                    for (const [key, value] of Object.entries(
+                        users[i].dataValues
+                    )) {
+                        el.dataValues[`${key}`] = value;
+                    }
+                }
+            }
+        });
+
+        items.forEach((el) => {
+            for (let i = 0; i < collections.length; ++i) {
+                if (el.dataValues.col_id == collections[i].dataValues.col_id) {
+                    for (const [key, value] of Object.entries(
+                        collections[i].dataValues
+                    )) {
+                        el.dataValues[`${key}`] = value;
+                    }
+                }
+            }
+        });
+        console.log(items)
+        socket.emit("items_by_tag", JSON.stringify(items))
+
+    });
 });
 
 server.listen(4000, async (req, res) => {});
