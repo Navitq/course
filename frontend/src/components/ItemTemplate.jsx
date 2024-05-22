@@ -10,6 +10,7 @@ import Form from "react-bootstrap/Form";
 import ItemField from "./ItemField";
 import Comment from "./Comment";
 import { socket } from "./socket";
+import TagsAreaSetting from "./TagsAreaSetting";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -220,24 +221,8 @@ function ItemTemplate(props) {
                                     name="description"
                                 />
                             </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label className="h6">
-                                    {props.t("ItemTemplate.tags")}
-                                </Form.Label>
-                                <Form.Control
-                                    style={{ resize: "none" }}
-                                    as="textarea"
-                                    rows={4}
-                                    className="filter__scroll"
-                                    readOnly
-                                    required
-                                    placeholder={props.t(
-                                        "ItemTemplate.tagsPlaceholder"
-                                    )}
-                                    defaultValue={itemData?.tags}
-                                    name="tags"
-                                />
-                            </Form.Group>
+                            <TagsAreaSetting defValue={itemData.tags} t={props.t}></TagsAreaSetting>
+
                         </Container>
                         {itemFields}
                     </Container>

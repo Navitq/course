@@ -48,6 +48,13 @@ function App() {
         if(!socket.connected){
             socket.connect();
         }
+        console.log("ssssssssssss")
+        socket.emit("check_admin_status")
+        socket.on("checked_admin_status", (data) => {
+            if(data != false){
+                setAdminState(data)
+            }
+        })
     },[])
 
 

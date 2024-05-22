@@ -711,6 +711,14 @@ io.on("connection", (socket) => {
         });
         socket.emit("items_by_tag", JSON.stringify(items));
     });
+
+    socket.on("check_admin_status", async ()=>{
+        let admin = false
+        if(req.session.user_id){
+            admin = await checkUser(req.session.user_id);
+        }
+        socket.emit("checked_admin_status", admin);
+    })
 });
 
 server.listen(4000, async (req, res) => {});
