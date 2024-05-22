@@ -168,5 +168,17 @@
         "count":"Count",
         "tags":"Tags",
         "noTags":"There are no items with this tag"
+    },
+    "Admin":{
+        "header":"Table with info about our users!",
+        "block":"Block",
+        "unblock":"Unblock",
+        "delete":"Delete",
+        "id":"Id",
+        "email":"Email",
+        "name":"Name",
+        "status":"Status",
+        "admin":"Admin",
+        "basic":"Basic"
     }
 }

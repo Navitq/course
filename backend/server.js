@@ -244,7 +244,7 @@ io.on("connection", (socket) => {
             });
             let adminChecker = await User.findAll({
                 where: {
-                    user_id: result[0].dataValues.uuid,
+                    user_id: user_id,
                 },
             });
             if (
@@ -271,6 +271,14 @@ io.on("connection", (socket) => {
         } else {
             return false;
         }
+    }
+
+    async function checkAdminStatus(user_id){
+        let admin = false
+        if(user_id){
+            admin = await checkUser(user_id);
+        }
+        return admin;
     }
 
     socket.on("delete_col_data", async (dataJSON) => {
@@ -711,13 +719,84 @@ io.on("connection", (socket) => {
         });
         socket.emit("items_by_tag", JSON.stringify(items));
     });
+    
+
 
     socket.on("check_admin_status", async ()=>{
-        let admin = false
-        if(req.session.user_id){
-            admin = await checkUser(req.session.user_id);
-        }
+        let admin = await checkAdminStatus(req.session.user_id)
+        
+
         socket.emit("checked_admin_status", admin);
+    })
+
+    socket.on("admin_user_list", async ()=>{
+        if(!(await checkAdminStatus(req.session.user_id))){
+            return;
+        }
+
+        let result = await User.findAll();
+        
+        socket.emit("admin_user_listed", JSON.stringify(result));
+    })
+    
+    socket.on("block_admin", async (dataJSON)=>{
+        let data = JSON.parse(dataJSON);
+
+        if(!(await checkAdminStatus(req.session.user_id))){
+            return;
+        }
+
+        await User.update(
+            {
+                status: 'block'
+            },
+            {
+            where:{
+                [Op.or]: data
+            }
+        });
+        
+        socket.emit("request_success");
+    })
+
+    socket.on("unblock_admin", async (dataJSON)=>{
+        let data = JSON.parse(dataJSON);
+
+        if(!(await checkAdminStatus(req.session.user_id))){
+            return;
+        }
+
+        await User.update(
+            {
+                status: 'basic'
+            },
+            {
+            where:{
+                [Op.or]: data
+            }
+        });
+        
+        socket.emit("request_success");
+    })
+
+    socket.on("admin_admin", async (dataJSON)=>{
+        let data = JSON.parse(dataJSON);
+
+        if(!(await checkAdminStatus(req.session.user_id))){
+            return;
+        }
+            
+        await User.update(
+            {
+                status: 'admin'
+            },
+            {
+            where:{
+                [Op.or]: data
+            }
+        });
+        
+        socket.emit("request_success");
     })
 });
 

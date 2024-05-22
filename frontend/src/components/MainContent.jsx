@@ -27,8 +27,6 @@ export default class MainContent extends Component {
                 this.props.changeHeader(true);
             }  
         })
-		
-
 	}
 
 
