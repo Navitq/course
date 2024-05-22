@@ -18,7 +18,7 @@ function CollectionsPrivate(props) {
     let [person, setPerson] = useState({});
 
     function addNewCard(card, type) {
-        if(type != "private" || type != "all"){
+        if(type != "private" && type != "all"){
             return
         }
         setCards((prev) => {

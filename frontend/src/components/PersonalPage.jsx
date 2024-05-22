@@ -23,7 +23,7 @@ function PersonalPage(props) {
     const navigate = useNavigate();
 
     function addNewCard(card, type) {
-        if(type != "people" || type != "all"){
+        if(type != "people" && type != "all"){
             return
         }
         setCards((prev) => {
