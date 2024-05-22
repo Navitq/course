@@ -9,6 +9,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 import CollCard from "./CollCard"
 import ModalCrColl from "./ModalCrColl"
+import { useParams } from "react-router-dom";
 
 import { socket } from "./socket";
 
@@ -17,6 +18,8 @@ function CreateCal(props) {
     let [categoryLabel, setCategoryLabel] = useState(props.t("Filter.chseCategory"));
 
     let [dataCategory, setDataCategory] = useState("");
+
+    let { user_id } = useParams();
 
     let dropRef = useRef("")
 
@@ -35,10 +38,10 @@ function CreateCal(props) {
 
 
     useEffect(()=>{
-        socket.on("got_new_coll",(dataJSON)=>{
+        socket.on("got_new_coll",(dataJSON, typeOfColl)=>{
             let data = JSON.parse(dataJSON)
             let card = createCollCard(data)
-            props.addNewCard(card)
+            props.addNewCard(card, typeOfColl)
         })
         getCategoryData()
     },[])
@@ -106,8 +109,11 @@ function CreateCal(props) {
         let formData = formDataCreater(e.currentTarget, dropDown);
         let data = await formObject(formData)
 
- 
-        socket.emit("get_new_coll", JSON.stringify(data))
+        if(user_id){
+            socket.emit("get_new_coll", JSON.stringify(data), user_id)
+        } else {
+            socket.emit("get_new_coll", JSON.stringify(data))
+        }
   
     }
 

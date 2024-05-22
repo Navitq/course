@@ -58,6 +58,9 @@ function App() {
                 setAdminState(data)
             }
         })
+        socket.on("status_changed", ()=>{
+            window.location.reload();
+        })
     },[])
 
 

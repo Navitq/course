@@ -1,3 +1,4 @@
+const session = require("express-session");
 const { Sequelize, DataTypes, Op } = require("sequelize");
 
 const sequelize = new Sequelize("course", "navitq", "qwerty123", {
@@ -41,6 +42,9 @@ const User = sequelize.define("user", {
         type: DataTypes.STRING,
         defaultValue: "basic",
         allowNull: false,
+    },
+    session_id: {
+        type: DataTypes.STRING,
     },
 });
 
@@ -279,7 +283,8 @@ const Comment = sequelize.define("comment", {
 });
 
 (async () => {
-    // await sequelize.sync({ force: true });//{ force: true }
+    //await sequelize.sync();//{ force: true }
+    //sequelize.sync({ alter: true })
     // let user = await User.build({ username: "1", email: "1@1", password: "1" });
     // await user.save();
 })();

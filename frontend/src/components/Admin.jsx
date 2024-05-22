@@ -9,28 +9,36 @@ import { socket } from "./socket";
 export default function Admin(props) {
     let [tableCnt, setTableCnt] = useState(null);
     let [checkboxes, setCheckboxes] = useState(false);
-    let checkboxesRef = useRef([]);
+    let checkboxesRef = document.querySelectorAll(".admin__checkbox input");
 
     function handleCheckboxChange(e) {
-        for (let i = 0; i < checkboxesRef.current.length; ++i) {
-            checkboxesRef.current[i].checked = !checkboxes;
+        checkboxesRef = document.querySelectorAll(".admin__checkbox input");
+        for (let i = 0; i < checkboxesRef.length; ++i) {
+            console.log(checkboxesRef[i])
+            checkboxesRef[i].checked = !checkboxes;
         }
         setCheckboxes(!checkboxes);
     }
 
     async function sendData(e) {
-        let emails = checkboxesRef.current.filter((value) => {
+        checkboxesRef = document.querySelectorAll(".admin__checkbox input");
+        let emails = []
+        Array.from(checkboxesRef).filter((value) => {
             if (value.checked) {
-                return value.name;
+                emails.push(value.name);
             }
         });
         let emailsParsed = emails.map((val) => {
-            return {email: val.name};
+            return {email: val};
         });
         if(emailsParsed.length < 1){
             return ;
         }
+
         let data = JSON.stringify(emailsParsed);
+        console.log(data)
+        setCheckboxes(false);
+
         socket.emit(`${e.target.dataset.method}`, data)
     }
 
@@ -39,10 +47,11 @@ export default function Admin(props) {
         socket.on("admin_user_listed", (dataJSON)=>{
             let data = JSON.parse(dataJSON);
             let checkboxName = {};
+            
             let table = data.map((el)=>{
                 let row = <tr key={uuidv4()}>
                     <td className='d-flex justify-content-center' >
-                        <Form.Check type="switch" name={el.email} ref={ref => checkboxesRef.current.push(ref) }  />
+                        <Form.Check type="switch" name={el.email} className="admin__checkbox" />
                     </td>
                     <td>{el.user_id}</td>
                     <td >{el.email}</td>
@@ -56,6 +65,9 @@ export default function Admin(props) {
         })
         socket.on("request_success",()=>{
             socket.emit("admin_user_list")
+        })
+        socket.on("request_unsuccess",()=>{
+            window.location.reload();
         })
     }, []);
 

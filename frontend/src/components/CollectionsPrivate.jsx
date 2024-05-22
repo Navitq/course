@@ -17,14 +17,16 @@ function CollectionsPrivate(props) {
     let [cards, setCards] = useState([]);
     let [person, setPerson] = useState({});
 
-    function addNewCard(card) {
+    function addNewCard(card, type) {
+        if(type != "private" || type != "all"){
+            return
+        }
         setCards((prev) => {
             return [...prev, card];
         });
     }
 
     useEffect(() => {
-
         socket.on("got_user_data", (data) => {
             let dataParsed = JSON.parse(data);
             setPerson(dataParsed);

@@ -36,6 +36,19 @@ app.use(middlware);
 
 const server = createServer(app);
 
+async function addSession(session_id, user_id) {
+    await User.update(
+        {
+            session_id: session_id,
+        },
+        {
+            where: {
+                [Op.or]: { user_id },
+            },
+        }
+    );
+}
+
 app.get("/sign_up", formidable(), async (req, res) => {
     if (req.session.auth) {
         res.json({ auth: true });
@@ -72,6 +85,7 @@ app.post("/sign_in", formidable(), async (req, res) => {
                     { email: req.fields.email },
                     { password: req.fields.password },
                 ],
+                [Op.or]: [{ status: "basic" }, { status: "admin" }],
             },
         });
         if (result.length < 1) {
@@ -85,8 +99,8 @@ app.post("/sign_in", formidable(), async (req, res) => {
     }
 
     req.session.auth = true;
-
     req.session.user_id = result[0].dataValues.user_id;
+    await addSession(req.session.id, req.session.user_id);
     req.session.save();
     res.json({ auth: true });
     return;
@@ -121,6 +135,7 @@ app.post("/sign_up", formidable(), async (req, res) => {
         });
         req.session.auth = true;
         req.session.user_id = currentUser.dataValues.user_id;
+        await addSession(req.session.id, req.session.user_id);
     } catch (err) {
         console.error(err);
         res.status(500).send("Internal Server Error");
@@ -165,14 +180,25 @@ io.on("connection", (socket) => {
     const req = socket.request;
     console.log("hhhhhhhhhhhhh", socket.request.session.auth);
 
-    socket.on("get_new_coll", async (data) => {
+    socket.on("get_new_coll", async (data, user_id) => {
         if (!req.session.auth) {
+            return;
+        }
+        if (await checkAdminStatus(req.session.user_id)) {
+            let parsedData = JSON.parse(data);
+            parsedData.uuid = user_id;
+            let currentUser = await Coll.create(parsedData);
+            if (req.session.user_id == user_id) {
+                socket.emit("got_new_coll", JSON.stringify(currentUser), "all");
+                return;
+            }
+            socket.emit("got_new_coll", JSON.stringify(currentUser), "people");
             return;
         }
         let parsedData = JSON.parse(data);
         parsedData.uuid = socket.request.session.user_id;
         let currentUser = await Coll.create(parsedData);
-        socket.emit("got_new_coll", JSON.stringify(currentUser));
+        socket.emit("got_new_coll", JSON.stringify(currentUser), "private");
     });
 
     socket.on("change_col_data", async (dataJSON) => {
@@ -191,6 +217,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_coll", async (data) => {
+        console.log(req.session.id, 22222222222222222222);
+
         try {
             let result = await Coll.findAll({
                 where: {
@@ -273,9 +301,9 @@ io.on("connection", (socket) => {
         }
     }
 
-    async function checkAdminStatus(user_id){
-        let admin = false
-        if(user_id){
+    async function checkAdminStatus(user_id) {
+        let admin = false;
+        if (user_id) {
             admin = await checkUser(user_id);
         }
         return admin;
@@ -347,7 +375,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_item_info", async (dataJSON) => {
-        let owner = {owner: false}
+        let owner = { owner: false };
 
         let data = JSON.parse(dataJSON);
         let resultColl, resultItems;
@@ -427,14 +455,14 @@ io.on("connection", (socket) => {
                     user_id: data,
                 },
             });
-            if(result.length < 1){
-                socket.emit(
-                    "got_person_data",
-                    JSON.stringify({err:true}),
-                );
+            if (result.length < 1) {
+                socket.emit("got_person_data", JSON.stringify({ err: true }));
             }
-            
-            if ((data == req.session.user_id && req.session.auth) || (req.session.auth && await checkUser(req.session.user_id))) {
+
+            if (
+                (data == req.session.user_id && req.session.auth) ||
+                (req.session.auth && (await checkUser(req.session.user_id)))
+            ) {
                 owner = { owner: true };
             }
             socket.emit(
@@ -483,7 +511,7 @@ io.on("connection", (socket) => {
     socket.on("get_col_items", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
         try {
-            let owner = {owner: false}
+            let owner = { owner: false };
             let resultColl = await Coll.findAll({
                 where: {
                     col_id: data.col_id,
@@ -719,85 +747,146 @@ io.on("connection", (socket) => {
         });
         socket.emit("items_by_tag", JSON.stringify(items));
     });
-    
 
-
-    socket.on("check_admin_status", async ()=>{
-        let admin = await checkAdminStatus(req.session.user_id)
-        
+    socket.on("check_admin_status", async () => {
+        let admin = await checkAdminStatus(req.session.user_id);
 
         socket.emit("checked_admin_status", admin);
-    })
+    });
 
-    socket.on("admin_user_list", async ()=>{
-        if(!(await checkAdminStatus(req.session.user_id))){
+    socket.on("admin_user_list", async () => {
+        if (!(await checkAdminStatus(req.session.user_id))) {
             return;
         }
 
         let result = await User.findAll();
-        
+
         socket.emit("admin_user_listed", JSON.stringify(result));
-    })
-    
-    socket.on("block_admin", async (dataJSON)=>{
+    });
+
+    socket.on("block_admin", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
 
-        if(!(await checkAdminStatus(req.session.user_id))){
+        if (!(await checkAdminStatus(req.session.user_id))) {
             return;
         }
 
         await User.update(
             {
-                status: 'block'
+                status: "block",
             },
             {
-            where:{
-                [Op.or]: data
+                where: {
+                    [Op.or]: data,
+                },
             }
-        });
-        
-        socket.emit("request_success");
-    })
+        );
 
-    socket.on("unblock_admin", async (dataJSON)=>{
+        socket.emit("request_success");
+    });
+
+    socket.on("unblock_admin", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
 
-        if(!(await checkAdminStatus(req.session.user_id))){
+        if (!(await checkAdminStatus(req.session.user_id))) {
             return;
         }
 
         await User.update(
             {
-                status: 'basic'
+                status: "basic",
             },
             {
-            where:{
-                [Op.or]: data
+                where: {
+                    [Op.or]: data,
+                },
             }
-        });
-        
-        socket.emit("request_success");
-    })
+        );
 
-    socket.on("admin_admin", async (dataJSON)=>{
+        socket.emit("request_success");
+    });
+
+    socket.on("admin_admin", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
 
-        if(!(await checkAdminStatus(req.session.user_id))){
+        if (!(await checkAdminStatus(req.session.user_id))) {
             return;
         }
-            
+
         await User.update(
             {
-                status: 'admin'
+                status: "admin",
             },
             {
-            where:{
-                [Op.or]: data
+                where: {
+                    [Op.or]: data,
+                },
             }
-        });
-        
+        );
+
         socket.emit("request_success");
-    })
+    });
+
+    socket.on("delete_admin", async (dataJSON) => {
+        try {
+            let data = JSON.parse(dataJSON);
+
+            if (!(await checkAdminStatus(req.session.user_id))) {
+                return;
+            }
+
+            let users = await User.findAll({
+                attributes: ["user_id", "session_id"],
+                where: {
+                    [Op.or]: data,
+                },
+            });
+
+            let userColl = [];
+
+            for (let i = 0; i < users.length; i++) {
+                userColl.push({ uuid: users[i].dataValues.user_id });
+                req.sessionStore.destroy(users[i].dataValues.session_id, (err, script) => {
+                });
+            }
+
+            let collections = await Coll.findAll({
+                attributes: ["col_id"],
+                where: {
+                    [Op.or]: userColl,
+                },
+            });
+
+            let colColl = [];
+
+            for (let i = 0; i < collections.length; i++) {
+                colColl.push(collections[i].dataValues);
+            }
+
+            await Item.destroy({
+                where: {
+                    [Op.or]: colColl,
+                },
+            });
+
+            await Coll.destroy({
+                where: {
+                    [Op.or]: userColl,
+                },
+            });
+
+            await User.destroy({
+                where: {
+                    [Op.or]: data,
+                },
+            });
+
+            socket.emit("request_success");
+        } catch (err) {
+            console.log(err);
+            socket.emit("request_unsuccess");
+        }
+    });
 });
 
 server.listen(4000, async (req, res) => {});

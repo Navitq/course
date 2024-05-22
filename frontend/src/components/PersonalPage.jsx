@@ -22,7 +22,10 @@ function PersonalPage(props) {
     let { user_id } = useParams();
     const navigate = useNavigate();
 
-    function addNewCard(card) {
+    function addNewCard(card, type) {
+        if(type != "people" || type != "all"){
+            return
+        }
         setCards((prev) => {
             return [...prev, card];
         });
