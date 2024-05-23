@@ -1,20 +1,22 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { socket } from "./socket";
 
 function Search(props) {
     const navigate = useNavigate();
+    let { search_req } = useParams();
+
     let mainSearch = useRef()
 
     function search(e){
         e.preventDefault()
-        navigate(`/search/${mainSearch.current.value}`)     
-        console.log(mainSearch.current.value) 
+        navigate(`/search/${mainSearch.current.value}`)
     }   
 
     return (

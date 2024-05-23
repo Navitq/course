@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
-import Form from "react-bootstrap/Form";
 
 import { NavLink } from "react-router-dom";
 
@@ -20,6 +18,7 @@ function ItemByTag(props) {
                 <th>{props.t("Public.collName")}</th>
                 <th>{props.t("Public.itemName")}</th>
                 <th>{props.t("Public.tags")}</th>
+                <th>{props.t("Public.description")}</th>
             </tr>
         );
         setElements([header]);
@@ -81,6 +80,16 @@ function ItemByTag(props) {
                     </td>
                     <td className="d-flex flex-wrap">
                         {tagsData}
+                    </td>
+                    <td>
+                        <NavLink
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                            variant="primary"
+                            className="nav-link active"
+                        >
+                            {el.description}
+                        </NavLink>
                     </td>
                 </tr>
             );

@@ -84,7 +84,8 @@
     "Search": {
         "header":"Search",
         "footer":"Search",
-        "schPlaceholder":"What do I want to find...?"
+        "schPlaceholder":"What do I want to find...?",
+        "searchResult":"Search results for query: "
     },
     "CrElem": {
         "header":"Create Collection",

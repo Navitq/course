@@ -239,24 +239,24 @@ const Item = sequelize.define("item", {
         type: DataTypes.STRING,
     },
 
-    item_search: {
+    item_search_english: {
+        type: DataTypes.TSVECTOR,
+    },
+
+    item_search_russian: {
         type: DataTypes.TSVECTOR,
     },
 }, {
     hooks: {
         beforeCreate: (item, options) => {
-            item.item_search = sequelize.fn(
-                'to_tsvector',
-                'simple',
-                sequelize.fn('concat_ws', ' ', item.name, item.col_id, item.tags, item.description, item.img, item.text0, item.text1, item.text2, item.number0, item.number1, item.number2, item.textarea0, item.textarea1, item.textarea2, item.date0, item.date1, item.date2)
-            );
+            const concatenatedText = sequelize.fn('concat_ws', ' ', item.name, item.col_id, item.tags, item.description, item.img, item.text0, item.text1, item.text2, item.number0, item.number1, item.number2, item.textarea0, item.textarea1, item.textarea2, item.date0, item.date1, item.date2);
+            item.item_search_english = sequelize.fn('to_tsvector', 'english', concatenatedText);
+            item.item_search_russian = sequelize.fn('to_tsvector', 'russian', concatenatedText);
         },
         beforeUpdate: (item, options) => {
-            item.item_search = sequelize.fn(
-                'to_tsvector',
-                'simple',
-                sequelize.fn('concat_ws', ' ', item.name, item.col_id, item.tags, item.description, item.img, item.text0, item.text1, item.text2, item.number0, item.number1, item.number2, item.textarea0, item.textarea1, item.textarea2, item.date0, item.date1, item.date2)
-            );
+            const concatenatedText = sequelize.fn('concat_ws', ' ', item.name, item.col_id, item.tags, item.description, item.img, item.text0, item.text1, item.text2, item.number0, item.number1, item.number2, item.textarea0, item.textarea1, item.textarea2, item.date0, item.date1, item.date2);
+            item.item_search_english = sequelize.fn('to_tsvector', 'english', concatenatedText);
+            item.item_search_russian = sequelize.fn('to_tsvector', 'russian', concatenatedText);
         }
     }
 });
@@ -310,7 +310,7 @@ const Comment = sequelize.define("comment", {
     // await sequelize.sync({ force: true });//{ force: true }
     // let user = await User.build({ username: "1", email: "1@1", password: "1" });
     // await user.save();
-        // sequelize.sync({ alter: true })
+    //sequelize.sync({ alter: true })
 
 })();
 

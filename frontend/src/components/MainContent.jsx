@@ -15,7 +15,7 @@ import { socket } from "./socket";
 import ItemTemplate from "./ItemTemplate"
 import TagPage from "./TagPage"
 import PersonalPage from "./PersonalPage"
-
+import SearchPage from './SearchPage';
 
 export default class MainContent extends Component {
 
@@ -45,6 +45,8 @@ export default class MainContent extends Component {
 					<Route exact path="/collection/:col_id/:item_id" element={<ItemTemplate theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
 					<Route exact path="/tags/:tag" element={<TagPage theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
 					<Route exact path="/people/:user_id" element={<PersonalPage theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
+					<Route exact path="/search/:search_req" element={<SearchPage theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
+
 					<Route path="*" element={<NotFound t={this.props.t}></NotFound>} ></Route>
 				</Routes >
 			</Container>

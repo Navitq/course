@@ -83,7 +83,8 @@
     "Search": {
         "header":"Поиск",
         "footer":"Искать",
-        "schPlaceholder":"Что же я хочу найти...?"
+        "schPlaceholder":"Что же я хочу найти...?",
+        "searchResult":"Результаты поиска по запросу: "
     },
     "CrElem": {
         "header":"Создать коллекцию",

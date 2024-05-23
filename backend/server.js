@@ -184,7 +184,7 @@ io.on("connection", (socket) => {
         if (!req.session.auth) {
             return;
         }
-        if (await checkAdminStatus(req.session.user_id) && user_id) {
+        if ((await checkAdminStatus(req.session.user_id)) && user_id) {
             let parsedData = JSON.parse(data);
             parsedData.uuid = user_id;
             let currentUser = await Coll.create(parsedData);
@@ -847,8 +847,10 @@ io.on("connection", (socket) => {
 
             for (let i = 0; i < users.length; i++) {
                 userColl.push({ uuid: users[i].dataValues.user_id });
-                req.sessionStore.destroy(users[i].dataValues.session_id, (err, script) => {
-                });
+                req.sessionStore.destroy(
+                    users[i].dataValues.session_id,
+                    (err, script) => {}
+                );
             }
 
             let collections = await Coll.findAll({
@@ -889,12 +891,120 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("get_tags_coll", async () =>{
+    socket.on("get_tags_coll", async () => {
         let tagsColl = await Tag.findAll({
-            attributes: ["tag"]
-        })
-        socket.emit("got_tags_coll", JSON.stringify(tagsColl))
-    })
+            attributes: ["tag"],
+        });
+        socket.emit("got_tags_coll", JSON.stringify(tagsColl));
+    });
+
+    socket.on("get_search", async (data) => {
+        let unicodeNum = null;
+        let language = "en"
+        for(let i =0;i<data.length;++i){
+            if(/[А-Яа-я]/.test(data[i])){
+                language = "ru";
+                break
+            } else if (/[A-Za-z]/.test(data[i])){
+                language = "en";
+                break
+            }
+        }
+        let items = null;
+
+        if(language == "ru"){
+            items = await Item.findAll({
+                limit:50,
+                attributes: {
+                    include: [
+                        [sequelize.fn('ts_rank', sequelize.col('item_search_russian'), sequelize.literal(`plainto_tsquery('${data}')`)), 'rank']
+                    ]
+                },
+                where: {
+                    item_search_russian: {
+                        [Op.match]: sequelize.literal(`plainto_tsquery('${data}')`),
+                    },
+                },
+                order: [
+                    [sequelize.literal('rank'), 'DESC']
+                ],
+            });
+        } else {
+            items = await Item.findAll({
+                limit:50,
+                attributes: {
+                    include: [
+                        [sequelize.fn('ts_rank', sequelize.col('item_search_english'), sequelize.literal(`plainto_tsquery('${data}')`)), 'rank']
+                    ]
+                },
+                where: {
+                    item_search_english: {
+                        [Op.match]: sequelize.literal(`plainto_tsquery('${data}')`),
+                    },
+                },
+                order: [
+                    [sequelize.literal('rank'), 'DESC']
+                ],
+            });
+        }
+
+        let collectionId = [];
+        for (let i = 0; i < items.length; ++i) {
+            items[i].dataValues.nameItem = items[i].dataValues.name;
+            delete items[i].dataValues.name;
+            if (!collectionId.includes(items[i].dataValues.col_id)) {
+                collectionId.push({ col_id: items[i].dataValues.col_id });
+            }
+        }
+
+        let collections = await Coll.findAll({
+            attributes: ["uuid", "name", "col_id"],
+            where: {
+                [Op.or]: collectionId,
+            },
+        });
+        let userId = [];
+        for (let i = 0; i < collections.length; ++i) {
+            collections[i].dataValues.nameColl = collections[i].dataValues.name;
+            delete collections[i].dataValues.name;
+            if (!userId.includes(collections[i].dataValues.col_id)) {
+                userId.push({ user_id: collections[i].dataValues.uuid });
+            }
+        }
+
+        let users = await User.findAll({
+            attributes: ["user_id", "username"],
+            where: {
+                [Op.or]: userId,
+            },
+        });
+
+        collections.forEach((el) => {
+            for (let i = 0; i < users.length; ++i) {
+                if (el.dataValues.uuid == users[i].dataValues.user_id) {
+                    for (const [key, value] of Object.entries(
+                        users[i].dataValues
+                    )) {
+                        el.dataValues[`${key}`] = value;
+                    }
+                }
+            }
+        });
+
+        items.forEach((el) => {
+            for (let i = 0; i < collections.length; ++i) {
+                if (el.dataValues.col_id == collections[i].dataValues.col_id) {
+                    for (const [key, value] of Object.entries(
+                        collections[i].dataValues
+                    )) {
+                        el.dataValues[`${key}`] = value;
+                    }
+                }
+            }
+        });
+
+        socket.emit("got_search", JSON.stringify(items))
+    });
 });
 
 server.listen(4000, async (req, res) => {});
