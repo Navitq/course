@@ -9,17 +9,14 @@ import ListGroup from "react-bootstrap/ListGroup";
 import { v4 as uuidv4 } from "uuid";
 
 import TagsArea from "./TagsArea"
+import { socket } from "./socket";
 
 function ModalNewItem(props) {
     let fieldsTypes = ["date", "text", "number", "checkbox", "textarea"];
     let [modalFields, setModalFields] = useState("");
     
     let tagsArea = useRef();
-    let tags = [
-        { tag: "#zaMerzula" },
-        { tag: "#zaKarinu" },
-        { tag: "#zaMikaIMorti" },
-    ];
+    let tags = props.tagsList;
     let [tagsData, setTagsData] = useState("#");
 
     const specialCharsRegex = /[\s*!@_"{}№;%:?*'()\[\]+/~`$^&=\-,.\\<>|]/g;
@@ -75,50 +72,6 @@ function ModalNewItem(props) {
         return fields;
     }
 
-    function tagCheckerKey(event) {
-        if (specialCharsRegex.test(event.key)) {
-            event.preventDefault();
-        }
-    }
-
-    function tagChecker(e) {
-        let value = e.currentTarget.value;
-        value = "#" + value.slice(1);
-        value = value.replaceAll(/ /g, "");
-        while (value.includes("##")) {
-            value = value.replaceAll(
-                /##/g,
-                "#"
-            );
-        }
-        value = value.replaceAll(
-            specialCharsRegex,
-            ""
-        );
-
-        setTagsData(value)
-        
-        let newData = tags.filter((el) => {
-                if(el.tag.indexOf( e.currentTarget.value) > -1){
-                    return el
-                }
-            })
-            .map((el) => {
-                return (
-                    <ListGroup.Item
-                        key={uuidv4()}
-                        action
-                        onClick={(e) => {
-                            e.preventDefault();
-                        }}
-                    >
-                        {el.tag}
-                    </ListGroup.Item>
-                );
-            });
-
-        
-    }
 
     useEffect(() => {
         let fields = createItemFileds();
@@ -179,38 +132,7 @@ function ModalNewItem(props) {
                             />
                         </Form.Group>
 
-                        {/* <Form.Group key={uuidv4()} className="mb-3" style={{position:"relative"}}>
-                            <Form.Label className="h6">
-                                {props.t("ModalItem.itemTags")}
-                            </Form.Label>
-                            <Form.Control
-                                name="tags"
-                                required
-                                as="textarea"
-                                rows={2}
-                                placeholder={props.t(
-                                    "ModalItem.tagsPlaceholder"
-                                )}
-                                onChange={tagChecker}
-                                onKeyDown={tagCheckerKey}
-                                value={tagsData}
-                                style={{ wordWrap: "break-word" }}
-                                className="filter__scroll"
-                                ref={tagsArea}
-                            />
-                            <ListGroup  style={{position:"absolute"}}>
-                                <ListGroup.Item
-                                    action
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                    }}
-                                >
-                                    Link 2
-                                </ListGroup.Item>
-
-                            </ListGroup>
-                        </Form.Group> */}
-                        <TagsArea t={props.t}></TagsArea>
+                        <TagsArea tagsList={props.tagsList} t={props.t}></TagsArea>
 
                         {modalFields}
 

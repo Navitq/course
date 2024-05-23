@@ -122,7 +122,7 @@ function ModalNewItem(props) {
                             </Form.Label>
                             <Form.Control
                                 name="tags"
-                                type="text"
+                                as="textarea"
                                 placeholder={props.t("ModalItem.tagsPlaceholder")}
                             />
                         </Form.Group>

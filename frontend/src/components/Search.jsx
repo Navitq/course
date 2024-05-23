@@ -4,14 +4,26 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
+import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
+
 function Search(props) {
+    const navigate = useNavigate();
+    let mainSearch = useRef()
+
+    function search(e){
+        e.preventDefault()
+        navigate(`/search/${mainSearch.current.value}`)     
+        console.log(mainSearch.current.value) 
+    }   
+
     return (
         <Container className="pe-0 mx-0 header__search" style={{width:"fit-content"}}>
-            <Form className="d-flex justify-content-end">
+            <Form className="d-flex justify-content-end" onSubmit={search}>
                 <Form.Group
                 className="me-2"
                 >
-                    <Form.Control name="search" placeholder={props.t("Search.schPlaceholder")} />
+                    <Form.Control name="search" ref={mainSearch} id="main_search" placeholder={props.t("Search.schPlaceholder")} />
                 </Form.Group>
                 <Button type="submit">{props.t("Search.footer")}</Button>
             </Form>

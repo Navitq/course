@@ -11,11 +11,6 @@ function TagsArea(props) {
     let [newData, setNewData] = useState("#");
     let [newHint, setNewHint] = useState([]);
 
-    let tags = [
-        { tag: "#zaMerzula" },
-        { tag: "#zaKarinu" },
-        { tag: "#zaMikaIMorti" },
-    ];
 
     const specialCharsRegex = /[\s*!@_"{}№;%:?*'()\[\]+/~`$^&=\-,.\\<>|]/g;
 
@@ -30,8 +25,6 @@ function TagsArea(props) {
         value = value.replaceAll(specialCharsRegex, "");
         return value;
     }
-
-    function getCheckedWord(value) {}
 
     function tagChecker(e) {
         let position = null;
@@ -70,10 +63,11 @@ function TagsArea(props) {
                 }
                 break;
             }
-            //let text = getCheckedWord(value);
-
-            let data = tags
+            let data = props.tagsList
                 .filter((el) => {
+                    if(el.tag == null){
+                        return;
+                    }
                     if (el.tag.indexOf(word.join("")) > -1) {
                         return el;
                     }
@@ -133,7 +127,7 @@ function TagsArea(props) {
                 className="filter__scroll"
                 ref={tagsArea}
             />
-            <ListGroup style={{ position: "absolute" }}>{newHint}</ListGroup>
+            <ListGroup style={{ position: "absolute", maxHeight: "200px", overflow:"auto" }} className="filter__scroll">{newHint}</ListGroup>
         </Form.Group>
     );
 }

@@ -24,8 +24,9 @@ function Collection(props) {
     let [theader, setTheader] = useState([]);
     let [tbody, setBody] = useState([]);
     let [colCurrent, setColCurrent] = useState({});
-    let [mainOwner, setMainOwner] = useState({owner: false})
+    let [mainOwner, setMainOwner] = useState({ owner: false });
 
+    let tagsList = useRef([])
 
     const [modalShow, setModalShow] = useState(false);
 
@@ -94,9 +95,12 @@ function Collection(props) {
         changeState(true, fields);
     }
 
-    async function deleteColl(e){
+    async function deleteColl(e) {
         let form = document.getElementById("collection__main-form");
-        socket.emit("delete_col_data", JSON.stringify({col_id: form.dataset.col_id}));
+        socket.emit(
+            "delete_col_data",
+            JSON.stringify({ col_id: form.dataset.col_id })
+        );
     }
 
     async function newItem(e) {
@@ -117,7 +121,12 @@ function Collection(props) {
 
     useEffect(() => {
         socket.emit("get_col_items", JSON.stringify({ col_id }));
-        socket.on("filtered_items",(dataJSON)=>{
+        socket.emit("get_tags_coll");
+        socket.on("got_tags_coll", (dataJSON) => {
+            let data = JSON.parse(dataJSON);
+            tagsList.current = [...data];
+        });
+        socket.on("filtered_items", (dataJSON) => {
             let data = JSON.parse(dataJSON);
             let body = (
                 <TableCell
@@ -131,11 +140,11 @@ function Collection(props) {
             setBody((prev) => {
                 return [body];
             });
-        })
+        });
         socket.on("got_col_items", (colJson, dataJson, ownerJSON) => {
             let col = JSON.parse(colJson);
-            
-            if(col.err){
+
+            if (col.err) {
                 navigate(`/private`);
                 return;
             }
@@ -160,8 +169,8 @@ function Collection(props) {
                     type="body"
                 ></TableCell>
             );
-            console.log(owner)
-            setMainOwner(owner)
+            console.log(owner);
+            setMainOwner(owner);
 
             setTheader((prev) => {
                 return [head];
@@ -189,9 +198,9 @@ function Collection(props) {
             }
         });
 
-        socket.on("delete_col_data",()=>{
-            window.location.reload()
-        })
+        socket.on("delete_col_data", () => {
+            window.location.reload();
+        });
     }, []);
 
     return (
@@ -234,9 +243,7 @@ function Collection(props) {
                             </Container>
                         </Container>
                         <Container className="d-flex px-0 flex-column justify-content-center">
-                            <Form.Group
-                                className="mb-3"
-                            >
+                            <Form.Group className="mb-3">
                                 <Form.Label className="h6">
                                     {props.t("CrElem.description")}
                                 </Form.Label>
@@ -261,59 +268,66 @@ function Collection(props) {
                     xs={12}
                     className=" px-0 filter__main d-flex justify-content-start align-items-center collection__xs"
                 >
-                    <Container className="mb-3 ms-0" style={{maxWidth:"340px"}}>
-                        <FilterItems theme={props.theme} col={refUser} i18n={props.i18n} t={props.t}></FilterItems>
+                    <Container
+                        className="mb-3 ms-0"
+                        style={{ maxWidth: "340px" }}
+                    >
+                        <FilterItems
+                            theme={props.theme}
+                            col={refUser}
+                            i18n={props.i18n}
+                            t={props.t}
+                        ></FilterItems>
                     </Container>
 
+                    {mainOwner.owner == true ? (
+                        <Container
+                            style={{ height: "-webkit-fill-available" }}
+                            className="d-flex flex-column collection__settings"
+                        >
+                            <Container className="d-flex flex-column  ps-0">
+                                <Container className="h4 ps-0 mb-2">
+                                    {props.t("Collection.settings")}
+                                </Container>
+                                <Button
+                                    className="mb-2"
+                                    style={{ maxWidth: "fit-content" }}
+                                    onClick={editData}
+                                >
+                                    {props.t("Collection.edit")}
+                                </Button>
 
+                                <Button
+                                    className="mb-2"
+                                    style={{ maxWidth: "fit-content" }}
+                                    onClick={saveData}
+                                >
+                                    {props.t("ItemTemplate.save")}
+                                </Button>
 
-                   {mainOwner.owner == true ?<Container
-                        style={{ height: "-webkit-fill-available" }}
-                        className="d-flex flex-column collection__settings"
-                    >
-                        <Container className="d-flex flex-column  ps-0">
-                            <Container className="h4 ps-0 mb-2">
-                                {props.t("Collection.settings")}
+                                <Button
+                                    style={{ maxWidth: "fit-content" }}
+                                    onClick={deleteColl}
+                                >
+                                    {props.t("Collection.delete")}
+                                </Button>
                             </Container>
-                            <Button
-                                className="mb-2"
-                                style={{ maxWidth: "fit-content" }}
-                                onClick={editData}
-                            >
-                                {props.t("Collection.edit")}
-                            </Button>
-
-                            <Button
-                                className="mb-2"
-                                style={{ maxWidth: "fit-content" }}
-                                onClick={saveData}
-                            >
-                                {props.t("ItemTemplate.save")}
-                            </Button>
-
-                            <Button
-                                style={{ maxWidth: "fit-content" }}
-                                onClick={deleteColl}
-                            >
-                                {props.t("Collection.delete")}
-                            </Button>
-                        </Container>
-                        <Container className="mt-4 ps-0">
-                            <Container className="h4 ps-0 mb-2">
-                                {props.t("Collection.items")}
+                            <Container className="mt-4 ps-0">
+                                <Container className="h4 ps-0 mb-2">
+                                    {props.t("Collection.items")}
+                                </Container>
+                                <Button
+                                    className="mb-2"
+                                    style={{ maxWidth: "fit-content" }}
+                                    onClick={showModal}
+                                >
+                                    {props.t("Collection.addNewItem")}
+                                </Button>
                             </Container>
-                            <Button
-                                className="mb-2"
-                                style={{ maxWidth: "fit-content" }}
-                                onClick={showModal}
-                            >
-                                {props.t("Collection.addNewItem")}
-                            </Button>
                         </Container>
-                    </Container>:""}
-
-
-
+                    ) : (
+                        ""
+                    )}
                 </Col>
             </Row>
             <Container className="filter__scroll" style={{ overflow: "auto" }}>
@@ -331,6 +345,7 @@ function Collection(props) {
                 modalShow={modalShow}
                 t={props.t}
                 col={refUser}
+                tagsList={tagsList.current}
             ></ModalNewItem>
         </Container>
     );

@@ -142,6 +142,9 @@ const Coll = sequelize.define("collection", {
 });
 
 const Item = sequelize.define("item", {
+
+    
+
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -235,6 +238,27 @@ const Item = sequelize.define("item", {
     date2: {
         type: DataTypes.STRING,
     },
+
+    item_search: {
+        type: DataTypes.TSVECTOR,
+    },
+}, {
+    hooks: {
+        beforeCreate: (item, options) => {
+            item.item_search = sequelize.fn(
+                'to_tsvector',
+                'simple',
+                sequelize.fn('concat_ws', ' ', item.name, item.col_id, item.tags, item.description, item.img, item.text0, item.text1, item.text2, item.number0, item.number1, item.number2, item.textarea0, item.textarea1, item.textarea2, item.date0, item.date1, item.date2)
+            );
+        },
+        beforeUpdate: (item, options) => {
+            item.item_search = sequelize.fn(
+                'to_tsvector',
+                'simple',
+                sequelize.fn('concat_ws', ' ', item.name, item.col_id, item.tags, item.description, item.img, item.text0, item.text1, item.text2, item.number0, item.number1, item.number2, item.textarea0, item.textarea1, item.textarea2, item.date0, item.date1, item.date2)
+            );
+        }
+    }
 });
 
 const Tag = sequelize.define("tag", {
@@ -283,10 +307,11 @@ const Comment = sequelize.define("comment", {
 });
 
 (async () => {
-    //await sequelize.sync();//{ force: true }
-    //sequelize.sync({ alter: true })
+    // await sequelize.sync({ force: true });//{ force: true }
     // let user = await User.build({ username: "1", email: "1@1", password: "1" });
     // await user.save();
+        // sequelize.sync({ alter: true })
+
 })();
 
 module.exports = {

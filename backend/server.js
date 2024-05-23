@@ -184,7 +184,7 @@ io.on("connection", (socket) => {
         if (!req.session.auth) {
             return;
         }
-        if (await checkAdminStatus(req.session.user_id)) {
+        if (await checkAdminStatus(req.session.user_id) && user_id) {
             let parsedData = JSON.parse(data);
             parsedData.uuid = user_id;
             let currentUser = await Coll.create(parsedData);
@@ -345,6 +345,7 @@ io.on("connection", (socket) => {
             where: {
                 item_id: data.item_id,
             },
+            individualHooks: true,
         });
     });
 
@@ -887,6 +888,13 @@ io.on("connection", (socket) => {
             socket.emit("request_unsuccess");
         }
     });
+
+    socket.on("get_tags_coll", async () =>{
+        let tagsColl = await Tag.findAll({
+            attributes: ["tag"]
+        })
+        socket.emit("got_tags_coll", JSON.stringify(tagsColl))
+    })
 });
 
 server.listen(4000, async (req, res) => {});

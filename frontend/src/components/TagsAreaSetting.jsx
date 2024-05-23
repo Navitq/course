@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import ListGroup from "react-bootstrap/ListGroup";
 
-function TagsArea(props) {
+function TagsAreaSetting(props) {
     let tagsArea = useRef();
     let [newData, setNewData] = useState([]);
     let [newHint, setNewHint] = useState([]);
@@ -141,4 +141,4 @@ function TagsArea(props) {
     );
 }
 
-export default TagsArea;
+export default TagsAreaSetting;
