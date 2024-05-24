@@ -242,7 +242,7 @@ function Collection(props) {
                                 />
                             </Container>
                         </Container>
-                        <Container className="d-flex px-0 flex-column justify-content-center">
+                        <Container className="d-flex crt-elem__descr flex-column justify-content-center">
                             <Form.Group className="mb-3">
                                 <Form.Label className="h6">
                                     {props.t("CrElem.description")}

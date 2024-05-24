@@ -49,7 +49,7 @@ function CollectionsPrivate(props) {
         <Container className="my-5">
             <Row className="user__main">
                 <Col
-                    xl={2}
+                    xl={4}
                     lg={4}
                     md={3}
                     sm={12}
@@ -68,7 +68,7 @@ function CollectionsPrivate(props) {
                     </Container>
                 </Col>
                 <Col
-                    xl={8}
+                    xl={6}
                     lg={5}
                     md={6}
                     sm={12}
