@@ -35,6 +35,7 @@ function ModalCrColl(props) {
                                 placeholder={props.t("CrElem.name")}
                                 value={props.nameField}
                                 onChange={props.changeNameField}
+                                maxLength="255"
                             />
                         </Form.Group>
 
@@ -50,6 +51,8 @@ function ModalCrColl(props) {
                                 rows={1}
                                 value={props.descrField}
                                 onChange={props.changeDescField}
+                                className="filter__scroll"
+                                maxLength="1024"
                             />
                         </Form.Group>
 
@@ -74,13 +77,13 @@ function ModalCrColl(props) {
 
                         <Form.Group controlId="formFile" className="mb-3 mt-3">
                             <Form.Label>{props.t("CrElem.image")}</Form.Label>
-                            <Form.Control name="img" type="file" />
+                            <Form.Control accept="image/png, image/jpeg" name="img" type="file" />
                         </Form.Group>
 
                         <Container className="px-0 h5">{props.t("ModalColl.headerItem")}</Container>
 
                         <Container  className="px-0 mt-2 mb-1 h6">{props.t("ModalColl.addTextField")}</Container>
-                        <AddField t={props.t} type="text"></AddField>
+                        <AddField  t={props.t} type="text"></AddField>
 
                         <Container className="px-0 mt-2 mb-1 h6">{props.t("ModalColl.addNumbField")}</Container>
                         <AddField t={props.t} type="number"></AddField>

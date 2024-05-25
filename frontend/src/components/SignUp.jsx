@@ -21,14 +21,11 @@ export default function SignUp(props) {
         setShowAnswer(value);
     }
 
-
-
     function resetForm(e) {
         e.target.closest("form").reset();
         setValueEmail("");
         setValuePassWord("");
         setValueUserName("");
-
     }
 
     async function sendRequest(e) {
@@ -46,7 +43,7 @@ export default function SignUp(props) {
             setTextAnswer(message.auth);
             setShowAnswer(true);
         } else if (message.auth == true) {
-            window.location.reload()
+            window.location.reload();
         }
         resetForm(e);
     }
@@ -113,7 +110,7 @@ export default function SignUp(props) {
                 textAnswer={textAnswer}
             ></ModalAnswer>
             <div
-                className="h3 d-flex justify-content-center my-2 mb-3"
+                className="h3 d-flex justify-content-center my-5 mb-4"
                 style={{ textAlign: "center" }}
             >
                 {props.t("signUp.header")}
@@ -122,22 +119,13 @@ export default function SignUp(props) {
                 onSubmit={(e) => {
                     sendRequest(e);
                 }}
+                className="d-flex align-items-center justify-content-center flex-column"
             >
-                <Form.Group className="mb-3" controlId="name">
-                    <Form.Label>{props.t("signUp.name")}</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder={props.t("signUp.nameAdd")}
-                        name="name"
-                        value={valueUserName}
-                        onChange={(e) => {
-                            setValueUserName(e.target.value);
-                        }}
-                        required
-                    />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="email">
+                <Form.Group
+                    className="mb-3"
+                    controlId="email"
+                    style={{ maxWidth: "600px", width: "100%" }}
+                >
                     <Form.Label>{props.t("signUp.email")}</Form.Label>
                     <Form.Control
                         type="email"
@@ -147,6 +135,7 @@ export default function SignUp(props) {
                         onChange={(e) => {
                             setValueEmail(e.target.value);
                         }}
+                        maxLength="255"
                         required
                     />
                     <Form.Text className="text-muted">
@@ -154,16 +143,11 @@ export default function SignUp(props) {
                     </Form.Text>
                 </Form.Group>
 
-                <Form.Group controlId="formFile" ref={imgRef} className="mb-3">
-                    <Form.Label>{props.t("signUp.avatar")}</Form.Label>
-                    <Form.Control
-                        type="file"
-                        name="img"
-                        accept="image/png, image/jpeg"
-                    />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="password">
+                <Form.Group
+                    className="mb-3"
+                    controlId="password"
+                    style={{ maxWidth: "600px", width: "100%" }}
+                >
                     <Form.Label>{props.t("signUp.password")}</Form.Label>
                     <Form.Control
                         type="password"
@@ -174,8 +158,46 @@ export default function SignUp(props) {
                             setValuePassWord(e.target.value);
                         }}
                         required
+                        maxLength="255"
                     />
                 </Form.Group>
+
+                <Form.Group
+                    className="mb-3"
+                    controlId="name"
+                    style={{ maxWidth: "600px", width: "100%" }}
+                >
+                    <Form.Label>{props.t("signUp.name")}</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder={props.t("signUp.nameAdd")}
+                        name="name"
+                        value={valueUserName}
+                        onChange={(e) => {
+                            setValueUserName(e.target.value);
+                        }}
+                        maxLength="255"
+
+                        required
+                    />
+                </Form.Group>
+
+
+
+                <Form.Group
+                    controlId="formFile"
+                    ref={imgRef}
+                    className="mb-3"
+                    style={{ maxWidth: "600px", width: "100%" }}
+                >
+                    <Form.Label>{props.t("signUp.avatar")}</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="img"
+                        accept="image/png, image/jpeg"
+                    />
+                </Form.Group>
+
                 <Button variant="primary" type="submit">
                     {props.t("signUp.submit")}
                 </Button>

@@ -103,9 +103,11 @@ function CreateCal(props) {
 
     async function newCollection(e, dropDown){
         e.preventDefault()
-        if(dropDown == props.t("Filter.chseCategory")){
+        if(dropDown == props.t("Filter.chseCategory") || dropDown == ""){
             return;
         }
+        console.log(11111111,dropDown, props.t("Filter.chseCategory"))
+
         let formData = formDataCreater(e.currentTarget, dropDown);
         let data = await formObject(formData)
 
@@ -162,6 +164,7 @@ function CreateCal(props) {
                         value={nameField}
                         onChange={changeNameField}
                         readOnly={!props.owner.owner}
+                        maxLength="255"
                     />
                 </Form.Group>
 
@@ -177,6 +180,7 @@ function CreateCal(props) {
                         value={descrField}
                         onChange={changeDescField}
                         readOnly={!props.owner.owner}
+                        maxLength="1024"
                     />
                 </Form.Group>
 

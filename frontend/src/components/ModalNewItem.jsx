@@ -46,6 +46,7 @@ function ModalNewItem(props) {
                                 key={uuidv4()}
                                 className="filter__scroll"
                                 rows={3}
+                                maxLength="255"
                             />
                         );
                     } else {
@@ -55,12 +56,13 @@ function ModalNewItem(props) {
                                 type={type}
                                 required
                                 key={uuidv4()}
+                                maxLength="255"
                             />
                         );
                     }
                     fields.push(
                         <Form.Group key={uuidv4()} className="mt-3">
-                            <Form.Label className="h6">
+                            <Form.Label className="h6 all-modals__label" >
                                 {props.col[`${type}` + i]}
                             </Form.Label>
                             {newFieldElem}
@@ -114,6 +116,7 @@ function ModalNewItem(props) {
                                 placeholder={props.t(
                                     "FilterItems.namePlaceHolder"
                                 )}
+                                maxLength="255"
                             />
                         </Form.Group>
 
@@ -129,6 +132,7 @@ function ModalNewItem(props) {
                                 placeholder={props.t("FilterItems.about")}
                                 rows={3}
                                 className="filter__scroll"
+                                maxLength="1024"
                             />
                         </Form.Group>
 

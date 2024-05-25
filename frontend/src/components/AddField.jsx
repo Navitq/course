@@ -15,7 +15,7 @@ function AddField(props) {
         let newField = (
             <Form.Group key={uuidv4()} className="mb-2">
                 <Form.Label>{props.t("ModalColl.fieldName")}</Form.Label>
-                <Form.Control name={`${props.type + elemAmount.current}`} placeholder={props.t("ModalColl.fieldName")} />
+                <Form.Control maxLength="255" className="filter__scroll" name={`${props.type + elemAmount.current}`} placeholder={props.t("ModalColl.fieldName")} />
             </Form.Group>
         );
 

@@ -135,6 +135,7 @@ function TagsAreaSetting(props) {
                 className="filter__scroll"
                 ref={tagsArea}
                 readOnly
+                maxLength="255"
             />
             <ListGroup style={{ position: "absolute" }}>{newHint}</ListGroup>
         </Form.Group>

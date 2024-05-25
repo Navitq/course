@@ -46,7 +46,7 @@ export class SignIn extends Component {
         return (
             <Container>
                 <Container 
-                    className="h3 d-flex justify-content-center my-2 mb-3"
+                    className="h3 d-flex justify-content-center my-5 mb-4"
                     style={{ textAlign: "center" }}
                 >
                     {this.props.t("signIn.header")}
@@ -55,9 +55,10 @@ export class SignIn extends Component {
                     onSubmit={(e) => {
                         this.sendRequest(e);
                     }}
+                    className="d-flex align-items-center justify-content-center flex-column"
                 >
-                    <Form.Group className="mb-3" controlId="email">
-                        <Form.Label>{this.props.t("signIn.email")}</Form.Label>
+                    <Form.Group className="mb-3" controlId="email" style={{maxWidth:"600px", width:"100%"}}>
+                        <Form.Label className="text-center">{this.props.t("signIn.email")}</Form.Label>
                         <Form.Control
                             className="sign-in__email"
                             type="text"
@@ -67,8 +68,7 @@ export class SignIn extends Component {
                             onChange={(e) => {
                                 this.setValueEmail(e);
                             }}
-                            
-
+                            maxLength="255"
                             required
                         />
                         <Form.Text className="text-muted">
@@ -76,7 +76,7 @@ export class SignIn extends Component {
                         </Form.Text>
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="password">
+                    <Form.Group className="mb-3"  style={{maxWidth:"600px", width:"100%"}} controlId="password">
                         <Form.Label>{this.props.t("signIn.password")}</Form.Label>
                         <Form.Control
                             type="password"
@@ -86,10 +86,11 @@ export class SignIn extends Component {
                             onChange={(e) => {
                                 this.setValuePassWord(e);
                             }}
+                            maxLength="255"
                             required
                         />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" style={{width:"fit-content"}}>
                         {this.props.t("signIn.submit")}
                     </Button>
                 </Form>

@@ -239,6 +239,7 @@ function Collection(props) {
                                     size="lg"
                                     className="text-center h4"
                                     readOnly
+                                    maxLength="255"
                                 />
                             </Container>
                         </Container>
@@ -255,6 +256,7 @@ function Collection(props) {
                                     rows={9}
                                     className="filter__scroll"
                                     readOnly
+                                    maxLength="1024"
                                 />
                             </Form.Group>
                         </Container>

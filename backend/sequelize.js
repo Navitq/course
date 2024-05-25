@@ -67,7 +67,7 @@ const Coll = sequelize.define("collection", {
     },
 
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1024),
         allowNull: false,
     },
 
@@ -167,7 +167,7 @@ const Item = sequelize.define("item", {
     },
 
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1024),
         allowNull: false,
     },
 
@@ -293,14 +293,13 @@ const Comment = sequelize.define("comment", {
     },
 
     comment: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1024),
         allowNull: false,
     },
 
     date: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1024),
         allowNull: false,
-
     },
 
 
@@ -310,7 +309,7 @@ const Comment = sequelize.define("comment", {
     // await sequelize.sync({ force: true });//{ force: true }
     // let user = await User.build({ username: "1", email: "1@1", password: "1" });
     // await user.save();
-    //sequelize.sync({ alter: true })
+    // sequelize.sync({ alter: true })
 
 })();
 

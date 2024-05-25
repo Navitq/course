@@ -149,12 +149,12 @@ function ItemTemplate(props) {
             setItemData(data);
             if (field.length > 0) {
                 setItemFields(
-                    <Container
-                        style={{ width: "fit-content", flex: "1 1 auto" }}
+                    <div
+                        //style={{ maxWidth: "350px", flex: "1 1 auto" }}
                         className="d-flex flex-column item-tp__user-settings px-0"
                     >
                         {field}
-                    </Container>
+                    </div>
                 );
             }
         });
@@ -185,15 +185,15 @@ function ItemTemplate(props) {
                     style={{ columnGap: "20px" }}
                 >
                     <Container
-                        style={{ width: "fit-content", columnGap: "20px" }}
+                        style={{  columnGap: "20px", minWidth:"0px" }}
                         className={mainOwner.owner == false ?"item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields me-auto":"item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields"}
                     >
                         <Container
                             className="d-flex flex-column ms-0 ps-0 pe-0 px-0"
-                            style={{ width: "100%", maxWidth: "300px" }}
+                            style={{ width: "100%"}}
                         >
                             <Form.Group className="text-left">
-                                <Form.Label className="h6 text-left">
+                                <Form.Label className="all-modals__label h6 text-left">
                                     {props.t("ItemTemplate.name")}
                                 </Form.Label>
                                 <Form.Control
@@ -204,10 +204,11 @@ function ItemTemplate(props) {
                                     readOnly
                                     required
                                     name="name"
+                                    maxLength="255"
                                 />
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Label className="h6">
+                                <Form.Label className="all-modals__label h6">
                                     {props.t("ItemTemplate.description")}
                                 </Form.Label>
                                 <Form.Control
@@ -219,6 +220,7 @@ function ItemTemplate(props) {
                                     readOnly
                                     required
                                     name="description"
+                                    maxLength="1024"
                                 />
                             </Form.Group>
                             <TagsAreaSetting defValue={itemData.tags} t={props.t}></TagsAreaSetting>
@@ -269,7 +271,7 @@ function ItemTemplate(props) {
                 <Container className="d-flex flex-column px-0">
                     <Container className="px-0">
                         <Form.Group className="mb-3 d-flex align-items-center flex-column">
-                            <Form.Label className="h5 text-left mb-3">
+                            <Form.Label className="h5 all-modals__label text-center mb-3">
                                 {props.t("ItemTemplate.comments")}
                             </Form.Label>
                             <Form.Control
@@ -280,6 +282,7 @@ function ItemTemplate(props) {
                                 className="filter__scroll item-tp__main-comment"
                                 required
                                 name="comment"
+                                maxLength="1024"
                             />
                             <Button type="submit" className="mt-3">
                                 {props.t("ItemTemplate.post")}

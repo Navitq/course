@@ -36,6 +36,7 @@ function ItemField(props) {
                                 readOnly
                                 className="filter__scroll"
                                 rows={5}
+                                maxLength="255"
                             />
                         );
                     } else {
@@ -47,12 +48,13 @@ function ItemField(props) {
                                 key={uuidv4()}
                                 defaultValue={props.col[`${type}` + i]}
                                 readOnly
+                                maxLength="255"
                             />
                         );
                     }
                     fields.push(
                         <Form.Group key={uuidv4()} className="mt-3">
-                            <Form.Label className="h6">
+                            <Form.Label className="all-modals__label h6">
                                 {props.header[`${type}` + i]}
                             </Form.Label>
                             {newFieldElem}

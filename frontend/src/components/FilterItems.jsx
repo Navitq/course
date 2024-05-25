@@ -191,6 +191,7 @@ function Filter(props) {
                             name="filter_items"
                             placeholder={props.t("FilterItems.searchField")}
                             type="text"
+                            maxLength="255"
                         />
                     </Form.Group>
                 </Row>

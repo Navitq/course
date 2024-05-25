@@ -126,6 +126,7 @@ function TagsArea(props) {
                 style={{ wordWrap: "break-word" }}
                 className="filter__scroll"
                 ref={tagsArea}
+                maxLength="255"
             />
             <ListGroup style={{ position: "absolute", maxHeight: "200px", overflow:"auto" }} className="filter__scroll">{newHint}</ListGroup>
         </Form.Group>

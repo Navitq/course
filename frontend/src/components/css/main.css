@@ -7,6 +7,14 @@
     margin-top: 0px !important;
 }
 
+.item-tp__user-settings {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allow the container to grow and fill the available space */
+    min-width: 0px;
+}
+  
+
 .item-tp__main-comment{
     max-width: 800px;
     width: 100%;
@@ -14,6 +22,15 @@
 
 .admin__butt-group {
     gap: 10px !important;
+}
+
+.coll-card__subtitle p{
+    margin-bottom: 0px !important;
+}
+
+.all-modals__label {
+    width: -webkit-fill-available;
+    word-wrap: break-word;
 }
 
 @media (max-width: 992px) {
@@ -30,6 +47,9 @@
     .navbar-collapse.collapse.show .header__search {
         margin-left: 5px !important;
         padding-left: 0px;
+    }
+    .item-tp__main {
+        flex-direction: column;
     }
 }
 
@@ -51,14 +71,12 @@
     .collection__xs {
         flex-direction: column;
     }
+    
 }
 
 @media (max-width: 576px) {
     .collection__settings{
         margin-top: 20px;
-    }
-    .item-tp__main {
-        flex-direction: column;
     }
     .item-tp__main  .item-tp__default{
         margin-left: auto !important;

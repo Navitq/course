@@ -34,6 +34,7 @@ function ModalNewItem(props) {
                                 id={type + i}
                                 key={uuidv4()}
                                 className="filter__scroll"
+                                maxLength="255"
                                 rows={3}
                             />
                         );
@@ -43,6 +44,7 @@ function ModalNewItem(props) {
                                 name={`${type + i}`}
                                 type={type}
                                 key={uuidv4()}
+                                maxLength="255"
                             />
                         );
                     }
@@ -52,7 +54,7 @@ function ModalNewItem(props) {
                             className="mt-3"
  
                         >
-                            <Form.Label className="h6">
+                            <Form.Label className="h6 all-modals__label">
                                 {props.col[`${type}` + i]}
                             </Form.Label>
                             {newFieldElem}
@@ -99,6 +101,7 @@ function ModalNewItem(props) {
                             </Form.Label>
                             <Form.Control
                                 name="name"
+                                maxLength="255"
                                 type="text"
                                 placeholder={props.t("FilterItems.namePlaceHolder")}
                             />
@@ -109,8 +112,10 @@ function ModalNewItem(props) {
                                 {props.t("FilterItems.description")}
                             </Form.Label>
                             <Form.Control
+                                maxLength="1024"
                                 name="description"
                                 as="textarea"
+                                className="filter__scroll"
                                 placeholder={props.t("FilterItems.about")}
                                 rows={3}
                             />
@@ -121,8 +126,10 @@ function ModalNewItem(props) {
                                 {props.t("ModalItem.itemTags")}
                             </Form.Label>
                             <Form.Control
+                                maxLength="255"
                                 name="tags"
                                 as="textarea"
+                                className="filter__scroll"
                                 placeholder={props.t("ModalItem.tagsPlaceholder")}
                             />
                         </Form.Group>

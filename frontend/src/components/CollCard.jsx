@@ -16,17 +16,30 @@ function CollCard(props) {
         <Card key={uuidv4()} style={{ width: "18rem" }}>
             <Card.Img
                 variant="top"
-                src={props.data.img ||(process.env.PUBLIC_URL + '/img/collection.svg')}
+                src={
+                    props.data.img ||
+                    process.env.PUBLIC_URL + "/img/collection.svg"
+                }
             />
             <Card.Body className="d-flex flex-column justify-content-between">
-                <div className="d-flex flex-column">
-                    <Card.Title>{props.data.name}</Card.Title>
+                <div className="d-flex flex-column mb-2">
+                    <Card.Title
+                        className="filter__scroll"
+                        style={{ maxHeight: "100px", overflow: "auto" }}
+                    >
+                        {props.data.name}
+                    </Card.Title>
                     <Card.Subtitle className="mb-2">
                         {props.t(`Filter.${props.data.category}`)}
                     </Card.Subtitle>
-                    <ReactMarkdown className="card-text">
-                        {props.data.description}
-                    </ReactMarkdown>
+                    <div
+                        className="filter__scroll coll-card__subtitle"
+                        style={{ maxHeight: "300px", overflow: "auto" }}
+                    >
+                        <ReactMarkdown className="card-text">
+                            {props.data.description}
+                        </ReactMarkdown>
+                    </div>
                 </div>
                 <Container className="px-0 d-flex justify-content-center">
                     <Nav variant="pills" activeKey="1">
