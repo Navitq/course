@@ -124,6 +124,7 @@ function Collection(props) {
         socket.emit("get_tags_coll");
         socket.on("got_tags_coll", (dataJSON) => {
             let data = JSON.parse(dataJSON);
+            console.log(data)
             tagsList.current = [...data];
         });
         socket.on("filtered_items", (dataJSON) => {

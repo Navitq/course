@@ -36,7 +36,7 @@ function LargestColl(props) {
                 >
                     <td>
                         <NavLink
-                            to={`/collection/${el.col_id}`}
+                            to={`/people/${el.user_id}`}
                             style={{ width: "100%" }}
                             variant="primary"
                             className="nav-link active"

@@ -32,6 +32,7 @@ function TableCell(props) {
                     data-col_id={el.col_id}
                     key={uuidv4()}
                 >
+                    <th>№</th>
                     <th>{props.t("TableCell.id")}</th>
                     <th>{props.t("TableCell.name")}</th>
                     {/* <th>{props.t("TableCell.description")}</th> */}
@@ -106,6 +107,17 @@ function TableCell(props) {
                             style={{ width: "100%" }}
                         >
                             {index + 1}
+                        </NavLink>
+                    </td>
+                    <td >
+                        <NavLink
+                            className="nav-link active"
+                            data-item_id={el.item_id}
+                            variant="primary"
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                        >
+                            {el.item_id}
                         </NavLink>
                     </td>
                     <td>

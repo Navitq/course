@@ -75,7 +75,7 @@ function CollectionsPublic(props) {
                 <Container className="text-center h3 mb-3">
                     {props.t("Public.collLargest")}
                 </Container>
-                <Container>
+                <Container style={{overflow:"auto"}}>
                     <Table striped bordered hover>
                         <thead>
                             <LargestColl

@@ -151,6 +151,7 @@ function Filter(props) {
         }
         let data = createObject(createFormData(event.currentTarget));
         socket.emit("filter_items", JSON.stringify(data));
+        event.currentTarget.getElementsByTagName("input")[0].value = "";
     }
 
     return (

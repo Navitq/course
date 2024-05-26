@@ -893,7 +893,9 @@ io.on("connection", (socket) => {
 
     socket.on("get_tags_coll", async () => {
         let tagsColl = await Tag.findAll({
-            attributes: ["tag"],
+            attributes: [
+                [sequelize.fn('DISTINCT', sequelize.col('tag')) ,'tag'],        
+            ]
         });
         socket.emit("got_tags_coll", JSON.stringify(tagsColl));
     });

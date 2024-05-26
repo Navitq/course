@@ -63,7 +63,8 @@ function ItemField(props) {
                 }
             }
         });
-            return fields;
+        
+        return fields;
     }
 
     useEffect(() => {

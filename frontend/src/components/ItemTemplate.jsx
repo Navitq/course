@@ -75,6 +75,7 @@ function ItemTemplate(props) {
         data.col_id = e.currentTarget.dataset.col_id;
         data.date = getDate();
         socket.emit("get_comment", JSON.stringify(data));
+        e.currentTarget.getElementsByTagName("textarea")[0].value = "";
     }
 
     function getDate(){
@@ -145,6 +146,7 @@ function ItemTemplate(props) {
                     t={props.t}
                 ></ItemField>,
             ];
+            console.log(field)
             setMainOwner(owner)
             setItemData(data);
             if (field.length > 0) {
@@ -152,6 +154,7 @@ function ItemTemplate(props) {
                     <div
                         //style={{ maxWidth: "350px", flex: "1 1 auto" }}
                         className="d-flex flex-column item-tp__user-settings px-0"
+                        style={{flex: "2 1 auto", width:"-webkit-fill-available"}}
                     >
                         {field}
                     </div>
@@ -190,7 +193,7 @@ function ItemTemplate(props) {
                     >
                         <Container
                             className="d-flex flex-column ms-0 ps-0 pe-0 px-0"
-                            style={{ width: "100%"}}
+                            style={{ width: "100%", flex:"1 1 auto", minWidth:"300px"}}
                         >
                             <Form.Group className="text-left">
                                 <Form.Label className="all-modals__label h6 text-left">
@@ -200,7 +203,7 @@ function ItemTemplate(props) {
                                     defaultValue={itemData?.name}
                                     type="text"
                                     size="lg"
-                                    className="text-center h4"
+                                    className="h4"
                                     readOnly
                                     required
                                     name="name"
@@ -224,7 +227,12 @@ function ItemTemplate(props) {
                                 />
                             </Form.Group>
                             <TagsAreaSetting defValue={itemData.tags} t={props.t}></TagsAreaSetting>
-
+                            <Container className="px-0">
+                                <Form.Label className="all-modals__label h6">
+                                    Id
+                                </Form.Label>
+                                <div>{itemData.item_id}</div>
+                            </Container>
                         </Container>
                         {itemFields}
                     </Container>

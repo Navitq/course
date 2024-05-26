@@ -116,7 +116,8 @@ function CreateCal(props) {
         } else {
             socket.emit("get_new_coll", JSON.stringify(data))
         }
-  
+        setDescrField("")
+        setNameField("")
     }
 
     function createCollCard(data){
@@ -153,7 +154,9 @@ function CreateCal(props) {
             <Container className="ps-0 h4">
                 {props.t("CrElem.header")}
             </Container>
-            <Form onSubmit={(e)=>{newCollection(e, dropRef.current.dataset.categoryNow)}}>
+            <Form onSubmit={(e)=>{
+                newCollection(e, dropRef.current.dataset.categoryNow)
+            }}>
                 <Form.Group className="mb-3">
                     <Form.Label>{props.t("CrElem.name")}</Form.Label>
                     <Form.Control

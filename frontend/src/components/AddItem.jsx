@@ -92,6 +92,18 @@ function AddItem(props) {
                             to={`/collection/${el.col_id}/${el.item_id}`}
                             style={{ width: "100%" }}
                         >
+                            {el.item_id}
+                        </NavLink>
+                    </td>
+                    <td>
+                        <NavLink
+                            key={uuidv4()}
+                            className="nav-link active"
+                            data-item_id={el.item_id}
+                            variant="primary"
+                            to={`/collection/${el.col_id}/${el.item_id}`}
+                            style={{ width: "100%" }}
+                        >
                             {el.name}
                         </NavLink>
                     </td>

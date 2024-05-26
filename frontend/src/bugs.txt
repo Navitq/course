@@ -3,19 +3,10 @@ CRITICAL!
 
 
 TRIVAL!
-1) After blocking of the defined person, they don't lost access to their account
-2) User can create collection without category
 3) Search bug query should be with language!!!!
-4) Delete varchar 255 for comments, tags for all strings fields ! (max symbols amount 255)
 
 LOW!
-1) Comments, post, clean textarea
-2) Remove symbols from tags
-3) Large collection table doesn't has overflow auto and scroll filter
-4) List of recently added items table doesn't scroll 
-5) Break words for Each
-    max-width: 300px;
-    word-wrap: break-word;
-    white-space: break-spaces;
+
+
 
 

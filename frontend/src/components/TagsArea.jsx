@@ -127,6 +127,7 @@ function TagsArea(props) {
                 className="filter__scroll"
                 ref={tagsArea}
                 maxLength="255"
+                minLength="2"
             />
             <ListGroup style={{ position: "absolute", maxHeight: "200px", overflow:"auto" }} className="filter__scroll">{newHint}</ListGroup>
         </Form.Group>
