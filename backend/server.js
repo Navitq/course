@@ -185,21 +185,22 @@ const io = new Server(server, {
     },
 });
 
-async function checkUserExisting(data){
-    if(!data){
-        return false
+async function checkUserExisting(data) {
+    if (!data) {
+        return false;
     }
+    console.log();
     let user = await User.findAll({
-        where:{
-            user_id : data
-        }
-    })
-    if(user.length < 1){
-        return false
+        where: {
+            user_id: data,
+        },
+    });
+    if (user.length < 1) {
+        return false;
     } else {
-        return false
+        return false;
     }
-}   
+}
 
 io.engine.use(middlware);
 
@@ -213,16 +214,16 @@ io.on("connection", (socket) => {
         }
         try {
             let parsedData = JSON.parse(data);
-            let userState = checkUserExisting(user_id || req.session.user_id)
-            if(!userState) {
-                return
+            console.log(user_id || req.session.user_id);
+            let userState = checkUserExisting(user_id || req.session.user_id);
+            if (!userState) {
+                return;
             }
 
             if (
                 ((await checkAdminStatus(req.session.user_id)) && user_id) ||
                 (user_id == req.session.user_id && user_id)
             ) {
-                
                 parsedData.uuid = user_id;
                 let currentUser = await Coll.create(parsedData);
                 if (req.session.user_id == user_id) {
@@ -301,8 +302,8 @@ io.on("connection", (socket) => {
         // }
         let data = JSON.parse(dataJSON);
         try {
-            if(!(await checkCollExisting(data))){
-                console.log(123123)
+            if (!(await checkCollExisting(data))) {
+                console.log(123123);
                 return;
             }
             let result = await Item.create(data);
@@ -318,13 +319,13 @@ io.on("connection", (socket) => {
         }
     });
 
-    async function checkCollExisting(data){
+    async function checkCollExisting(data) {
         let result = await Coll.findAll({
             where: {
-                col_id: data.col_id
-            }
-        })
-        if(result.length<1){
+                col_id: data.col_id,
+            },
+        });
+        if (result.length < 1) {
             return false;
         } else {
             return true;
@@ -332,36 +333,31 @@ io.on("connection", (socket) => {
     }
 
     async function checkAccess(user_id, data) {
-        try {
-            let result = await Coll.findAll({
-                where: {
-                    col_id: data.col_id,
-                },
-            });
-            if(result.length < 1){
-                console.log(111111111111111111111)
-                return false;
-            }
-            let adminChecker = await User.findAll({
-                where: {
-                    user_id: user_id,
-                },
-            });
-            if (
-                result[0].dataValues.uuid == user_id ||
-                adminChecker[0].dataValues.status == "admin"
-            ) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (err) {
-            console.error(err);
+        let result = await Coll.findAll({
+            where: {
+                col_id: data.col_id,
+            },
+        });
+        if (result.length < 1) {
+            console.log(111111111111111111111);
+            return false;
+        }
+        let adminChecker = await User.findAll({
+            where: {
+                user_id: user_id,
+            },
+        });
+        if (
+            result[0].dataValues.uuid == user_id ||
+            adminChecker[0].dataValues.status == "admin"
+        ) {
+            return true;
+        } else {
+            return false;
         }
     }
 
     async function checkUser(user_id) {
-        try {
             let adminChecker = await User.findAll({
                 where: {
                     user_id: user_id,
@@ -372,21 +368,15 @@ io.on("connection", (socket) => {
             } else {
                 return false;
             }
-        } catch (err) {
-            console.error(err);
-        }
+        
     }
 
     async function checkAdminStatus(user_id) {
-        try {
-            let admin = false;
-            if (user_id) {
-                admin = await checkUser(user_id);
-            }
-            return admin;
-        } catch (err) {
-            console.error(err);
+        let admin = false;
+        if (user_id) {
+            admin = await checkUser(user_id);
         }
+        return admin;
     }
 
     socket.on("delete_col_data", async (dataJSON) => {
@@ -396,7 +386,7 @@ io.on("connection", (socket) => {
                 !req.session.auth ||
                 !(await checkAccess(req.session.user_id, data))
             ) {
-                console.log("111111111111111")
+                console.log("111111111111111");
                 return;
             }
 
