@@ -59,8 +59,13 @@ app.get("/sign_up", formidable(), async (req, res) => {
 });
 
 app.get("/s3drop", async (req, res) => {
-    let url = await s3.generateUrl();
-    res.send({ url });
+    try {
+        let url = await s3.generateUrl();
+        res.send({ url });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 app.get("/sign_in", formidable(), async (req, res) => {
@@ -100,7 +105,13 @@ app.post("/sign_in", formidable(), async (req, res) => {
 
     req.session.auth = true;
     req.session.user_id = result[0].dataValues.user_id;
-    await addSession(req.session.id, req.session.user_id);
+    try {
+        await addSession(req.session.id, req.session.user_id);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+        return;
+    }
     req.session.save();
     res.json({ auth: true });
     return;
@@ -147,8 +158,8 @@ app.post("/sign_up", formidable(), async (req, res) => {
 
 app.delete("/log_out", async (req, res) => {
     delete req.session.auth;
-    req.session.destroy();
     res.json({ auth: false });
+    req.session.destroy();
 });
 
 app.get("/categories", async (req, res) => {
@@ -174,6 +185,22 @@ const io = new Server(server, {
     },
 });
 
+async function checkUserExisting(data){
+    if(!data){
+        return false
+    }
+    let user = await User.findAll({
+        where:{
+            user_id : data
+        }
+    })
+    if(user.length < 1){
+        return false
+    } else {
+        return false
+    }
+}   
+
 io.engine.use(middlware);
 
 io.on("connection", (socket) => {
@@ -184,36 +211,60 @@ io.on("connection", (socket) => {
         if (!req.session.auth) {
             return;
         }
-        if ((await checkAdminStatus(req.session.user_id)) && user_id) {
+        try {
             let parsedData = JSON.parse(data);
-            parsedData.uuid = user_id;
-            let currentUser = await Coll.create(parsedData);
-            if (req.session.user_id == user_id) {
-                socket.emit("got_new_coll", JSON.stringify(currentUser), "all");
+            let userState = checkUserExisting(user_id || req.session.user_id)
+            if(!userState) {
+                return
+            }
+
+            if (
+                ((await checkAdminStatus(req.session.user_id)) && user_id) ||
+                (user_id == req.session.user_id && user_id)
+            ) {
+                
+                parsedData.uuid = user_id;
+                let currentUser = await Coll.create(parsedData);
+                if (req.session.user_id == user_id) {
+                    socket.emit(
+                        "got_new_coll",
+                        JSON.stringify(currentUser),
+                        "all"
+                    );
+                    return;
+                }
+                socket.emit(
+                    "got_new_coll",
+                    JSON.stringify(currentUser),
+                    "people"
+                );
                 return;
             }
-            socket.emit("got_new_coll", JSON.stringify(currentUser), "people");
-            return;
+            parsedData.uuid = socket.request.session.user_id;
+            let currentUser = await Coll.create(parsedData);
+            socket.emit("got_new_coll", JSON.stringify(currentUser), "private");
+        } catch (err) {
+            console.error(err);
         }
-        let parsedData = JSON.parse(data);
-        parsedData.uuid = socket.request.session.user_id;
-        let currentUser = await Coll.create(parsedData);
-        socket.emit("got_new_coll", JSON.stringify(currentUser), "private");
     });
 
     socket.on("change_col_data", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-        if (
-            !req.session.auth ||
-            !(await checkAccess(req.session.user_id, data))
-        ) {
-            return;
+        try {
+            if (
+                !req.session.auth ||
+                !(await checkAccess(req.session.user_id, data))
+            ) {
+                return;
+            }
+            await Coll.update(data, {
+                where: {
+                    col_id: data.col_id,
+                },
+            });
+        } catch (err) {
+            console.error(err);
         }
-        await Coll.update(data, {
-            where: {
-                col_id: data.col_id,
-            },
-        });
     });
 
     socket.on("get_coll", async (data) => {
@@ -250,6 +301,10 @@ io.on("connection", (socket) => {
         // }
         let data = JSON.parse(dataJSON);
         try {
+            if(!(await checkCollExisting(data))){
+                console.log(123123)
+                return;
+            }
             let result = await Item.create(data);
             socket.emit("got_item", JSON.stringify(result));
             let tags = data.tags.split("#");
@@ -263,6 +318,19 @@ io.on("connection", (socket) => {
         }
     });
 
+    async function checkCollExisting(data){
+        let result = await Coll.findAll({
+            where: {
+                col_id: data.col_id
+            }
+        })
+        if(result.length<1){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     async function checkAccess(user_id, data) {
         try {
             let result = await Coll.findAll({
@@ -270,6 +338,10 @@ io.on("connection", (socket) => {
                     col_id: data.col_id,
                 },
             });
+            if(result.length < 1){
+                console.log(111111111111111111111)
+                return false;
+            }
             let adminChecker = await User.findAll({
                 where: {
                     user_id: user_id,
@@ -289,90 +361,115 @@ io.on("connection", (socket) => {
     }
 
     async function checkUser(user_id) {
-        let adminChecker = await User.findAll({
-            where: {
-                user_id: user_id,
-            },
-        });
-        if (adminChecker[0].dataValues.status == "admin") {
-            return true;
-        } else {
-            return false;
+        try {
+            let adminChecker = await User.findAll({
+                where: {
+                    user_id: user_id,
+                },
+            });
+            if (adminChecker[0].dataValues.status == "admin") {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (err) {
+            console.error(err);
         }
     }
 
     async function checkAdminStatus(user_id) {
-        let admin = false;
-        if (user_id) {
-            admin = await checkUser(user_id);
+        try {
+            let admin = false;
+            if (user_id) {
+                admin = await checkUser(user_id);
+            }
+            return admin;
+        } catch (err) {
+            console.error(err);
         }
-        return admin;
     }
 
     socket.on("delete_col_data", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-        if (
-            !req.session.auth ||
-            !(await checkAccess(req.session.user_id, data))
-        ) {
-            return;
+        try {
+            if (
+                !req.session.auth ||
+                !(await checkAccess(req.session.user_id, data))
+            ) {
+                console.log("111111111111111")
+                return;
+            }
+
+            await Coll.destroy({
+                where: {
+                    col_id: data.col_id,
+                },
+            });
+
+            await Item.destroy({
+                where: {
+                    col_id: data.col_id,
+                },
+            });
+
+            socket.emit("delete_col_data");
+        } catch (err) {
+            console.error(err);
         }
-
-        await Coll.destroy({
-            where: {
-                col_id: data.col_id,
-            },
-        });
-
-        await Item.destroy({
-            where: {
-                col_id: data.col_id,
-            },
-        });
-
-        socket.emit("delete_col_data");
     });
 
     socket.on("change_item", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-        if (
-            !req.session.auth ||
-            !(await checkAccess(req.session.user_id, data))
-        ) {
-            return;
+        try {
+            if (
+                !req.session.auth ||
+                !(await checkAccess(req.session.user_id, data))
+            ) {
+                return;
+            }
+            await Item.update(data, {
+                where: {
+                    item_id: data.item_id,
+                },
+                individualHooks: true,
+            });
+        } catch (err) {
+            console.error(err);
         }
-        await Item.update(data, {
-            where: {
-                item_id: data.item_id,
-            },
-            individualHooks: true,
-        });
     });
 
     socket.on("delete_item", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
-        if (
-            !req.session.auth ||
-            !(await checkAccess(req.session.user_id, data))
-        ) {
-            return;
+        try {
+            if (
+                !req.session.auth ||
+                !(await checkAccess(req.session.user_id, data))
+            ) {
+                return;
+            }
+            await Item.destroy({
+                where: {
+                    item_id: data.item_id,
+                },
+            });
+            socket.emit("delete_item");
+        } catch (err) {
+            console.error(err);
         }
-        await Item.destroy({
-            where: {
-                item_id: data.item_id,
-            },
-        });
-        socket.emit("delete_item");
     });
 
     socket.on("old_comment", async (dataJSON) => {
-        let data = JSON.parse(dataJSON);
-        let newComment = await Comment.findAll({
-            where: {
-                item_id: data.item_id,
-            },
-        });
-        socket.emit(`${data.item_id}`, JSON.stringify(newComment));
+        try {
+            let data = JSON.parse(dataJSON);
+            let newComment = await Comment.findAll({
+                where: {
+                    item_id: data.item_id,
+                },
+            });
+            socket.emit(`${data.item_id}`, JSON.stringify(newComment));
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("get_item_info", async (dataJSON) => {
@@ -542,290 +639,336 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_last_items", async () => {
-        let items = await Item.findAll({
-            attributes: ["id", "col_id", "name", "item_id"],
-            limit: 10,
-            order: [["id", "DESC"]],
-        });
-        let colData = [];
-        let compareData = [];
-        for (let i = 0; i < items.length; ++i) {
-            items[i].dataValues.nameItem = items[i].dataValues.name;
-            delete items[i].dataValues.name;
-            if (!colData.includes(items[i].dataValues.col_id)) {
-                colData.push(items[i].dataValues.col_id);
-                compareData.push({ col_id: items[i].dataValues.col_id });
-            }
-        }
-        let collections = await Coll.findAll({
-            attributes: ["uuid", "name", "col_id"],
-            where: {
-                [Op.or]: compareData,
-            },
-        });
-        colData = [];
-        compareData = [];
-        for (let i = 0; i < collections.length; ++i) {
-            collections[i].dataValues.nameColl = collections[i].dataValues.name;
-            delete collections[i].dataValues.name;
-            if (!colData.includes(collections[i].dataValues.uuid)) {
-                colData.push(collections[i].dataValues.uuid);
-                compareData.push({ user_id: collections[i].dataValues.uuid });
-            }
-        }
-        let users = await User.findAll({
-            attributes: ["user_id", "username"],
-            where: {
-                [Op.or]: compareData,
-            },
-        });
-        collections.forEach((el) => {
-            for (let i = 0; i < users.length; ++i) {
-                if (el.dataValues.uuid == users[i].dataValues.user_id) {
-                    delete el.dataValues.uuid;
-                    for (const [key, value] of Object.entries(
-                        users[i].dataValues
-                    )) {
-                        el.dataValues[`${key}`] = value;
-                    }
+        try {
+            let items = await Item.findAll({
+                attributes: ["id", "col_id", "name", "item_id"],
+                limit: 10,
+                order: [["id", "DESC"]],
+            });
+            let colData = [];
+            let compareData = [];
+            for (let i = 0; i < items.length; ++i) {
+                items[i].dataValues.nameItem = items[i].dataValues.name;
+                delete items[i].dataValues.name;
+                if (!colData.includes(items[i].dataValues.col_id)) {
+                    colData.push(items[i].dataValues.col_id);
+                    compareData.push({ col_id: items[i].dataValues.col_id });
                 }
             }
-        });
-        items.forEach((el) => {
+            let collections = await Coll.findAll({
+                attributes: ["uuid", "name", "col_id"],
+                where: {
+                    [Op.or]: compareData,
+                },
+            });
+            colData = [];
+            compareData = [];
             for (let i = 0; i < collections.length; ++i) {
-                if (el.dataValues.col_id == collections[i].dataValues.col_id) {
-                    for (const [key, value] of Object.entries(
-                        collections[i].dataValues
-                    )) {
-                        el.dataValues[`${key}`] = value;
-                    }
+                collections[i].dataValues.nameColl =
+                    collections[i].dataValues.name;
+                delete collections[i].dataValues.name;
+                if (!colData.includes(collections[i].dataValues.uuid)) {
+                    colData.push(collections[i].dataValues.uuid);
+                    compareData.push({
+                        user_id: collections[i].dataValues.uuid,
+                    });
                 }
             }
-        });
-        socket.emit("got_last_items", JSON.stringify(items));
+            let users = await User.findAll({
+                attributes: ["user_id", "username"],
+                where: {
+                    [Op.or]: compareData,
+                },
+            });
+            collections.forEach((el) => {
+                for (let i = 0; i < users.length; ++i) {
+                    if (el.dataValues.uuid == users[i].dataValues.user_id) {
+                        delete el.dataValues.uuid;
+                        for (const [key, value] of Object.entries(
+                            users[i].dataValues
+                        )) {
+                            el.dataValues[`${key}`] = value;
+                        }
+                    }
+                }
+            });
+            items.forEach((el) => {
+                for (let i = 0; i < collections.length; ++i) {
+                    if (
+                        el.dataValues.col_id == collections[i].dataValues.col_id
+                    ) {
+                        for (const [key, value] of Object.entries(
+                            collections[i].dataValues
+                        )) {
+                            el.dataValues[`${key}`] = value;
+                        }
+                    }
+                }
+            });
+            socket.emit("got_last_items", JSON.stringify(items));
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("get_largest_coll", async () => {
-        let items = await Item.findAll({
-            limit: 5,
-            attributes: [
-                "col_id",
-                [sequelize.fn("COUNT", sequelize.col("col_id")), "count"],
-            ],
-            group: ["col_id"],
-            having: sequelize.literal("count(col_id) > 0"),
-            order: [[sequelize.fn("COUNT", sequelize.col("col_id")), "DESC"]],
-        });
-        let collectionId = [];
-        let userId = [];
-        for (let i = 0; i < items.length; ++i) {
-            collectionId.push({ col_id: items[i].dataValues.col_id });
-        }
-        let collections = await Coll.findAll({
-            where: {
-                [Op.or]: collectionId,
-            },
-        });
-        for (let i = 0; i < collections.length; ++i) {
-            userId.push({ user_id: collections[i].dataValues.uuid });
-        }
-
-        collections.forEach((el) => {
+        try {
+            let items = await Item.findAll({
+                limit: 5,
+                attributes: [
+                    "col_id",
+                    [sequelize.fn("COUNT", sequelize.col("col_id")), "count"],
+                ],
+                group: ["col_id"],
+                having: sequelize.literal("count(col_id) > 0"),
+                order: [
+                    [sequelize.fn("COUNT", sequelize.col("col_id")), "DESC"],
+                ],
+            });
+            let collectionId = [];
+            let userId = [];
             for (let i = 0; i < items.length; ++i) {
-                if (el.dataValues.col_id == items[i].dataValues.col_id) {
-                    el.dataValues.count = items[i].dataValues.count;
-                    break;
-                }
+                collectionId.push({ col_id: items[i].dataValues.col_id });
             }
-        });
-        let users = await User.findAll({
-            attributes: ["user_id", "username"],
-            where: {
-                [Op.or]: userId,
-            },
-        });
+            let collections = await Coll.findAll({
+                where: {
+                    [Op.or]: collectionId,
+                },
+            });
+            for (let i = 0; i < collections.length; ++i) {
+                userId.push({ user_id: collections[i].dataValues.uuid });
+            }
 
-        collections.forEach((el) => {
-            for (let i = 0; i < users.length; ++i) {
-                if (el.dataValues.uuid == users[i].dataValues.user_id) {
-                    for (const [key, value] of Object.entries(
-                        users[i].dataValues
-                    )) {
-                        el.dataValues[`${key}`] = value;
+            collections.forEach((el) => {
+                for (let i = 0; i < items.length; ++i) {
+                    if (el.dataValues.col_id == items[i].dataValues.col_id) {
+                        el.dataValues.count = items[i].dataValues.count;
+                        break;
                     }
                 }
-            }
-        });
+            });
+            let users = await User.findAll({
+                attributes: ["user_id", "username"],
+                where: {
+                    [Op.or]: userId,
+                },
+            });
 
-        socket.emit("got_largest_coll", JSON.stringify(collections));
+            collections.forEach((el) => {
+                for (let i = 0; i < users.length; ++i) {
+                    if (el.dataValues.uuid == users[i].dataValues.user_id) {
+                        for (const [key, value] of Object.entries(
+                            users[i].dataValues
+                        )) {
+                            el.dataValues[`${key}`] = value;
+                        }
+                    }
+                }
+            });
+
+            socket.emit("got_largest_coll", JSON.stringify(collections));
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("get_tags_cloud", async () => {
-        let tags = await Tag.findAll({
-            limit: 100,
-            attributes: [
-                "tag",
-                [sequelize.fn("COUNT", sequelize.col("tag")), "count"],
-            ],
-            group: ["tag"],
-            having: sequelize.literal("count(tag) > 0"),
-            order: [[sequelize.fn("COUNT", sequelize.col("tag")), "DESC"]],
-        });
-        socket.emit("got_tags_cloud", JSON.stringify(tags));
+        try {
+            let tags = await Tag.findAll({
+                limit: 100,
+                attributes: [
+                    "tag",
+                    [sequelize.fn("COUNT", sequelize.col("tag")), "count"],
+                ],
+                group: ["tag"],
+                having: sequelize.literal("count(tag) > 0"),
+                order: [[sequelize.fn("COUNT", sequelize.col("tag")), "DESC"]],
+            });
+            socket.emit("got_tags_cloud", JSON.stringify(tags));
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("items_by_tag", async (data) => {
-        let items = await Item.findAll({
-            where: {
-                [Op.or]: [
-                    {
-                        tags: {
-                            [Op.like]: `%${"#" + data + "#"}%`,
+        try {
+            let items = await Item.findAll({
+                where: {
+                    [Op.or]: [
+                        {
+                            tags: {
+                                [Op.like]: `%${"#" + data + "#"}%`,
+                            },
                         },
-                    },
-                    {
-                        tags: {
-                            [Op.endsWith]: `${"#" + data}`,
+                        {
+                            tags: {
+                                [Op.endsWith]: `${"#" + data}`,
+                            },
                         },
-                    },
-                ],
-            },
-        });
+                    ],
+                },
+            });
 
-        let collectionId = [];
-        for (let i = 0; i < items.length; ++i) {
-            items[i].dataValues.nameItem = items[i].dataValues.name;
-            delete items[i].dataValues.name;
-            if (!collectionId.includes(items[i].dataValues.col_id)) {
-                collectionId.push({ col_id: items[i].dataValues.col_id });
-            }
-        }
-
-        let collections = await Coll.findAll({
-            attributes: ["uuid", "name", "col_id"],
-            where: {
-                [Op.or]: collectionId,
-            },
-        });
-        let userId = [];
-        for (let i = 0; i < collections.length; ++i) {
-            collections[i].dataValues.nameColl = collections[i].dataValues.name;
-            delete collections[i].dataValues.name;
-            if (!userId.includes(collections[i].dataValues.col_id)) {
-                userId.push({ user_id: collections[i].dataValues.uuid });
-            }
-        }
-
-        let users = await User.findAll({
-            attributes: ["user_id", "username"],
-            where: {
-                [Op.or]: userId,
-            },
-        });
-
-        collections.forEach((el) => {
-            for (let i = 0; i < users.length; ++i) {
-                if (el.dataValues.uuid == users[i].dataValues.user_id) {
-                    for (const [key, value] of Object.entries(
-                        users[i].dataValues
-                    )) {
-                        el.dataValues[`${key}`] = value;
-                    }
+            let collectionId = [];
+            for (let i = 0; i < items.length; ++i) {
+                items[i].dataValues.nameItem = items[i].dataValues.name;
+                delete items[i].dataValues.name;
+                if (!collectionId.includes(items[i].dataValues.col_id)) {
+                    collectionId.push({ col_id: items[i].dataValues.col_id });
                 }
             }
-        });
 
-        items.forEach((el) => {
+            let collections = await Coll.findAll({
+                attributes: ["uuid", "name", "col_id"],
+                where: {
+                    [Op.or]: collectionId,
+                },
+            });
+            let userId = [];
             for (let i = 0; i < collections.length; ++i) {
-                if (el.dataValues.col_id == collections[i].dataValues.col_id) {
-                    for (const [key, value] of Object.entries(
-                        collections[i].dataValues
-                    )) {
-                        el.dataValues[`${key}`] = value;
-                    }
+                collections[i].dataValues.nameColl =
+                    collections[i].dataValues.name;
+                delete collections[i].dataValues.name;
+                if (!userId.includes(collections[i].dataValues.col_id)) {
+                    userId.push({ user_id: collections[i].dataValues.uuid });
                 }
             }
-        });
-        socket.emit("items_by_tag", JSON.stringify(items));
+
+            let users = await User.findAll({
+                attributes: ["user_id", "username"],
+                where: {
+                    [Op.or]: userId,
+                },
+            });
+
+            collections.forEach((el) => {
+                for (let i = 0; i < users.length; ++i) {
+                    if (el.dataValues.uuid == users[i].dataValues.user_id) {
+                        for (const [key, value] of Object.entries(
+                            users[i].dataValues
+                        )) {
+                            el.dataValues[`${key}`] = value;
+                        }
+                    }
+                }
+            });
+
+            items.forEach((el) => {
+                for (let i = 0; i < collections.length; ++i) {
+                    if (
+                        el.dataValues.col_id == collections[i].dataValues.col_id
+                    ) {
+                        for (const [key, value] of Object.entries(
+                            collections[i].dataValues
+                        )) {
+                            el.dataValues[`${key}`] = value;
+                        }
+                    }
+                }
+            });
+            socket.emit("items_by_tag", JSON.stringify(items));
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("check_admin_status", async () => {
-        let admin = await checkAdminStatus(req.session.user_id);
+        try {
+            let admin = await checkAdminStatus(req.session.user_id);
 
-        socket.emit("checked_admin_status", admin);
+            socket.emit("checked_admin_status", admin);
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("admin_user_list", async () => {
-        if (!(await checkAdminStatus(req.session.user_id))) {
-            return;
+        try {
+            if (!(await checkAdminStatus(req.session.user_id))) {
+                return;
+            }
+
+            let result = await User.findAll();
+
+            socket.emit("admin_user_listed", JSON.stringify(result));
+        } catch (err) {
+            console.error(err);
         }
-
-        let result = await User.findAll();
-
-        socket.emit("admin_user_listed", JSON.stringify(result));
     });
 
     socket.on("block_admin", async (dataJSON) => {
-        let data = JSON.parse(dataJSON);
+        try {
+            let data = JSON.parse(dataJSON);
 
-        if (!(await checkAdminStatus(req.session.user_id))) {
-            return;
-        }
-
-        await User.update(
-            {
-                status: "block",
-            },
-            {
-                where: {
-                    [Op.or]: data,
-                },
+            if (!(await checkAdminStatus(req.session.user_id))) {
+                return;
             }
-        );
 
-        socket.emit("request_success");
+            await User.update(
+                {
+                    status: "block",
+                },
+                {
+                    where: {
+                        [Op.or]: data,
+                    },
+                }
+            );
+
+            socket.emit("request_success");
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("unblock_admin", async (dataJSON) => {
-        let data = JSON.parse(dataJSON);
+        try {
+            let data = JSON.parse(dataJSON);
 
-        if (!(await checkAdminStatus(req.session.user_id))) {
-            return;
-        }
-
-        await User.update(
-            {
-                status: "basic",
-            },
-            {
-                where: {
-                    [Op.or]: data,
-                },
+            if (!(await checkAdminStatus(req.session.user_id))) {
+                return;
             }
-        );
 
-        socket.emit("request_success");
+            await User.update(
+                {
+                    status: "basic",
+                },
+                {
+                    where: {
+                        [Op.or]: data,
+                    },
+                }
+            );
+
+            socket.emit("request_success");
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("admin_admin", async (dataJSON) => {
-        let data = JSON.parse(dataJSON);
+        try {
+            let data = JSON.parse(dataJSON);
 
-        if (!(await checkAdminStatus(req.session.user_id))) {
-            return;
-        }
-
-        await User.update(
-            {
-                status: "admin",
-            },
-            {
-                where: {
-                    [Op.or]: data,
-                },
+            if (!(await checkAdminStatus(req.session.user_id))) {
+                return;
             }
-        );
 
-        socket.emit("request_success");
+            await User.update(
+                {
+                    status: "admin",
+                },
+                {
+                    where: {
+                        [Op.or]: data,
+                    },
+                }
+            );
+
+            socket.emit("request_success");
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("delete_admin", async (dataJSON) => {
@@ -892,120 +1035,149 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_tags_coll", async () => {
-        let tagsColl = await Tag.findAll({
-            attributes: [
-                [sequelize.fn('DISTINCT', sequelize.col('tag')) ,'tag'],        
-            ]
-        });
-        socket.emit("got_tags_coll", JSON.stringify(tagsColl));
+        try {
+            let tagsColl = await Tag.findAll({
+                attributes: [
+                    [sequelize.fn("DISTINCT", sequelize.col("tag")), "tag"],
+                ],
+            });
+            socket.emit("got_tags_coll", JSON.stringify(tagsColl));
+        } catch (err) {
+            console.error(err);
+        }
     });
 
     socket.on("get_search", async (data) => {
-        let unicodeNum = null;
-        let language = "en"
-        for(let i =0;i<data.length;++i){
-            if(/[А-Яа-я]/.test(data[i])){
-                language = "ru";
-                break
-            } else if (/[A-Za-z]/.test(data[i])){
-                language = "en";
-                break
-            }
-        }
-        let items = null;
-
-        if(language == "ru"){
-            items = await Item.findAll({
-                limit:50,
-                attributes: {
-                    include: [
-                        [sequelize.fn('ts_rank', sequelize.col('item_search_russian'), sequelize.literal(`plainto_tsquery('${data}')`)), 'rank']
-                    ]
-                },
-                where: {
-                    item_search_russian: {
-                        [Op.match]: sequelize.literal(`plainto_tsquery('${data}')`),
-                    },
-                },
-                order: [
-                    [sequelize.literal('rank'), 'DESC']
-                ],
-            });
-        } else {
-            items = await Item.findAll({
-                limit:50,
-                attributes: {
-                    include: [
-                        [sequelize.fn('ts_rank', sequelize.col('item_search_english'), sequelize.literal(`plainto_tsquery('${data}')`)), 'rank']
-                    ]
-                },
-                where: {
-                    item_search_english: {
-                        [Op.match]: sequelize.literal(`plainto_tsquery('${data}')`),
-                    },
-                },
-                order: [
-                    [sequelize.literal('rank'), 'DESC']
-                ],
-            });
-        }
-
-        let collectionId = [];
-        for (let i = 0; i < items.length; ++i) {
-            items[i].dataValues.nameItem = items[i].dataValues.name;
-            delete items[i].dataValues.name;
-            if (!collectionId.includes(items[i].dataValues.col_id)) {
-                collectionId.push({ col_id: items[i].dataValues.col_id });
-            }
-        }
-
-        let collections = await Coll.findAll({
-            attributes: ["uuid", "name", "col_id"],
-            where: {
-                [Op.or]: collectionId,
-            },
-        });
-        let userId = [];
-        for (let i = 0; i < collections.length; ++i) {
-            collections[i].dataValues.nameColl = collections[i].dataValues.name;
-            delete collections[i].dataValues.name;
-            if (!userId.includes(collections[i].dataValues.col_id)) {
-                userId.push({ user_id: collections[i].dataValues.uuid });
-            }
-        }
-
-        let users = await User.findAll({
-            attributes: ["user_id", "username"],
-            where: {
-                [Op.or]: userId,
-            },
-        });
-
-        collections.forEach((el) => {
-            for (let i = 0; i < users.length; ++i) {
-                if (el.dataValues.uuid == users[i].dataValues.user_id) {
-                    for (const [key, value] of Object.entries(
-                        users[i].dataValues
-                    )) {
-                        el.dataValues[`${key}`] = value;
-                    }
+        try {
+            let unicodeNum = null;
+            let language = "en";
+            for (let i = 0; i < data.length; ++i) {
+                if (/[А-Яа-я]/.test(data[i])) {
+                    language = "ru";
+                    break;
+                } else if (/[A-Za-z]/.test(data[i])) {
+                    language = "en";
+                    break;
                 }
             }
-        });
+            let items = null;
 
-        items.forEach((el) => {
+            if (language == "ru") {
+                items = await Item.findAll({
+                    limit: 50,
+                    attributes: {
+                        include: [
+                            [
+                                sequelize.fn(
+                                    "ts_rank",
+                                    sequelize.col("item_search_russian"),
+                                    sequelize.literal(
+                                        `plainto_tsquery('${data}')`
+                                    )
+                                ),
+                                "rank",
+                            ],
+                        ],
+                    },
+                    where: {
+                        item_search_russian: {
+                            [Op.match]: sequelize.literal(
+                                `plainto_tsquery('${data}')`
+                            ),
+                        },
+                    },
+                    order: [[sequelize.literal("rank"), "DESC"]],
+                });
+            } else {
+                items = await Item.findAll({
+                    limit: 50,
+                    attributes: {
+                        include: [
+                            [
+                                sequelize.fn(
+                                    "ts_rank",
+                                    sequelize.col("item_search_english"),
+                                    sequelize.literal(
+                                        `plainto_tsquery('${data}')`
+                                    )
+                                ),
+                                "rank",
+                            ],
+                        ],
+                    },
+                    where: {
+                        item_search_english: {
+                            [Op.match]: sequelize.literal(
+                                `plainto_tsquery('${data}')`
+                            ),
+                        },
+                    },
+                    order: [[sequelize.literal("rank"), "DESC"]],
+                });
+            }
+
+            let collectionId = [];
+            for (let i = 0; i < items.length; ++i) {
+                items[i].dataValues.nameItem = items[i].dataValues.name;
+                delete items[i].dataValues.name;
+                if (!collectionId.includes(items[i].dataValues.col_id)) {
+                    collectionId.push({ col_id: items[i].dataValues.col_id });
+                }
+            }
+
+            let collections = await Coll.findAll({
+                attributes: ["uuid", "name", "col_id"],
+                where: {
+                    [Op.or]: collectionId,
+                },
+            });
+            let userId = [];
             for (let i = 0; i < collections.length; ++i) {
-                if (el.dataValues.col_id == collections[i].dataValues.col_id) {
-                    for (const [key, value] of Object.entries(
-                        collections[i].dataValues
-                    )) {
-                        el.dataValues[`${key}`] = value;
-                    }
+                collections[i].dataValues.nameColl =
+                    collections[i].dataValues.name;
+                delete collections[i].dataValues.name;
+                if (!userId.includes(collections[i].dataValues.col_id)) {
+                    userId.push({ user_id: collections[i].dataValues.uuid });
                 }
             }
-        });
 
-        socket.emit("got_search", JSON.stringify(items))
+            let users = await User.findAll({
+                attributes: ["user_id", "username"],
+                where: {
+                    [Op.or]: userId,
+                },
+            });
+
+            collections.forEach((el) => {
+                for (let i = 0; i < users.length; ++i) {
+                    if (el.dataValues.uuid == users[i].dataValues.user_id) {
+                        for (const [key, value] of Object.entries(
+                            users[i].dataValues
+                        )) {
+                            el.dataValues[`${key}`] = value;
+                        }
+                    }
+                }
+            });
+
+            items.forEach((el) => {
+                for (let i = 0; i < collections.length; ++i) {
+                    if (
+                        el.dataValues.col_id == collections[i].dataValues.col_id
+                    ) {
+                        for (const [key, value] of Object.entries(
+                            collections[i].dataValues
+                        )) {
+                            el.dataValues[`${key}`] = value;
+                        }
+                    }
+                }
+            });
+
+            socket.emit("got_search", JSON.stringify(items));
+        } catch (err) {
+            console.error(err);
+        }
     });
 });
 

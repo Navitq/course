@@ -41,6 +41,7 @@ function CreateCal(props) {
         socket.on("got_new_coll",(dataJSON, typeOfColl)=>{
             let data = JSON.parse(dataJSON)
             let card = createCollCard(data)
+            console.log(typeOfColl)
             props.addNewCard(card, typeOfColl)
         })
         getCategoryData()

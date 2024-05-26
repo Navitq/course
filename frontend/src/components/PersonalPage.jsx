@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 
 import { useParams, useNavigate } from "react-router-dom";
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 import CollCard from "./CollCard";
 import Filter from "./Filter";
@@ -18,13 +18,14 @@ import { socket } from "./socket";
 function PersonalPage(props) {
     let [cards, setCards] = useState([]);
     let [person, setPerson] = useState({});
-    let [mainOwner, setMainOwner] = useState({owner: false})
+    let [mainOwner, setMainOwner] = useState({ owner: false });
     let { user_id } = useParams();
     const navigate = useNavigate();
 
     function addNewCard(card, type) {
-        if(type != "people" && type != "all"){
-            return
+        console.log(type)
+        if (type != "people" && type != "all") {
+            return;
         }
         setCards((prev) => {
             return [...prev, card];
@@ -32,26 +33,31 @@ function PersonalPage(props) {
     }
 
     useEffect(() => {
-
         socket.on("got_person_data", (dataJSON, ownerJSON) => {
             let data = JSON.parse(dataJSON);
-            if(data.err){
+            if (data.err) {
                 navigate(`/public`);
                 return;
             }
-            let owner = JSON.parse(ownerJSON)
-            console.log(data,owner)
-            setMainOwner(owner)
+            let owner = JSON.parse(ownerJSON);
+            console.log(data, owner);
+            setMainOwner(owner);
             setPerson(data);
         });
 
         socket.on("got_person_coll", (dataJson) => {
             let data = JSON.parse(dataJson);
             let mewCards = [];
-            for(let i =0; i < data.length;++i){
-                mewCards.push(<CollCard key={uuidv4()} t={props.t} data={data[i]}></CollCard>)
+            for (let i = 0; i < data.length; ++i) {
+                mewCards.push(
+                    <CollCard
+                        key={uuidv4()}
+                        t={props.t}
+                        data={data[i]}
+                    ></CollCard>
+                );
             }
-            setCards(mewCards)
+            setCards(mewCards);
         });
 
         socket.emit("get_person_data", `${user_id}`);
@@ -62,7 +68,7 @@ function PersonalPage(props) {
         <Container className="my-5">
             <Row className="user__main">
                 <Col
-                    xl={2}
+                    xl={4}
                     lg={4}
                     md={3}
                     sm={12}
@@ -71,7 +77,10 @@ function PersonalPage(props) {
                 >
                     <Container className="d-flex justify-content-center">
                         <Image
-                            src={person?.img || (process.env.PUBLIC_URL+"/img/noName.svg")}
+                            src={
+                                person?.img ||
+                                process.env.PUBLIC_URL + "/img/noName.svg"
+                            }
                             rounded
                             height="180px"
                         />
@@ -81,7 +90,7 @@ function PersonalPage(props) {
                     </Container>
                 </Col>
                 <Col
-                    xl={8}
+                    xl={6}
                     lg={5}
                     md={6}
                     sm={12}
@@ -104,7 +113,11 @@ function PersonalPage(props) {
                     xs={12}
                     className="filter__main d-flex flex-column justify-content-start"
                 >
-                    <Filter uuid={person?.user_id} i18n={props.i18n} t={props.t}></Filter>
+                    <Filter
+                        uuid={person?.user_id}
+                        i18n={props.i18n}
+                        t={props.t}
+                    ></Filter>
                 </Col>
             </Row>
             <Container>
@@ -124,4 +137,4 @@ function PersonalPage(props) {
     );
 }
 
-export default PersonalPage
+export default PersonalPage;
