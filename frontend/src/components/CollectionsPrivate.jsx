@@ -60,9 +60,10 @@ function CollectionsPrivate(props) {
                 >
                     <Container className="d-flex justify-content-center">
                         <Image
-                            src={person?.img || (process.env.PUBLIC_URL+"/img/noName.svg")}
-                            rounded
+                            src={person?.img != 'undefined'?person?.img : (process.env.PUBLIC_URL+"/img/noName.svg")}
+                            roundedCircle="true"
                             height="180px"
+                            fluid	
                         />
                     </Container>
                     <Container className="h3 mt-3 text-center">

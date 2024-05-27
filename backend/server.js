@@ -176,7 +176,7 @@ app.get("/categories", async (req, res) => {
         "hats",
         "other",
     ]);
-});
+});87
 
 const io = new Server(server, {
     cors: {
@@ -189,12 +189,13 @@ async function checkUserExisting(data) {
     if (!data) {
         return false;
     }
-    console.log();
     let user = await User.findAll({
         where: {
             user_id: data,
         },
     });
+    console.log(user);
+
     if (user.length < 1) {
         return false;
     } else {
@@ -209,12 +210,12 @@ io.on("connection", (socket) => {
     console.log("hhhhhhhhhhhhh", socket.request.session.auth);
 
     socket.on("get_new_coll", async (data, user_id) => {
-        if (!req.session.auth) {
-            return;
-        }
+        // if (!req.session.auth) {
+        //     return;
+        // }
         try {
             let parsedData = JSON.parse(data);
-            console.log(user_id || req.session.user_id);
+            console.log(user_id , req.session.user_id, 555555555555);
             let userState = checkUserExisting(user_id || req.session.user_id);
             if (!userState) {
                 return;
@@ -904,6 +905,19 @@ io.on("connection", (socket) => {
                     },
                 }
             );
+
+            let users = await User.findAll({
+                where: {
+                    [Op.or]: data,
+                },
+            })
+            
+            for (let i = 0; i < users.length; i++) {
+                req.sessionStore.destroy(
+                    users[i].dataValues.session_id,
+                    (err, script) => {}
+                );
+            }
 
             socket.emit("request_success");
         } catch (err) {

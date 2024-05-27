@@ -23,7 +23,7 @@ function PersonalPage(props) {
     const navigate = useNavigate();
 
     function addNewCard(card, type) {
-        console.log(type)
+        console.log(type);
         if (type != "people" && type != "all") {
             return;
         }
@@ -78,10 +78,12 @@ function PersonalPage(props) {
                     <Container className="d-flex justify-content-center">
                         <Image
                             src={
-                                person?.img ||
-                                process.env.PUBLIC_URL + "/img/noName.svg"
+                                person?.img != "undefined"
+                                    ? person?.img
+                                    : process.env.PUBLIC_URL + "/img/noName.svg"
                             }
-                            rounded
+                            roundedCircle="true"
+                            fluid
                             height="180px"
                         />
                     </Container>
