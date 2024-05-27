@@ -11,12 +11,7 @@ function TagsAreaSetting(props) {
     let [newData, setNewData] = useState([]);
     let [newHint, setNewHint] = useState([]);
 
-    let tags = [
-        { tag: "#zaMerzula" },
-        { tag: "#zaKarinu" },
-        { tag: "#zaMikaIMorti" },
-    ];
-
+ 
     const specialCharsRegex = /[\s*!@_"{}№;%:?*'()\[\]+/~`$^&=\-,.\\<>|]/g;
 
     function checkTagGrammar(value) {
@@ -72,10 +67,11 @@ function TagsAreaSetting(props) {
                 }
                 break;
             }
-            //let text = getCheckedWord(value);
-
-            let data = tags
+            let data = props.tagsList.current
                 .filter((el) => {
+                    if(el.tag == null){
+                        return;
+                    }
                     if (el.tag.indexOf(word.join("")) > -1) {
                         return el;
                     }

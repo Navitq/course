@@ -53,7 +53,7 @@ function ItemField(props) {
                         );
                     }
                     fields.push(
-                        <Form.Group key={uuidv4()} className="mt-3">
+                        <Form.Group key={uuidv4()} className="mt-3" >
                             <Form.Label className="all-modals__label h6">
                                 {props.header[`${type}` + i]}
                             </Form.Label>

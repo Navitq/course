@@ -78,13 +78,13 @@ function PersonalPage(props) {
                     <Container className="d-flex justify-content-center">
                         <Image
                             src={
-                                person?.img != "undefined"
-                                    ? person?.img
+                                person.img && person.img != "undefined"
+                                    ? person.img
                                     : process.env.PUBLIC_URL + "/img/noName.svg"
                             }
                             roundedCircle="true"
                             fluid
-                            style={{maxHeight:"250px"}}
+                            style={{ maxHeight: "250px" }}
                         />
                     </Container>
                     <Container className="h3 mt-3 text-center">

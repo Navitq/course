@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import ItemField from "./ItemField";
 import Comment from "./Comment";
 import { socket } from "./socket";
 import TagsAreaSetting from "./TagsAreaSetting";
+import TagField from "./TagField";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -18,7 +19,10 @@ function ItemTemplate(props) {
     let [itemData, setItemData] = useState({});
     let [itemFields, setItemFields] = useState([]);
     let [comments, setComments] = useState([]);
-    let [mainOwner, setMainOwner] = useState({owner: true})
+    let [mainOwner, setMainOwner] = useState({ owner: true });
+    let [tagsValue, setTagsValue] = useState();
+
+    let tagsList = useRef([]);
 
     let { col_id, item_id } = useParams();
 
@@ -54,17 +58,18 @@ function ItemTemplate(props) {
         let object = createObject(formData);
         object.item_id = e.currentTarget.dataset.item_id;
         object.col_id = e.currentTarget.dataset.col_id;
+        setTagsValue(object.tags)
         socket.emit("change_item", JSON.stringify(object));
         changeState(true, fields);
     }
 
-    function addComment(data){
-        let comments = data.map((el)=>{
-            return (<Comment key={uuidv4()} t={props.t} data={el}></Comment>)
-        })
-        setComments((prev)=>{
-            return [...prev, ...comments]
-        })
+    function addComment(data) {
+        let comments = data.map((el) => {
+            return <Comment key={uuidv4()} t={props.t} data={el}></Comment>;
+        });
+        setComments((prev) => {
+            return [...prev, ...comments];
+        });
     }
 
     function createComment(e) {
@@ -78,20 +83,23 @@ function ItemTemplate(props) {
         e.currentTarget.getElementsByTagName("textarea")[0].value = "";
     }
 
-    function getDate(){
+    function getDate() {
         let date = new Date();
-        let fullDate = `${fixDate(date.getUTCHours())}:${fixDate(date.getUTCMinutes())}; ${fixDate(date.getUTCDate())}.${fixDate(date.getUTCMonth()+1)}.${fixDate(date.getUTCFullYear())}`
+        let fullDate = `${fixDate(date.getUTCHours())}:${fixDate(
+            date.getUTCMinutes()
+        )}; ${fixDate(date.getUTCDate())}.${fixDate(
+            date.getUTCMonth() + 1
+        )}.${fixDate(date.getUTCFullYear())}`;
         return fullDate;
     }
 
-    function fixDate(date){
-        if(date < 10){
-            return "0"+ date
+    function fixDate(date) {
+        if (date < 10) {
+            return "0" + date;
         } else {
-            return date
+            return date;
         }
     }
-
 
     async function deleteItem(e) {
         let form = e.currentTarget.closest("form");
@@ -146,30 +154,39 @@ function ItemTemplate(props) {
                     t={props.t}
                 ></ItemField>,
             ];
-            console.log(field)
-            setMainOwner(owner)
+            console.log(field);
+            setMainOwner(owner);
             setItemData(data);
+            setTagsValue(data.tags)
+            let availableFields = (
+                <div
+                    //style={{ maxWidth: "350px", flex: "1 1 auto" }}
+                    className="d-flex flex-column item-tp__user-settings px-0"
+                    style={{ flex: "2 1 1", width: "initial" }}
+                >
+                    {field}
+                </div>
+            );
+            console.log(field)
             if (field.length > 0) {
-                setItemFields(
-                    <div
-                        //style={{ maxWidth: "350px", flex: "1 1 auto" }}
-                        className="d-flex flex-column item-tp__user-settings px-0"
-                        style={{flex: "2 1 auto", width:"-webkit-fill-available"}}
-                    >
-                        {field}
-                    </div>
-                );
+                setItemFields(availableFields);
             }
         });
         socket.on("delete_item", () => {
             window.location.reload();
         });
-        socket.on(`${item_id}`,(dataJSON)=>{
+        socket.on(`${item_id}`, (dataJSON) => {
             let data = JSON.parse(dataJSON);
-            addComment(data)
-        })
+            addComment(data);
+        });
+        socket.on("got_tags_coll", (dataJSON) => {
+            let data = JSON.parse(dataJSON);
+            console.log(data);
+            tagsList.current = [...data];
+        });
+        socket.emit("get_tags_coll");
         socket.emit("get_item_info", JSON.stringify({ col_id, item_id }));
-        socket.emit("old_comment", JSON.stringify({item_id}));
+        socket.emit("old_comment", JSON.stringify({ item_id }));
     }, []);
 
     return (
@@ -188,12 +205,16 @@ function ItemTemplate(props) {
                     style={{ columnGap: "20px" }}
                 >
                     <Container
-                        style={{  columnGap: "20px", minWidth:"0px" }}
-                        className={mainOwner.owner == false ?"item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields me-auto":"item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields"}
+                        style={{ columnGap: "20px", minWidth: "0px", }}
+                        className={
+                            mainOwner.owner == false
+                                ? "item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields me-auto"
+                                : "item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields"
+                        }
                     >
                         <Container
                             className="d-flex flex-column ms-0 ps-0 pe-0 px-0"
-                            style={{ width: "100%", flex:"1 1 auto", minWidth:"300px"}}
+                            style={{ width: "100%", flex: "1 1 auto" }}
                         >
                             <Form.Group className="text-left">
                                 <Form.Label className="all-modals__label h6 text-left">
@@ -226,8 +247,16 @@ function ItemTemplate(props) {
                                     maxLength="1024"
                                 />
                             </Form.Group>
-                            <TagsAreaSetting defValue={itemData.tags} t={props.t}></TagsAreaSetting>
-                            <Container className="px-0">
+                            <TagsAreaSetting
+                                tagsList={tagsList}
+                                defValue={itemData.tags}
+                                t={props.t}
+                            ></TagsAreaSetting>
+                             <TagField
+                                defValue={tagsValue}
+                                t={props.t}
+                            ></TagField>
+                            <Container className="px-0 mb-3">
                                 <Form.Label className="all-modals__label h6">
                                     Id
                                 </Form.Label>
@@ -236,38 +265,41 @@ function ItemTemplate(props) {
                         </Container>
                         {itemFields}
                     </Container>
-                    
-                    {mainOwner.owner == true?<Container
-                        className="d-flex flex-column ms-0 item-tp__buttons px-0"
-                        style={{ width: "fit-content" }}
-                    >
-                        <Container className="h6 ps-0 mb-2">
-                            {props.t("ItemTemplate.setting")}
+
+                    {mainOwner.owner == true ? (
+                        <Container
+                            className="d-flex flex-column ms-0 item-tp__buttons px-0"
+                            style={{ width: "fit-content" }}
+                        >
+                            <Container className="h6 ps-0 mb-2">
+                                {props.t("ItemTemplate.setting")}
+                            </Container>
+                            <Button
+                                className="mb-2"
+                                onClick={changeReadonly}
+                                style={{ maxWidth: "fit-content" }}
+                            >
+                                {props.t("ItemTemplate.edit")}
+                            </Button>
+
+                            <Button
+                                className="mb-2"
+                                style={{ maxWidth: "fit-content" }}
+                                type="submit"
+                            >
+                                {props.t("ItemTemplate.save")}
+                            </Button>
+
+                            <Button
+                                onClick={deleteItem}
+                                style={{ maxWidth: "fit-content" }}
+                            >
+                                {props.t("ItemTemplate.delete")}
+                            </Button>
                         </Container>
-                        <Button
-                            className="mb-2"
-                            onClick={changeReadonly}
-                            style={{ maxWidth: "fit-content" }}
-                        >
-                            {props.t("ItemTemplate.edit")}
-                        </Button>
-
-                        <Button
-                            className="mb-2"
-                            style={{ maxWidth: "fit-content" }}
-                            type="submit"
-                        >
-                            {props.t("ItemTemplate.save")}
-                        </Button>
-
-                        <Button
-                            onClick={deleteItem}
-                            style={{ maxWidth: "fit-content" }}
-                        >
-                            {props.t("ItemTemplate.delete")}
-                        </Button>
-                    </Container>:""}
-
+                    ) : (
+                        ""
+                    )}
                 </Container>
             </Form>
             <Form
@@ -283,7 +315,9 @@ function ItemTemplate(props) {
                                 {props.t("ItemTemplate.comments")}
                             </Form.Label>
                             <Form.Control
-                                placeholder={props.t("ItemTemplate.commentPlholder")}
+                                placeholder={props.t(
+                                    "ItemTemplate.commentPlholder"
+                                )}
                                 style={{ resize: "none" }}
                                 as="textarea"
                                 rows={7}
@@ -297,7 +331,9 @@ function ItemTemplate(props) {
                             </Button>
                         </Form.Group>
                     </Container>
-                    <Container className="px-0 d-flex flex-column align-items-center" >{comments}</Container>
+                    <Container className="px-0 d-flex flex-column align-items-center">
+                        {comments}
+                    </Container>
                 </Container>
             </Form>
         </Container>
