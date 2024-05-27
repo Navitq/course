@@ -84,7 +84,7 @@ function PersonalPage(props) {
                             }
                             roundedCircle="true"
                             fluid
-                            height="180px"
+                            style={{maxHeight:"250px"}}
                         />
                     </Container>
                     <Container className="h3 mt-3 text-center">

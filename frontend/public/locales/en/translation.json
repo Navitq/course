@@ -120,7 +120,9 @@
         "delete":"Delete",
         "settings":"Setting", 
         "addNewItem":"Create element",
-        "items":"Working with items"
+        "items":"Working with items", 
+        "cards":"Cards",
+        "table":"Tables"
     },
     "TableCell":{
         "id": "Id",
@@ -168,6 +170,7 @@
         "category":"Category",
         "count":"Count",
         "tags":"Tags",
+        "name":"Name",
         "noTags":"There are no items with this tag"
     },
     "Admin":{

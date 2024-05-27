@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 import { NavLink } from "react-router-dom";
 
@@ -12,69 +12,89 @@ function CollTable(props) {
     }
 
     function createHeader() {
-        let header = (
-            <thead key={uuidv4()}> 
-                <tr  key={uuidv4()}>
-                    <th  key={uuidv4()}>{props.t("Public.name")}</th>
-                    <th  key={uuidv4()}>{props.t("Public.category")}</th>
-                    <th  key={uuidv4()}>{props.t("Public.description")}</th>
+        let header = [""];
+        header.push (
+            <thead key={uuidv4()}>
+                <tr >
+                    <th >№</th>
+                    <th >Id</th>
+                    <th >{props.t("Public.name")}</th>
+                    <th >{props.t("Public.category")}</th>
+                    <th >{props.t("Public.description")}</th>
                 </tr>
             </thead>
         );
-        setElements([header]);
+        setElements(header);
     }
-
     function createBody() {
-        let body = props.data.map((el) => {
-            return (
-                
-                <tr key={uuidv4()}>
-                    <td  key={uuidv4()}>
-                        <NavLink
-                            className="nav-link active"
-                            uuid={el.uuid}
-                            variant="primary"
-                            to={`/collection/${el.col_id}`}
-                            style={{ width: "100%" }}
-                        >
-                            {el.name}
-                        </NavLink>
-                    </td>
-                    <td  key={uuidv4()}> 
-                        <NavLink
-                            className="nav-link active"
-                            uuid={el.uuid}
-                            variant="primary"
-                            to={`/collection/${el.col_id}`}
-                            style={{ width: "100%" }}
-                        >
-                            {props.t(`Filter.${el.category}`)}
-                        </NavLink>
-                    </td>
-                    <td  key={uuidv4()}>
-                        <NavLink
-                            className="nav-link active"
-                            uuid={el.uuid}
-                            variant="primary"
-                            to={`/collection/${el.col_id}`}
-                            style={{ width: "100%" }}
-                        >
-                            {el.description}
-                        </NavLink>
-                    </td>
-                </tr>
-            
-            );
-        });
+        let body = [];
+        body.push (
+            <tr key={uuidv4()} className="coll-table">
+                <td >
+                    <NavLink
+                        className="nav-link active"
+                        uuid={props.data.uuid}
+                        variant="primary"
+                        to={`/collection/${props.data.col_id}`}
+                        style={{ width: "100%" }}
+                    >
+                        {props.index + 1}
+                    </NavLink>
+                </td>
+                <td >
+                    <NavLink
+                        className="nav-link active"
+                        uuid={props.data.uuid}
+                        variant="primary"
+                        to={`/collection/${props.data.col_id}`}
+                        style={{ width: "100%" }}
+                    >
+                        {props.data.col_id}
+                    </NavLink>
+                </td>
+                <td >
+                    <NavLink
+                        className="nav-link active"
+                        uuid={props.data.uuid}
+                        variant="primary"
+                        to={`/collection/${props.data.col_id}`}
+                        style={{ width: "100%" }}
+                    >
+                        {props.data.name}
+                    </NavLink>
+                </td>
+                <td >
+                    <NavLink
+                        className="nav-link active"
+                        uuid={props.data.uuid}
+                        variant="primary"
+                        to={`/collection/${props.data.col_id}`}
+                        style={{ width: "100%" }}
+                    >
+                        {props.t(`Filter.${props.data.category}`)}
+                    </NavLink>
+                </td>
+                <td >
+                    <NavLink
+                        className="nav-link active"
+                        uuid={props.data.uuid}
+                        variant="primary"
+                        to={`/collection/${props.data.col_id}`}
+                        style={{ width: "100%" }}
+                    >
+                        {props.data.description}
+                    </NavLink>
+                </td>
+            </tr>
+        );
+
         setElements(body);
     }
 
     useEffect(() => {
         createElem();
     }, []);
-    return <>{elements}</>;
-
-
+    return (<React.Fragment>{elements}</React.Fragment>);
 }
 
 export default CollTable;

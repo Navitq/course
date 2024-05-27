@@ -1,31 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 import CollCard from "./CollCard";
 import Filter from "./Filter";
 import CreateCal from "./CreateCal";
+import CollTable from "./CollTable";
 
 import { socket } from "./socket";
+import { Table } from "react-bootstrap";
 
 function CollectionsPrivate(props) {
     let [cards, setCards] = useState([]);
     let [person, setPerson] = useState({});
+    let [header, setHeader] = useState(<></>);
+
+    let designChecker = useRef("1");
+
+    const [checked, setChecked] = useState(false);
+    const [radioValue, setRadioValue] = useState("1");
+
+    const radios = [
+        { name: props.t("Collection.cards"), value: "1" },
+        { name: props.t("Collection.table"), value: "2" },
+    ];
 
     function addNewCard(card, type) {
-        console.log(type)
+        console.log(type);
 
-        if(type != "private" && type != "all"){
-            return
+        if (type != "private" && type != "all") {
+            return;
         }
-        setCards((prev) => {
-            return [...prev, card];
-        });
+        console.log(designChecker.current)
+        if(designChecker.current == '1'){
+            setCards((prev) => {
+                return [...prev, card[0]];
+            });
+        } else {
+            setCards((prev) => {
+                return [...prev, card[1]];
+            });
+        }
+        
     }
 
     useEffect(() => {
@@ -37,14 +60,45 @@ function CollectionsPrivate(props) {
         socket.on("got_coll", (dataJson) => {
             let data = JSON.parse(dataJson);
             let mewCards = [];
-            for(let i =0; i < data.length;++i){
-                mewCards.push(<CollCard key={uuidv4()} t={props.t} data={data[i]}></CollCard>)
+            if (designChecker.current == "1") {
+                for (let i = 0; i < data.length; ++i) {
+                    mewCards.push(
+                        <CollCard
+                            key={uuidv4()}
+                            t={props.t}
+                            data={data[i]}
+                        ></CollCard>
+                    );
+                }
+            } else {
+                for (let i = 0; i < data.length; ++i) {
+                    mewCards.push(
+                        <CollTable
+                            key={uuidv4()}
+                            t={props.t}
+                            data={data[i]}
+                            type="body"
+                            index={i}
+                        ></CollTable>
+                    );
+                }
+                console.log(2222222222222)
+                let newHeader = (
+                    <CollTable
+                        key={uuidv4()}
+                        t={props.t}
+                        elem={data}
+                        type="header"
+                    ></CollTable>
+                );
+                setHeader(newHeader);
             }
-            setCards(mewCards)
+            setCards(mewCards);
         });
 
         socket.emit("get_user_data");
         socket.emit("get_coll");
+        console.log(11111);
     }, []);
 
     return (
@@ -60,10 +114,14 @@ function CollectionsPrivate(props) {
                 >
                     <Container className="d-flex justify-content-center">
                         <Image
-                            src={person?.img != 'undefined'?person?.img : (process.env.PUBLIC_URL+"/img/noName.svg")}
+                            src={
+                                ( person.img &&  person.img != 'undefined')
+                                    ? person.img
+                                    : process.env.PUBLIC_URL + "/img/noName.svg"
+                            }
                             roundedCircle="true"
-                            height="180px"
-                            fluid	
+                            style={{maxHeight: "250px"}}
+                            fluid
                         />
                     </Container>
                     <Container className="h3 mt-3 text-center">
@@ -83,7 +141,7 @@ function CollectionsPrivate(props) {
                         theme={props.theme}
                         i18n={props.i18n}
                         t={props.t}
-                        owner={{owner:true}}
+                        owner={{ owner: true }}
                     ></CreateCal>
                 </Col>
                 <Col
@@ -94,20 +152,63 @@ function CollectionsPrivate(props) {
                     xs={12}
                     className="filter__main d-flex flex-column justify-content-start"
                 >
-                    <Filter uuid={person?.user_id} i18n={props.i18n} t={props.t}></Filter>
+                    <Filter
+                        uuid={person?.user_id}
+                        i18n={props.i18n}
+                        t={props.t}
+                    ></Filter>
                 </Col>
             </Row>
             <Container>
                 <Container className="h3 text-center my-4">
                     {props.t("Private.collections")}
                 </Container>
+                <Container className="mb-4">
+                    <ButtonGroup>
+                        {radios.map((radio, idx) => (
+                            <ToggleButton
+                                key={idx}
+                                id={`radio-${idx}_coll`}
+                                type="radio"
+                                variant={
+                                    idx % 2
+                                        ? "outline-primary"
+                                        : "outline-primary"
+                                }
+                                name="radio_coll"
+                                value={radio.value}
+                                checked={radioValue === radio.value}
+                                onChange={(e) => {
+                                    setCards([]);
+                                    setHeader([]);
+                                    setRadioValue(e.currentTarget.value);
+                                    designChecker.current =
+                                        e.currentTarget.value;
+                                    socket.emit("get_coll");
+                                }}
+                            >
+                                {radio.name}
+                            </ToggleButton>
+                        ))}
+                    </ButtonGroup>
+                </Container>
                 <Container
                     className="d-flex flex-wrap justify-content-around"
                     style={{ gap: "15px" }}
                 >
-                    {cards.length > 0
-                        ? cards
-                        : props.t("Private.noCollections")}
+                    {cards.length < 1 ? (
+                        props.t("Private.noCollections")
+                    ) : radioValue == 1 ? (
+                        cards
+                    ) : (
+                        <Container style={{overflow:"auto"}}>
+                            <Table striped bordered hover>
+                                {header}
+                                <tbody>{cards}</tbody>
+                                
+                            </Table>
+                        </Container>
+                    )}
                 </Container>
             </Container>
         </Container>
