@@ -25,6 +25,7 @@ function ItemByTag(props) {
     }
 
     function createBody() {
+        console.log(props.elem)
         let body = props.elem.map((el) => {
             let tags = el.tags.split("#");
             tags.shift()

@@ -562,7 +562,7 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("filter_coll", async (dataJSON) => {
+    socket.on("filter_coll", async (dataJSON, user_id) => {
         let data = JSON.parse(dataJSON);
         if (data.checkbox_img_only == true) {
             data.img = { [Op.ne]: null };
@@ -573,7 +573,12 @@ io.on("connection", (socket) => {
             let result = await Coll.findAll({
                 where: data,
             });
-            socket.emit("got_coll", JSON.stringify(result));
+            console.log(user_id)
+            if(user_id && req.session.user_id != user_id){
+                socket.emit("got_person_coll", JSON.stringify(result));
+            } else {
+                socket.emit("got_coll", JSON.stringify(result));
+            }
         } catch (err) {
             console.error(err);
         }

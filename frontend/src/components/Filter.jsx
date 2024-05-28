@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 
 import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Dropdown from "react-bootstrap/Dropdown";
 import Row from "react-bootstrap/Row";
 import { v4 as uuidv4 } from "uuid";
+
+import { useParams } from "react-router-dom";
 
 import { socket } from "./socket";
 import "./css/scroll.css";
@@ -16,6 +17,8 @@ function Filter(props) {
     let [categoryLabel, setCategoryLabel] = useState(
         props.t("Filter.chseCategory")
     );
+
+    let { user_id } = useParams();
 
     let mainCategory = useRef(props.t("Filter.chseCategory"));
 
@@ -80,7 +83,7 @@ function Filter(props) {
     function getFilteredCol(event) {
         event.preventDefault();
         let data = createObject(createFormData(event.currentTarget))
-        socket.emit("filter_coll", JSON.stringify(data))
+        socket.emit("filter_coll", JSON.stringify(data), user_id)
     }
 
     return (

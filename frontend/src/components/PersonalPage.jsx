@@ -69,6 +69,7 @@ function PersonalPage(props) {
         socket.on("got_person_coll", (dataJson) => {
             let data = JSON.parse(dataJson);
             let mewCards = [];
+
             if (designChecker.current == "1") {
                 for (let i = 0; i < data.length; ++i) {
                     mewCards.push(
@@ -101,6 +102,7 @@ function PersonalPage(props) {
                 );
                 setHeader(newHeader);
             }
+            
             setCards(mewCards);
         });
 

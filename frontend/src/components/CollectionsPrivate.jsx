@@ -33,6 +33,7 @@ function CollectionsPrivate(props) {
     ];
 
     function addNewCard(card, type) {
+
         if (type != "private" && type != "all") {
             return;
         }
