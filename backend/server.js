@@ -336,13 +336,15 @@ io.on("connection", (socket) => {
     }
 
     async function checkAccess(user_id, data) {
+        if(!user_id){
+            return false
+        }
         let result = await Coll.findAll({
             where: {
                 col_id: data.col_id,
             },
         });
         if (result.length < 1) {
-            console.log(111111111111111111111);
             return false;
         }
         let adminChecker = await User.findAll({
@@ -497,6 +499,7 @@ io.on("connection", (socket) => {
                 JSON.stringify(owner)
             );
         } catch (err) {
+            console.log(err)
             socket.emit("got_item_info", JSON.stringify({ err: true }));
         }
     });
@@ -608,6 +611,7 @@ io.on("connection", (socket) => {
                 },
             });
             if (resultColl.length < 1) {
+                console.log(1111111111111111111111)
                 socket.emit("got_col_items", JSON.stringify({ err: true }));
                 return;
             }
@@ -616,9 +620,13 @@ io.on("connection", (socket) => {
                     col_id: data.col_id,
                 },
             });
+
             if (await checkAccess(req.session.user_id, data)) {
                 owner = { owner: true };
             }
+
+            console.log(resultItems)
+
             socket.emit(
                 "got_col_items",
                 JSON.stringify(resultColl),
@@ -626,6 +634,7 @@ io.on("connection", (socket) => {
                 JSON.stringify(owner)
             );
         } catch (err) {
+            console.log(err)
             socket.emit("got_col_items", JSON.stringify({ err: true }));
         }
     });
