@@ -49,7 +49,6 @@ function App() {
             socket.connect();
         }
         socket.on("connect", ()=>{
-            console.log("ssssssssssss")
             socket.emit("check_admin_status")
         })
  

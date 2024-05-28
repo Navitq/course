@@ -14,7 +14,6 @@ export default function Admin(props) {
     function handleCheckboxChange(e) {
         checkboxesRef = document.querySelectorAll(".admin__checkbox input");
         for (let i = 0; i < checkboxesRef.length; ++i) {
-            console.log(checkboxesRef[i])
             checkboxesRef[i].checked = !checkboxes;
         }
         setCheckboxes(!checkboxes);
@@ -36,7 +35,6 @@ export default function Admin(props) {
         }
 
         let data = JSON.stringify(emailsParsed);
-        console.log(data)
         setCheckboxes(false);
 
         socket.emit(`${e.target.dataset.method}`, data)

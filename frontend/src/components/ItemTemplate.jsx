@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink, useParams } from "react-router-dom";
 
 import { Button } from "react-bootstrap";
 import { Container, Image } from "react-bootstrap";
@@ -166,7 +165,6 @@ function ItemTemplate(props) {
                     t={props.t}
                 ></ItemField>,
             ];
-            console.log(field);
             setMainOwner(owner);
             setItemData(data);
             setTagsValue(data.tags);
@@ -180,7 +178,6 @@ function ItemTemplate(props) {
                     {field}
                 </div>
             );
-            console.log(field);
             if (field.length > 0) {
                 setItemFields(availableFields);
             }
@@ -195,12 +192,11 @@ function ItemTemplate(props) {
         });
         socket.on("got_tags_coll", (dataJSON) => {
             let data = JSON.parse(dataJSON);
-            console.log(data);
             tagsList.current = [...data];
         });
         socket.on("new_like", (dataJSON) => {
             let data = JSON.parse(dataJSON);
-            if (likeManager.current.dataset.item_id != data.item_id) {
+            if (!likeManager.current || likeManager.current.dataset.item_id != data.item_id) {
                 return;
             }
             setLikes((prev) => {
@@ -217,7 +213,7 @@ function ItemTemplate(props) {
         });
         socket.on("got_like", (dataJSON) => {
             let data = JSON.parse(dataJSON);
-            if (likeManager.current.dataset.item_id != data.item_id) {
+            if (!likeManager.current || likeManager.current.dataset.item_id != data.item_id) {
                 return;
             }
             setLikes([data.count, data.liked]);
@@ -229,17 +225,28 @@ function ItemTemplate(props) {
 
     return (
         <Container className="px-0">
+            <Container className="h5 mt-4">
+                <NavLink
+                    className="nav-link active text-decoration-underline"
+                    variant="primary"
+                    to={`/collection/${col_id}`}
+                    style={{ width: "fit-content" }}
+                    key={uuidv4()}
+                >
+                    <em>{props.t("Public.goToColl")}</em>
+                </NavLink>
+            </Container>
             <Form
-                className="d-flex mt-4 flex-column"
+                className="d-flex flex-column"
                 data-col_id={itemData.col_id}
                 data-item_id={itemData.item_id}
                 onSubmit={saveChanges}
             >
-                <Container className="mb-2 h3 text-center mt-3">
+                <Container className="h3 text-center">
                     {props.t("ItemTemplate.settings")}
                 </Container>
                 <Container
-                    className="item-tp__main d-flex mt-4"
+                    className="item-tp__main d-flex mt-2"
                     style={{ columnGap: "20px" }}
                 >
                     <Container

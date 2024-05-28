@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, NavLink } from "react-router-dom";
 
 import Table from "react-bootstrap/Table";
 import Col from "react-bootstrap/Col";
@@ -124,7 +124,6 @@ function Collection(props) {
         socket.emit("get_tags_coll");
         socket.on("got_tags_coll", (dataJSON) => {
             let data = JSON.parse(dataJSON);
-            console.log(data)
             tagsList.current = [...data];
         });
         socket.on("filtered_items", (dataJSON) => {
@@ -144,7 +143,6 @@ function Collection(props) {
         });
         socket.on("got_col_items", (colJson, dataJson, ownerJSON) => {
             let col = JSON.parse(colJson);
-            console.log(col, 444444444444444444444444444)
             if (col.err) {
                 navigate(`/private`);
                 return;
@@ -170,7 +168,6 @@ function Collection(props) {
                     type="body"
                 ></TableCell>
             );
-            console.log(owner);
             setMainOwner(owner);
 
             setTheader((prev) => {
@@ -205,7 +202,18 @@ function Collection(props) {
     }, []);
 
     return (
-        <Container className="my-5">
+        <Container className="my-4">
+            <Container className="px-0 h5 mb-3">
+                <NavLink
+                    className="nav-link active text-decoration-underline"
+                    variant="primary"
+                    to={`/people/${colCurrent.uuid}`}
+                    style={{ width: "fit-content" }}
+                    key={uuidv4()}
+                >
+                    <em>{props.t("Public.goToAuthor")}</em>
+                </NavLink>
+            </Container>
             <Row className="user__main">
                 <Col
                     xl={7}

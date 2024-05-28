@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
+import { Table } from "react-bootstrap";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
 
 import { useParams, useNavigate } from "react-router-dom";
 
 import { v4 as uuidv4 } from "uuid";
 
+import CollTable from "./CollTable";
 import CollCard from "./CollCard";
 import Filter from "./Filter";
 import CreateCal from "./CreateCal";
@@ -19,17 +23,35 @@ function PersonalPage(props) {
     let [cards, setCards] = useState([]);
     let [person, setPerson] = useState({});
     let [mainOwner, setMainOwner] = useState({ owner: false });
+    let [header, setHeader] = useState(<></>);
+
     let { user_id } = useParams();
+
     const navigate = useNavigate();
 
+    let designChecker = useRef("1");
+
+    const [checked, setChecked] = useState(false);
+    const [radioValue, setRadioValue] = useState("1");
+
+    const radios = [
+        { name: props.t("Collection.cards"), value: "1" },
+        { name: props.t("Collection.table"), value: "2" },
+    ];
+
     function addNewCard(card, type) {
-        console.log(type);
         if (type != "people" && type != "all") {
             return;
         }
-        setCards((prev) => {
-            return [...prev, card];
-        });
+        if (designChecker.current == "1") {
+            setCards((prev) => {
+                return [...prev, card[0]];
+            });
+        } else {
+            setCards((prev) => {
+                return [...prev, card[1]];
+            });
+        }
     }
 
     useEffect(() => {
@@ -40,7 +62,6 @@ function PersonalPage(props) {
                 return;
             }
             let owner = JSON.parse(ownerJSON);
-            console.log(data, owner);
             setMainOwner(owner);
             setPerson(data);
         });
@@ -48,14 +69,37 @@ function PersonalPage(props) {
         socket.on("got_person_coll", (dataJson) => {
             let data = JSON.parse(dataJson);
             let mewCards = [];
-            for (let i = 0; i < data.length; ++i) {
-                mewCards.push(
-                    <CollCard
+            if (designChecker.current == "1") {
+                for (let i = 0; i < data.length; ++i) {
+                    mewCards.push(
+                        <CollCard
+                            key={uuidv4()}
+                            t={props.t}
+                            data={data[i]}
+                        ></CollCard>
+                    );
+                }
+            } else {
+                for (let i = 0; i < data.length; ++i) {
+                    mewCards.push(
+                        <CollTable
+                            key={uuidv4()}
+                            t={props.t}
+                            data={data[i]}
+                            type="body"
+                            index={i}
+                        ></CollTable>
+                    );
+                }
+                let newHeader = (
+                    <CollTable
                         key={uuidv4()}
                         t={props.t}
-                        data={data[i]}
-                    ></CollCard>
+                        elem={data}
+                        type="header"
+                    ></CollTable>
                 );
+                setHeader(newHeader);
             }
             setCards(mewCards);
         });
@@ -126,13 +170,51 @@ function PersonalPage(props) {
                 <Container className="h3 text-center my-4">
                     {props.t("Private.collections")}
                 </Container>
+                <Container className="mb-4">
+                    <ButtonGroup>
+                        {radios.map((radio, idx) => (
+                            <ToggleButton
+                                key={idx}
+                                id={`radio-${idx}_coll`}
+                                type="radio"
+                                variant={
+                                    idx % 2
+                                        ? "outline-primary"
+                                        : "outline-primary"
+                                }
+                                name="radio_coll"
+                                value={radio.value}
+                                checked={radioValue === radio.value}
+                                onChange={(e) => {
+                                    setCards([]);
+                                    setHeader([]);
+                                    setRadioValue(e.currentTarget.value);
+                                    designChecker.current =
+                                        e.currentTarget.value;
+                                    socket.emit("get_person_coll", user_id);
+                                }}
+                            >
+                                {radio.name}
+                            </ToggleButton>
+                        ))}
+                    </ButtonGroup>
+                </Container>
                 <Container
                     className="d-flex flex-wrap justify-content-around"
                     style={{ gap: "15px" }}
                 >
-                    {cards.length > 0
-                        ? cards
-                        : props.t("Private.noCollections")}
+                    {cards.length < 1 ? (
+                        props.t("Private.noCollections")
+                    ) : radioValue == 1 ? (
+                        cards
+                    ) : (
+                        <Container style={{ overflow: "auto" }}>
+                            <Table striped bordered hover>
+                                {header}
+                                <tbody>{cards}</tbody>
+                            </Table>
+                        </Container>
+                    )}
                 </Container>
             </Container>
         </Container>

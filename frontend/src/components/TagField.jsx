@@ -36,7 +36,6 @@ function TagField(props) {
     
 
     useEffect(() => {
-        console.log(123123)
         createTagField();
     }, [props.defValue]);
     return <Container className="px-0 d-flex mb-2 flex-wrap text-break">{tags}</Container>;

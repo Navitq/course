@@ -172,7 +172,9 @@
         "count":"Count",
         "tags":"Tags",
         "name":"Name",
-        "noTags":"There are no items with this tag"
+        "noTags":"There are no items with this tag",
+        "goToAuthor":"Go to the author",
+        "goToColl":"Go to the collection"
     },
     "Admin":{
         "header":"Table with info about our users!",

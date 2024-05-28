@@ -33,12 +33,9 @@ function CollectionsPrivate(props) {
     ];
 
     function addNewCard(card, type) {
-        console.log(type);
-
         if (type != "private" && type != "all") {
             return;
         }
-        console.log(designChecker.current)
         if(designChecker.current == '1'){
             setCards((prev) => {
                 return [...prev, card[0]];
@@ -82,7 +79,6 @@ function CollectionsPrivate(props) {
                         ></CollTable>
                     );
                 }
-                console.log(2222222222222)
                 let newHeader = (
                     <CollTable
                         key={uuidv4()}
@@ -98,7 +94,6 @@ function CollectionsPrivate(props) {
 
         socket.emit("get_user_data");
         socket.emit("get_coll");
-        console.log(11111);
     }, []);
 
     return (

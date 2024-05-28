@@ -52,7 +52,6 @@ function CreateCal(props) {
                     index={document.getElementsByClassName("coll-table").length}
                 ></CollTable>,
             ];
-            console.log(typeOfColl);
             props.addNewCard(card, typeOfColl);
         });
         getCategoryData();
@@ -117,7 +116,6 @@ function CreateCal(props) {
         if (dropDown == props.t("Filter.chseCategory") || dropDown == "") {
             return;
         }
-        console.log(11111111, dropDown, props.t("Filter.chseCategory"));
 
         let formData = formDataCreater(e.currentTarget, dropDown);
         let data = await formObject(formData);

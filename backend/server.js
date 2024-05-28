@@ -196,7 +196,6 @@ async function checkUserExisting(data) {
             user_id: data,
         },
     });
-    console.log(user);
 
     if (user.length < 1) {
         return false;
@@ -209,7 +208,6 @@ io.engine.use(middlware);
 
 io.on("connection", (socket) => {
     const req = socket.request;
-    console.log("hhhhhhhhhhhhh", socket.request.session.auth);
 
     socket.on("get_new_coll", async (data, user_id) => {
         // if (!req.session.auth) {
@@ -217,7 +215,6 @@ io.on("connection", (socket) => {
         // }
         try {
             let parsedData = JSON.parse(data);
-            console.log(user_id, req.session.user_id, 555555555555);
             let userState = checkUserExisting(user_id || req.session.user_id);
             if (!userState) {
                 return;
@@ -272,7 +269,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_coll", async (data) => {
-        console.log(req.session.id, 22222222222222222222);
 
         try {
             let result = await Coll.findAll({
@@ -306,7 +302,6 @@ io.on("connection", (socket) => {
         let data = JSON.parse(dataJSON);
         try {
             if (!(await checkCollExisting(data))) {
-                console.log(123123);
                 return;
             }
             let result = await Item.create(data);
@@ -390,7 +385,6 @@ io.on("connection", (socket) => {
                 !req.session.auth ||
                 !(await checkAccess(req.session.user_id, data))
             ) {
-                console.log("111111111111111");
                 return;
             }
 
@@ -611,7 +605,6 @@ io.on("connection", (socket) => {
                 },
             });
             if (resultColl.length < 1) {
-                console.log(1111111111111111111111)
                 socket.emit("got_col_items", JSON.stringify({ err: true }));
                 return;
             }
@@ -625,7 +618,6 @@ io.on("connection", (socket) => {
                 owner = { owner: true };
             }
 
-            console.log(resultItems)
 
             socket.emit(
                 "got_col_items",
@@ -1220,14 +1212,12 @@ io.on("connection", (socket) => {
     socket.on("get_like", async (itemIdJSON) => {
         let itemId = JSON.parse(itemIdJSON)
         let userLiked = false;
-        console.log(888888888888)
 
         let likes = await Likes.findAll({
             where: {
                 item_id: itemId.item_id,
             },
         });
-        console.log(77777777777777777)
         if (req.session.user_id) {
             itemId.user_id = req.session.user_id;
             let user = await Likes.findAll({

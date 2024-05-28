@@ -46,7 +46,6 @@ function SearchPage(props) {
                 return body;
             });
         });
-        console.log(search_req)
         socket.emit("get_search", `${search_req}`);
 
     }, [search_req]);
