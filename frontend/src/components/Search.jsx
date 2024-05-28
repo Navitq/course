@@ -16,7 +16,11 @@ function Search(props) {
 
     function search(e){
         e.preventDefault()
+        if(e.currentTarget.getElementsByTagName("input")[0].value == ""){
+            return;
+        }
         navigate(`/search/${mainSearch.current.value}`)
+        e.currentTarget.getElementsByTagName("input")[0].value = "";
     }   
 
     return (

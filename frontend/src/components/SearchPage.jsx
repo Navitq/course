@@ -24,7 +24,7 @@ function SearchPage(props) {
                 let body = (
                     <tr>
                         <td colSpan="100%" className="text-center h6">
-                            {props.t("Public.noTags")}
+                            {props.t("Search.notFound")}
                         </td>
                     </tr>
                 );
@@ -33,6 +33,7 @@ function SearchPage(props) {
             }
             let body = [
                 <ItemByTag
+                    search_req={search_req}
                     theme={props.theme}
                     t={props.t}
                     key={uuidv4()}

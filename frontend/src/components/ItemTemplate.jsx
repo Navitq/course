@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
+import { Container, Image } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 
 import ItemField from "./ItemField";
@@ -21,8 +21,10 @@ function ItemTemplate(props) {
     let [comments, setComments] = useState([]);
     let [mainOwner, setMainOwner] = useState({ owner: true });
     let [tagsValue, setTagsValue] = useState();
+    let [likes, setLikes] = useState([0, false]);
 
     let tagsList = useRef([]);
+    let likeManager = useRef();
 
     let { col_id, item_id } = useParams();
 
@@ -58,7 +60,7 @@ function ItemTemplate(props) {
         let object = createObject(formData);
         object.item_id = e.currentTarget.dataset.item_id;
         object.col_id = e.currentTarget.dataset.col_id;
-        setTagsValue(object.tags)
+        setTagsValue(object.tags);
         socket.emit("change_item", JSON.stringify(object));
         changeState(true, fields);
     }
@@ -99,6 +101,16 @@ function ItemTemplate(props) {
         } else {
             return date;
         }
+    }
+
+    function changeLikeState(e) {
+        if (!e.currentTarget.dataset.item_id) {
+            return;
+        }
+        socket.emit(
+            "new_like",
+            JSON.stringify({ item_id: `${e.currentTarget.dataset.item_id}` })
+        );
     }
 
     async function deleteItem(e) {
@@ -157,7 +169,8 @@ function ItemTemplate(props) {
             console.log(field);
             setMainOwner(owner);
             setItemData(data);
-            setTagsValue(data.tags)
+            setTagsValue(data.tags);
+
             let availableFields = (
                 <div
                     //style={{ maxWidth: "350px", flex: "1 1 auto" }}
@@ -167,10 +180,11 @@ function ItemTemplate(props) {
                     {field}
                 </div>
             );
-            console.log(field)
+            console.log(field);
             if (field.length > 0) {
                 setItemFields(availableFields);
             }
+            socket.emit("get_like", JSON.stringify({ item_id: data.item_id }));
         });
         socket.on("delete_item", () => {
             window.location.reload();
@@ -183,6 +197,30 @@ function ItemTemplate(props) {
             let data = JSON.parse(dataJSON);
             console.log(data);
             tagsList.current = [...data];
+        });
+        socket.on("new_like", (dataJSON) => {
+            let data = JSON.parse(dataJSON);
+            if (likeManager.current.dataset.item_id != data.item_id) {
+                return;
+            }
+            setLikes((prev) => {
+                let newLikeAdd = [];
+                if (prev[1] == false) {
+                    newLikeAdd.push(prev[0] + 1);
+                    newLikeAdd.push(true);
+                } else {
+                    newLikeAdd.push(prev[0] - 1);
+                    newLikeAdd.push(false);
+                }
+                return newLikeAdd;
+            });
+        });
+        socket.on("got_like", (dataJSON) => {
+            let data = JSON.parse(dataJSON);
+            if (likeManager.current.dataset.item_id != data.item_id) {
+                return;
+            }
+            setLikes([data.count, data.liked]);
         });
         socket.emit("get_tags_coll");
         socket.emit("get_item_info", JSON.stringify({ col_id, item_id }));
@@ -205,7 +243,7 @@ function ItemTemplate(props) {
                     style={{ columnGap: "20px" }}
                 >
                     <Container
-                        style={{ columnGap: "20px", minWidth: "0px", }}
+                        style={{ columnGap: "20px", minWidth: "0px" }}
                         className={
                             mainOwner.owner == false
                                 ? "item-tp__default ps-0 pe-0 d-flex justify-content-start ps-0 me-0 item-tp__fields me-auto"
@@ -252,7 +290,7 @@ function ItemTemplate(props) {
                                 defValue={itemData.tags}
                                 t={props.t}
                             ></TagsAreaSetting>
-                             <TagField
+                            <TagField
                                 defValue={tagsValue}
                                 t={props.t}
                             ></TagField>
@@ -296,9 +334,66 @@ function ItemTemplate(props) {
                             >
                                 {props.t("ItemTemplate.delete")}
                             </Button>
+
+                            <Container
+                                style={{ width: "fit-content" }}
+                                className="ms-0 px-0 mt-4 d-flex align-items-center"
+                            >
+                                <div
+                                    className="me-2"
+                                    style={{ fontSize: "1.6rem" }}
+                                >
+                                    <em>{likes[0]}</em>
+                                </div>
+                                <Image
+                                    src={
+                                        process.env.PUBLIC_URL + "/img/like.svg"
+                                    }
+                                    className={
+                                        likes[1] != "false" && likes[1] != false
+                                            ? "like__checked"
+                                            : "like__unchecked"
+                                    }
+                                    ref={likeManager}
+                                    data-item_id={itemData.item_id}
+                                    height="30px"
+                                    onClick={changeLikeState}
+                                    style={{ cursor: "pointer" }}
+                                ></Image>
+                            </Container>
                         </Container>
                     ) : (
-                        ""
+                        <Container
+                            className="d-flex flex-column ms-0 item-tp__buttons px-0"
+                            style={{ width: "fit-content" }}
+                        >
+                            <Container
+                                style={{ width: "fit-content" }}
+                                className="ms-0 px-0 mt-4 d-flex align-items-center"
+                            >
+                                <div
+                                    className="me-2"
+                                    style={{ fontSize: "1.6rem" }}
+                                >
+                                    <em>{likes[0]}</em>
+                                </div>
+                                <Image
+                                    src={
+                                        process.env.PUBLIC_URL + "/img/like.svg"
+                                    }
+                                    className={
+                                        likes[1] != "false" && likes[1] != false
+                                            ? "like__checked"
+                                            : "like__unchecked"
+                                    }
+                                    ref={likeManager}
+                                    data-item_id={itemData.item_id}
+                                    height="30px"
+                                    onClick={changeLikeState}
+                                    style={{ cursor: "pointer" }}
+                                ></Image>
+                            </Container>
+                        </Container>
                     )}
                 </Container>
             </Form>

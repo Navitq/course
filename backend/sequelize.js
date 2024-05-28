@@ -265,6 +265,11 @@ const Tag = sequelize.define("tag", {
     tag: DataTypes.STRING
 });
 
+const Likes = sequelize.define("like", {
+    item_id: DataTypes.STRING,
+    user_id: DataTypes.STRING
+});
+
 const Comment = sequelize.define("comment", {
     comment_id: {
         type: DataTypes.UUID,
@@ -314,6 +319,7 @@ const Comment = sequelize.define("comment", {
 })();
 
 module.exports = {
+    Likes,
     User,
     Coll,
     Item,

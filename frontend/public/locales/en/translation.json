@@ -85,7 +85,8 @@
         "header":"Search",
         "footer":"Search",
         "schPlaceholder":"What do I want to find...?",
-        "searchResult":"Search results for query: "
+        "searchResult":"Search results for query: ",
+        "notFound": "No results were found for your request"
     },
     "CrElem": {
         "header":"Create Collection",

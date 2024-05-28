@@ -17,6 +17,7 @@ const {
     Item,
     Comment,
     Tag,
+    Likes,
 } = require("./sequelize.js");
 const s3 = require("./s3.js");
 
@@ -176,7 +177,8 @@ app.get("/categories", async (req, res) => {
         "hats",
         "other",
     ]);
-});87
+});
+87;
 
 const io = new Server(server, {
     cors: {
@@ -215,7 +217,7 @@ io.on("connection", (socket) => {
         // }
         try {
             let parsedData = JSON.parse(data);
-            console.log(user_id , req.session.user_id, 555555555555);
+            console.log(user_id, req.session.user_id, 555555555555);
             let userState = checkUserExisting(user_id || req.session.user_id);
             if (!userState) {
                 return;
@@ -359,17 +361,16 @@ io.on("connection", (socket) => {
     }
 
     async function checkUser(user_id) {
-            let adminChecker = await User.findAll({
-                where: {
-                    user_id: user_id,
-                },
-            });
-            if (adminChecker[0].dataValues.status == "admin") {
-                return true;
-            } else {
-                return false;
-            }
-        
+        let adminChecker = await User.findAll({
+            where: {
+                user_id: user_id,
+            },
+        });
+        if (adminChecker[0].dataValues.status == "admin") {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     async function checkAdminStatus(user_id) {
@@ -910,8 +911,8 @@ io.on("connection", (socket) => {
                 where: {
                     [Op.or]: data,
                 },
-            })
-            
+            });
+
             for (let i = 0; i < users.length; i++) {
                 req.sessionStore.destroy(
                     users[i].dataValues.session_id,
@@ -1182,6 +1183,61 @@ io.on("connection", (socket) => {
         } catch (err) {
             console.error(err);
         }
+    });
+
+    socket.on("new_like", async (itemId) => {
+        itemId = JSON.parse(itemId);
+        if (!req.session.auth) {
+            return;
+        }
+        itemId.user_id = req.session.user_id;
+        let likes = await Likes.findAll({
+            where: {
+                [Op.and]: [itemId],
+            },
+        });
+        if (likes.length < 1) {
+            await Likes.create(itemId);
+        } else {
+            await Likes.destroy({
+                where: {
+                    [Op.and]: [itemId],
+                },
+            });
+        }
+        socket.emit("new_like", JSON.stringify(itemId));
+    });
+
+    socket.on("get_like", async (itemIdJSON) => {
+        let itemId = JSON.parse(itemIdJSON)
+        let userLiked = false;
+        console.log(888888888888)
+
+        let likes = await Likes.findAll({
+            where: {
+                item_id: itemId.item_id,
+            },
+        });
+        console.log(77777777777777777)
+        if (req.session.user_id) {
+            itemId.user_id = req.session.user_id;
+            let user = await Likes.findAll({
+                where: {
+                    [Op.and]: [itemId]
+                },
+            });
+            if (user.length > 0) {
+                userLiked = true;
+            }
+        }
+        socket.emit(
+            "got_like",
+            JSON.stringify({
+                count: likes.length,
+                liked: userLiked,
+                item_id: itemId.item_id,
+            })
+        );
     });
 });
 
