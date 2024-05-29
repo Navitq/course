@@ -34,7 +34,7 @@ export default function SignUp(props) {
         let data = await formObject(formData);
         formData.append("img_name", data.img_name);
         formData.set("img", data.img);
-        let resJson = await fetch("/sign_up", {
+        let resJson = await fetch(`${process.env.REACT_APP_HOST}/sign_up`, {
             method: "post",
             body: formData,
         });
@@ -77,7 +77,7 @@ export default function SignUp(props) {
     }
 
     async function createImgUrl() {
-        let data = await fetch("/s3drop");
+        let data = await fetch(`${process.env.REACT_APP_HOST}/s3drop`);
         let jsonUrl = await data.json();
         return jsonUrl.url;
     }

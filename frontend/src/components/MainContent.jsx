@@ -20,7 +20,7 @@ import SearchPage from './SearchPage';
 export default class MainContent extends Component {
 
 	async componentDidMount() {
-		await fetch("/sign_in")
+		await fetch(`${process.env.REACT_APP_HOST}/sign_in`)
         .then(response => response.json())
         .then((message)=>{
             if(message.auth == true){

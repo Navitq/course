@@ -28,7 +28,7 @@ function Filter(props) {
     }
 
     function getCategoryData() {
-        fetch("/categories")
+        fetch(`${process.env.REACT_APP_HOST}/categories`)
             .then((res) => res.json())
             .then((res) => {
                 let currentCat = res.map((el) => {

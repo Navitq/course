@@ -4,7 +4,7 @@ import Nav from "react-bootstrap/Nav";
 
 export default function StoragePageLinks(props) {
     async function logOut() {
-        let resp = await fetch("/log_out", {
+        let resp = await fetch(`${process.env.REACT_APP_HOST}/log_out`, {
             method: "delete",
         });
         let mess = await resp.json();

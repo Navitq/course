@@ -8,6 +8,11 @@ const { createServer } = require("http");
 const cookieParser = require("cookie-parser");
 const { emit } = require("process");
 const { writeFile, readFile } = require("fs");
+const cors = require('cors') 
+
+let corsOptions = { 
+    origin : ['http://94.237.37.190:8880'], 
+} 
 
 const {
     User,
@@ -31,6 +36,8 @@ const middlware = session({
 
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
+app.use(cors(corsOptions)) 
+ 
 app.use(cookieParser("aaa2C44-4D44-WppQ38Siuyiuy"));
 
 app.use(middlware);

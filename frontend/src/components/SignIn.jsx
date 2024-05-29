@@ -8,6 +8,8 @@ import { socket } from "./socket";
 
 export class SignIn extends Component {
     constructor(props) {
+        console.log(process.env.REACT_APP_HOST)
+
         super(props);
         this.state = { valueEmail: "", valuePassWord: "" };
 
@@ -16,10 +18,9 @@ export class SignIn extends Component {
 
         this.sendRequest = this.sendRequest.bind(this);
     }
-
     async sendRequest(e) {
         e.preventDefault();
-        let response = await fetch("/sign_in", {
+        let response = await fetch(`${process.env.REACT_APP_HOST}/sign_in`, {
             method: "post",
             body: new FormData(e.currentTarget)
         })

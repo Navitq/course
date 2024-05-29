@@ -87,7 +87,7 @@ function CreateCal(props) {
     }
 
     async function createImgUrl() {
-        let data = await fetch("/s3drop");
+        let data = await fetch(`${process.env.REACT_APP_HOST}/s3drop`);
         let jsonUrl = await data.json();
         return jsonUrl.url;
     }
@@ -147,7 +147,7 @@ function CreateCal(props) {
     }
 
     function getCategoryData() {
-        fetch("/categories")
+        fetch(`${process.env.REACT_APP_HOST}/categories`)
             .then((res) => res.json())
             .then((res) => {
                 let currentCat = res.map((el) => {
