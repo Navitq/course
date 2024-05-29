@@ -124,7 +124,7 @@ function TagsArea(props) {
                 onKeyDown={tagCheckerKey}
                 value={newData}
                 style={{ wordWrap: "break-word" }}
-                className="filter__scroll"
+                className="filter__scroll main-tag-area"
                 ref={tagsArea}
                 maxLength="255"
                 minLength="2"

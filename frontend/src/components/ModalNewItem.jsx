@@ -97,6 +97,10 @@ function ModalNewItem(props) {
                 <Modal.Body>
                     <Form
                         onSubmit={(e) => {
+                            e.preventDefault()
+                            if(e.target.getElementsByClassName("main-tag-area")[0].value.length < 2){
+                                return;
+                            }
                             props.modalClose();
                             props.newItem(e);
                         }}

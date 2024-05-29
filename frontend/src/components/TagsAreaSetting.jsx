@@ -128,10 +128,11 @@ function TagsAreaSetting(props) {
                 onKeyDown={tagCheckerKey}
                 value={newData}
                 style={{ wordWrap: "break-word" }}
-                className="filter__scroll"
+                className="filter__scroll  main-tag-area"
                 ref={tagsArea}
                 readOnly
                 maxLength="255"
+                minLength="2"
             />
             <ListGroup style={{ position: "absolute" }}>{newHint}</ListGroup>
         </Form.Group>

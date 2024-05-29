@@ -54,6 +54,9 @@ function ItemTemplate(props) {
 
     function saveChanges(e) {
         e.preventDefault();
+        if(e.currentTarget.getElementsByClassName("main-tag-area")[0].value.length < 2){
+            return;
+        }
         let fields = findFields(e);
         let formData = createFormData(e.currentTarget);
         let object = createObject(formData);
