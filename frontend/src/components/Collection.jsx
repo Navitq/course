@@ -17,6 +17,7 @@ import TableCell from "./TableCell";
 import FilterItems from "./FilterItems";
 import AddItem from "./AddItem";
 import ModalNewItem from "./ModalNewItem";
+import ModalAnswer from "./ModalAnswer";
 
 function Collection(props) {
     const [refUser, setRefUser] = useState("");
@@ -25,6 +26,9 @@ function Collection(props) {
     let [tbody, setBody] = useState([]);
     let [colCurrent, setColCurrent] = useState({});
     let [mainOwner, setMainOwner] = useState({ owner: false });
+
+    const [showAnswer, setShowAnswer] = useState(false);
+    const [textAnswer, setTextAnswer] = useState("");
 
     let tagsList = useRef([])
 
@@ -47,6 +51,10 @@ function Collection(props) {
             }
         }
         return validatedForm;
+    }
+
+    function closeAnswer(value) {
+        setShowAnswer(value);
     }
 
     async function formObject(validatedForm) {
@@ -83,6 +91,8 @@ function Collection(props) {
         let form = document.getElementById("collection__main-form");
         let fields = findFields(form);
         changeState(false, fields);
+        setTextAnswer("editMode");
+        setShowAnswer(true);
     }
 
     async function saveData(e) {
@@ -93,6 +103,8 @@ function Collection(props) {
         socket.emit("change_col_data", JSON.stringify(data));
         let fields = findFields(form);
         changeState(true, fields);
+        setTextAnswer("saveData");
+        setShowAnswer(true);
     }
 
     async function deleteColl(e) {
@@ -194,15 +206,25 @@ function Collection(props) {
                     return [...prev, card];
                 });
             }
+            setTextAnswer("collNewItem");
+            setShowAnswer(true);
         });
 
         socket.on("delete_col_data", () => {
+            setTextAnswer("collDeleted");
+            setShowAnswer(true);
             window.location.reload();
         });
     }, []);
 
     return (
         <Container className="my-4">
+            <ModalAnswer
+                t={props.t}
+                closeAnswer={closeAnswer}
+                showAnswer={showAnswer}
+                textAnswer={textAnswer}
+            ></ModalAnswer>
             <Container className="px-0 h5 mb-3">
                 <NavLink
                     className="nav-link active text-decoration-underline"

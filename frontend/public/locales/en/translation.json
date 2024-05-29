@@ -14,6 +14,15 @@
 
     "ModalAnswer": {
         "exist": "User with this email already exist!",
+        "passErr":"Incorrect username or password!",
+        "unAuth": "You must be logged in to leave comments!",
+        "unLike": "You must be logged in to leave reaction!",
+        "editMode":"Edit mode enable!",
+        "saveData":"Data successfully saved! Edit mode was disabled",
+        "itemDeleted": "Item was successfully deleted!",
+        "collDeleted": "Collection was successfully deleted!",
+        "collNewItem": "New item was successfully added!",
+        "newColl": "New collection was successfully created!",
         "ok": "Ok",
         "warning":"Warning!"
     }, 

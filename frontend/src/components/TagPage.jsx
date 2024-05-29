@@ -44,7 +44,7 @@ function TagPage(props) {
     }, [tag]);
     return (
         <Container className="px-0">
-            <Container className="text-center h3 my-5 mb-4">
+            <Container className="text-center h3 my-5 mb-4" style={{wordBreak: "break-word"}}>
                 {`#${tag}`}
             </Container>
             <Container className="overflow-auto">

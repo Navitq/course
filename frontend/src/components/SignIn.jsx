@@ -4,6 +4,8 @@ import { Container } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
+import ModalAnswer from "./ModalAnswer";
+
 import { socket } from "./socket";
 
 export class SignIn extends Component {
@@ -11,12 +13,14 @@ export class SignIn extends Component {
         console.log(process.env.REACT_APP_HOST)
 
         super(props);
-        this.state = { valueEmail: "", valuePassWord: "" };
+        this.state = { valueEmail: "", valuePassWord: "", showAnswer: false, textAnswer: "" };
 
         this.setValueEmail = this.setValueEmail.bind(this);
         this.setValuePassWord = this.setValuePassWord.bind(this);
 
         this.sendRequest = this.sendRequest.bind(this);
+        this.closeAnswer = this.closeAnswer.bind(this)
+        
     }
     async sendRequest(e) {
         e.preventDefault();
@@ -29,14 +33,20 @@ export class SignIn extends Component {
             return
         }
         let message = await response.json();
-
-        if(message.auth == true){
+        if (typeof message.auth == "string") {
+            this.setState({ textAnswer: message.auth });
+            this.setState({ showAnswer: true });
+        } else if(message.auth == true){
             window.location.reload()
         }    
     }
 
     setValueEmail(event) {
         this.setState({ valueEmail: event.target.value });
+    }
+
+    closeAnswer(value) {
+        this.setState({ showAnswer: value });
     }
 
     setValuePassWord(event) {
@@ -46,6 +56,12 @@ export class SignIn extends Component {
     render() {
         return (
             <Container>
+                <ModalAnswer
+                t={this.props.t}
+                closeAnswer={this.closeAnswer}
+                showAnswer={this.state.showAnswer}
+                textAnswer={this.state.textAnswer}
+            ></ModalAnswer>
                 <Container 
                     className="h3 d-flex justify-content-center my-5 mb-4"
                     style={{ textAlign: "center" }}

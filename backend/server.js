@@ -102,7 +102,7 @@ app.post("/sign_in", formidable(), async (req, res) => {
             },
         });
         if (result.length < 1) {
-            res.status(401).send("Login or password error!");
+            res.json({ auth: "passErr" });            
             return;
         }
     } catch (err) {
@@ -506,10 +506,11 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_comment", async (dataJSON) => {
+        let data = JSON.parse(dataJSON);
         if (!req.session.auth) {
+            socket.emit(`${data.item_id}`, JSON.stringify({ auth: "unAuth" }));
             return;
         }
-        let data = JSON.parse(dataJSON);
         try {
             let result = await User.findAll({
                 where: {
@@ -1202,6 +1203,7 @@ io.on("connection", (socket) => {
     socket.on("new_like", async (itemId) => {
         itemId = JSON.parse(itemId);
         if (!req.session.auth) {
+            socket.emit(`new_like`, JSON.stringify({ auth: "unLike" }));
             return;
         }
         itemId.user_id = req.session.user_id;

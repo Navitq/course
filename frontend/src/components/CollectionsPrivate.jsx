@@ -13,6 +13,7 @@ import CollCard from "./CollCard";
 import Filter from "./Filter";
 import CreateCal from "./CreateCal";
 import CollTable from "./CollTable";
+import ModalAnswer from "./ModalAnswer";
 
 import { socket } from "./socket";
 import { Table } from "react-bootstrap";
@@ -21,6 +22,9 @@ function CollectionsPrivate(props) {
     let [cards, setCards] = useState([]);
     let [person, setPerson] = useState({});
     let [header, setHeader] = useState(<></>);
+
+    const [showAnswer, setShowAnswer] = useState(false);
+    const [textAnswer, setTextAnswer] = useState("");
 
     let designChecker = useRef("1");
 
@@ -33,11 +37,12 @@ function CollectionsPrivate(props) {
     ];
 
     function addNewCard(card, type) {
-
         if (type != "private" && type != "all") {
             return;
         }
-        if(designChecker.current == '1'){
+        setTextAnswer("newColl");
+        setShowAnswer(true);
+        if (designChecker.current == "1") {
             setCards((prev) => {
                 return [...prev, card[0]];
             });
@@ -46,7 +51,10 @@ function CollectionsPrivate(props) {
                 return [...prev, card[1]];
             });
         }
-        
+    }
+
+    function closeAnswer(value) {
+        setShowAnswer(value);
     }
 
     useEffect(() => {
@@ -99,6 +107,12 @@ function CollectionsPrivate(props) {
 
     return (
         <Container className="my-5">
+            <ModalAnswer
+                t={props.t}
+                closeAnswer={closeAnswer}
+                showAnswer={showAnswer}
+                textAnswer={textAnswer}
+            ></ModalAnswer>
             <Row className="user__main">
                 <Col
                     xl={4}
@@ -111,12 +125,12 @@ function CollectionsPrivate(props) {
                     <Container className="d-flex justify-content-center">
                         <Image
                             src={
-                                ( person.img &&  person.img != 'undefined')
+                                person.img && person.img != "undefined"
                                     ? person.img
                                     : process.env.PUBLIC_URL + "/img/noName.svg"
                             }
                             roundedCircle="true"
-                            style={{maxHeight: "250px"}}
+                            style={{ maxHeight: "250px" }}
                             fluid
                         />
                     </Container>
@@ -197,11 +211,10 @@ function CollectionsPrivate(props) {
                     ) : radioValue == 1 ? (
                         cards
                     ) : (
-                        <Container style={{overflow:"auto"}}>
+                        <Container style={{ overflow: "auto" }}>
                             <Table striped bordered hover>
                                 {header}
                                 <tbody>{cards}</tbody>
-                                
                             </Table>
                         </Container>
                     )}

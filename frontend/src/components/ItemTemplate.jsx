@@ -11,6 +11,7 @@ import Comment from "./Comment";
 import { socket } from "./socket";
 import TagsAreaSetting from "./TagsAreaSetting";
 import TagField from "./TagField";
+import ModalAnswer from "./ModalAnswer";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,6 +22,8 @@ function ItemTemplate(props) {
     let [mainOwner, setMainOwner] = useState({ owner: true });
     let [tagsValue, setTagsValue] = useState();
     let [likes, setLikes] = useState([0, false]);
+    const [showAnswer, setShowAnswer] = useState(false);
+    const [textAnswer, setTextAnswer] = useState("");
 
     let tagsList = useRef([]);
     let likeManager = useRef();
@@ -44,6 +47,10 @@ function ItemTemplate(props) {
         return formData;
     }
 
+    function closeAnswer(value) {
+        setShowAnswer(value);
+    }
+
     function createObject(form) {
         let formObj = {};
         for (const value of form.entries()) {
@@ -65,6 +72,8 @@ function ItemTemplate(props) {
         setTagsValue(object.tags);
         socket.emit("change_item", JSON.stringify(object));
         changeState(true, fields);
+        setTextAnswer("saveData");
+        setShowAnswer(true);
     }
 
     function addComment(data) {
@@ -148,6 +157,8 @@ function ItemTemplate(props) {
     function changeReadonly(e) {
         let fields = findFields(e);
         changeState(false, fields);
+        setTextAnswer("editMode");
+        setShowAnswer(true);
     }
 
     useEffect(() => {
@@ -187,10 +198,17 @@ function ItemTemplate(props) {
             socket.emit("get_like", JSON.stringify({ item_id: data.item_id }));
         });
         socket.on("delete_item", () => {
+            setTextAnswer("itemDeleted");
+            setShowAnswer(true);
             window.location.reload();
         });
         socket.on(`${item_id}`, (dataJSON) => {
             let data = JSON.parse(dataJSON);
+            if(data.auth == "unAuth"){
+                setTextAnswer(data.auth);
+                setShowAnswer(true);
+                return;
+            }
             addComment(data);
         });
         socket.on("got_tags_coll", (dataJSON) => {
@@ -199,6 +217,11 @@ function ItemTemplate(props) {
         });
         socket.on("new_like", (dataJSON) => {
             let data = JSON.parse(dataJSON);
+            if(data.auth == "unLike"){
+                setTextAnswer(data.auth);
+                setShowAnswer(true);
+                return;
+            }
             if (!likeManager.current || likeManager.current.dataset.item_id != data.item_id) {
                 return;
             }
@@ -228,6 +251,12 @@ function ItemTemplate(props) {
 
     return (
         <Container className="px-0">
+            <ModalAnswer
+                t={props.t}
+                closeAnswer={closeAnswer}
+                showAnswer={showAnswer}
+                textAnswer={textAnswer}
+            ></ModalAnswer>
             <Container className="h5 mt-4">
                 <NavLink
                     className="nav-link active text-decoration-underline"
