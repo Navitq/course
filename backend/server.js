@@ -558,6 +558,7 @@ io.on("connection", (socket) => {
                 JSON.stringify(owner)
             );
         } catch (err) {
+            socket.emit("got_person_data", JSON.stringify({ err: true }));
             console.error(err);
         }
     });

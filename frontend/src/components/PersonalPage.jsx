@@ -58,7 +58,7 @@ function PersonalPage(props) {
         socket.on("got_person_data", (dataJSON, ownerJSON) => {
             let data = JSON.parse(dataJSON);
             if (data.err) {
-                navigate(`/public`);
+                navigate(`/not_found`);
                 return;
             }
             let owner = JSON.parse(ownerJSON);
