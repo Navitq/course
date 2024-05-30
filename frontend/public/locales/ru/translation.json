@@ -50,12 +50,12 @@
         "header": "Новый способ распоряжаться своей коллекцией.",
         "title": "Ваша личная коллекция",
         "subTitle": "В моей личной коллекции самые разнообразные предметы: от старинных виниловых пластинок до уникальных произведений искусства. Каждый предмет имеет особое значение, будь то сувенир из памятного путешествия или подарок дорогого друга. Тщательно организованная моя коллекция отражает мои эклектичные вкусы, а истории, стоящие за каждым предметом, делают ее по-настоящему особенной.",
-        "firstSlideTitle":"Первый слайд",
-        "secondSlideTitle":"Второй слайд",
-        "thirdSlideTitle":"Третий слайд",
-        "firstSlideTxt":"Nulla vitae elit libero, a pharetra augue mollis interdum.",
-        "secondSlideTxt":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        "thirdSlideTxt":"Praesent commodo cursus magna, vel scelerisque nisl consectetur.",
+        "firstSlideTitle":"Коллекции наших пользователей",
+        "secondSlideTitle":"Коллекции пользователей",
+        "thirdSlideTitle":"Ваш элемент",
+        "firstSlideTxt":"Лучшие в своих номинациях коллекции",
+        "secondSlideTxt":"Теперь вы всегда можете делиться своими коллекциями",
+        "thirdSlideTxt":"Сохраняйте, удаляйте, редактируйте свои элементы в любой момент",
         "tryFree":"Попробовать"
     }, 
     "Filter": {

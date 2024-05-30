@@ -6,7 +6,7 @@ import Ratio from "react-bootstrap/Ratio";
 
 function AboutUs(props) {
     return (
-        <Container >
+        <Container>
             <div
                 className="h3 d-flex justify-content-center my-2 mb-3"
                 style={{ textAlign: "center" }}
@@ -19,15 +19,13 @@ function AboutUs(props) {
                     <Accordion.Header>
                         {props.t("About.title")}
                     </Accordion.Header>
-                    <Accordion.Body>
-                        {props.t("About.subTitle")}
-                    </Accordion.Body>
+                    <Accordion.Body>{props.t("About.subTitle")}</Accordion.Body>
                 </Accordion.Item>
             </Accordion>
 
             <Ratio key={"16x9"} aspectRatio={"16x9"} className="mb-4">
                 <iframe
-                    src="https://www.youtube.com/embed/bhfdyzWWFTY?si=C-DkeX2cAJREIw6G"
+                    src="https://www.youtube.com/embed/RKEEqbj80Wg?si=yk0uuSQxZJ8tTui3"
                     title="YouTube video player"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
@@ -38,7 +36,7 @@ function AboutUs(props) {
             <Carousel>
                 <Carousel.Item>
                     <Image
-                        src={process.env.PUBLIC_URL+"/img/1.jpg"}
+                        src={process.env.PUBLIC_URL + "/img/4.png"}
                         text="First slide"
                         style={{ maxHeight: "700px" }}
                     />
@@ -49,7 +47,7 @@ function AboutUs(props) {
                 </Carousel.Item>
                 <Carousel.Item>
                     <Image
-                        src={process.env.PUBLIC_URL+"/img/1.jpg"}
+                        src={process.env.PUBLIC_URL + "/img/5.png"}
                         text="Second slide"
                         style={{ maxHeight: "700px" }}
                     />
@@ -60,7 +58,7 @@ function AboutUs(props) {
                 </Carousel.Item>
                 <Carousel.Item>
                     <Image
-                        src={process.env.PUBLIC_URL+"/img/1.jpg"}
+                        src={process.env.PUBLIC_URL + "/img/6.png"}
                         text="Third slide"
                         style={{ maxHeight: "700px" }}
                     />
