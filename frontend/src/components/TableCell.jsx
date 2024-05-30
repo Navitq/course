@@ -132,13 +132,13 @@ function TableCell(props) {
                         </NavLink>
                     </td>
                     {/* <th>{props.el.description}</th> */}
-                    <td>
+                    <td style={{maxWidth: "300px"}}>
                         <NavLink
                             className="nav-link active"
                             data-item_id={el.item_id}
                             variant="primary"
                             to={`/collection/${el.col_id}/${el.item_id}`}
-                            style={{ width: "100%" }}
+                            style={{ width: "100%", wordWrap: "break-word" }}
                         >
                             {el.tags}
                         </NavLink>

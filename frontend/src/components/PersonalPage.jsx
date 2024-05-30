@@ -16,6 +16,7 @@ import CollTable from "./CollTable";
 import CollCard from "./CollCard";
 import Filter from "./Filter";
 import CreateCal from "./CreateCal";
+import ModalAnswer from "./ModalAnswer";
 
 import { socket } from "./socket";
 
@@ -24,6 +25,9 @@ function PersonalPage(props) {
     let [person, setPerson] = useState({});
     let [mainOwner, setMainOwner] = useState({ owner: false });
     let [header, setHeader] = useState(<></>);
+
+    const [showAnswer, setShowAnswer] = useState(false);
+    const [textAnswer, setTextAnswer] = useState("");
 
     let { user_id } = useParams();
 
@@ -43,6 +47,8 @@ function PersonalPage(props) {
         if (type != "people" && type != "all") {
             return;
         }
+        setTextAnswer("newColl");
+        setShowAnswer(true);
         if (designChecker.current == "1") {
             setCards((prev) => {
                 return [...prev, card[0]];
@@ -52,6 +58,10 @@ function PersonalPage(props) {
                 return [...prev, card[1]];
             });
         }
+    }
+
+    function closeAnswer(value) {
+        setShowAnswer(value);
     }
 
     useEffect(() => {
@@ -102,7 +112,7 @@ function PersonalPage(props) {
                 );
                 setHeader(newHeader);
             }
-            
+
             setCards(mewCards);
         });
 
@@ -112,6 +122,12 @@ function PersonalPage(props) {
 
     return (
         <Container className="my-5">
+            <ModalAnswer
+                t={props.t}
+                closeAnswer={closeAnswer}
+                showAnswer={showAnswer}
+                textAnswer={textAnswer}
+            ></ModalAnswer>
             <Row className="user__main">
                 <Col
                     xl={4}

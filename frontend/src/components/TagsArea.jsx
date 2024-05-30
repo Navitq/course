@@ -88,6 +88,7 @@ function TagsArea(props) {
                                 setNewData(sliced);
                                 setNewHint([]);
                             }}
+                            style={{wordWrap:"break-word"}}
                         >
                             {el.tag}
                         </ListGroup.Item>
@@ -129,7 +130,7 @@ function TagsArea(props) {
                 maxLength="255"
                 minLength="2"
             />
-            <ListGroup style={{ position: "absolute", maxHeight: "200px", overflow:"auto" }} className="filter__scroll">{newHint}</ListGroup>
+            <ListGroup style={{ position: "absolute", maxHeight: "200px", overflow:"auto", maxWidth: "350px" }} className="filter__scroll">{newHint}</ListGroup>
         </Form.Group>
     );
 }

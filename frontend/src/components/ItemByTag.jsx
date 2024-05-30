@@ -33,7 +33,7 @@ function ItemByTag(props) {
                 return (
                     <NavLink
                             to={`/tags/${element}`}
-                            style={{ width: "fit-content" }}
+                            style={{ width: "auto", wordWrap: "break-word" }}
                             variant="primary"
                             className="nav-link active"
                             key={uuidv4()}
@@ -79,7 +79,7 @@ function ItemByTag(props) {
                             {el.nameItem}
                         </NavLink>
                     </td>
-                    <td className="d-flex flex-wrap">
+                    <td style={{display:"table-cell !important", maxWidth:"300px"}}>
                         {tagsData}
                     </td>
                     <td>
