@@ -1109,6 +1109,7 @@ io.on("connection", (socket) => {
                     },
                     order: [[sequelize.literal("rank"), "DESC"]],
                 });
+                console.log(items)
             } else {
                 items = await Item.findAll({
                     limit: 50,
@@ -1119,7 +1120,7 @@ io.on("connection", (socket) => {
                                     "ts_rank",
                                     sequelize.col("item_search_english"),
                                     sequelize.literal(
-                                        'english',`plainto_tsquery('${data}')`
+                                       `plainto_tsquery( 'english','${data}')`
                                     )
                                 ),
                                 "rank",
