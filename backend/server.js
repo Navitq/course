@@ -1103,7 +1103,7 @@ io.on("connection", (socket) => {
                     where: {
                         item_search_russian: {
                             [Op.match]: sequelize.literal(
-                                `plainto_tsquery('${data}')`
+                                `plainto_tsquery('russian','${data}')`
                             ),
                         },
                     },
@@ -1130,7 +1130,7 @@ io.on("connection", (socket) => {
                     where: {
                         item_search_english: {
                             [Op.match]: sequelize.literal(
-                                `plainto_tsquery('${data}')`
+                                `plainto_tsquery('english','${data}')`
                             ),
                         },
                     },
