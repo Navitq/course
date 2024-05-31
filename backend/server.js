@@ -1083,6 +1083,7 @@ io.on("connection", (socket) => {
             let items = null;
 
             if (language == "ru") {
+                console.log(11111111111111)
                 items = await Item.findAll({
                     limit: 50,
                     attributes: {
@@ -1092,7 +1093,7 @@ io.on("connection", (socket) => {
                                     "ts_rank",
                                     sequelize.col("item_search_russian"),
                                     sequelize.literal(
-                                        `plainto_tsquery('${data}')`
+                                        `plainto_tsquery('russian','${data}')`
                                     )
                                 ),
                                 "rank",
@@ -1118,7 +1119,7 @@ io.on("connection", (socket) => {
                                     "ts_rank",
                                     sequelize.col("item_search_english"),
                                     sequelize.literal(
-                                        `plainto_tsquery('${data}')`
+                                        'english',`plainto_tsquery('${data}')`
                                     )
                                 ),
                                 "rank",
