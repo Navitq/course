@@ -21,6 +21,7 @@
     "express-session": "^1.18.0",
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
+    "jira-connector": "^3.1.0",
     "nodemon": "^3.1.0",
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",

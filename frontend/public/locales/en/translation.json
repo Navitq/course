@@ -196,5 +196,9 @@
         "status":"Status",
         "admin":"Admin",
         "basic":"Basic"
+    },
+    "Jira":{
+        "header":"JIRA Tasks",
+        "noTasks": "You don't have tasks now!"
     }
 }
