@@ -4,9 +4,9 @@
         "signUp": "Sign up",
         "logOut": "Log out",
         "about": "About us",
-        "collections":"Collections",
-        "admin":"Admin",
-        "yourCall":"Your collection"
+        "collections": "Collections",
+        "admin": "Admin",
+        "yourCall": "Your collection"
     },
     "footer": {
         "protection": "© 2024 Company, Inc"
@@ -14,18 +14,18 @@
 
     "ModalAnswer": {
         "exist": "User with this email already exist!",
-        "passErr":"Incorrect username or password!",
+        "passErr": "Incorrect username or password!",
         "unAuth": "You must be logged in to leave comments!",
         "unLike": "You must be logged in to leave reaction!",
-        "editMode":"Edit mode enable!",
-        "saveData":"Data successfully saved! Edit mode was disabled",
+        "editMode": "Edit mode enable!",
+        "saveData": "Data successfully saved! Edit mode was disabled",
         "itemDeleted": "Item was successfully deleted!",
         "collDeleted": "Collection was successfully deleted!",
         "collNewItem": "New item was successfully added!",
         "newColl": "New collection was successfully created!",
         "ok": "Ok",
-        "warning":"Warning!"
-    }, 
+        "warning": "Warning!"
+    },
 
     "notFound": {
         "404": "Page wasn't found 404"
@@ -51,54 +51,54 @@
         "header": "A magical new way to store and share your collection",
         "title": "Your personal collection",
         "subTitle": "In my personal collection, I have a diverse array of items ranging from vintage vinyl records to unique pieces of art. Each item holds a special significance, whether it's a souvenir from a memorable trip or a gift from a dear friend. Organized meticulously, my collection reflects my eclectic tastes and the stories behind each object make it truly special.",
-        "firstSlideTitle":"Our users' collections",
-        "secondSlideTitle":"User сollections",
-        "thirdSlideTitle":"Your element",
-        "firstSlideTxt":"Collections that are the best in their categories",
-        "secondSlideTxt":"Now you can always share your collections",
-        "thirdSlideTxt":"Save, delete, edit your elements at any time",
-        "tryFree":"Try it for free"
-    }, 
-    "Filter": {
-        "filter":"Filter",
-        "category":"Category",
-        "calName":"Collection Name",
-        "imgOnly":"With img only",
-        "chseCategory":"Choose category",
-        "stamps":"Stamps",
-        "spoons":"Spoons",
-        "rings":"Rings",
-        "books":"Books",
-        "glasses":"Glasses",
-        "coins":"Coins",
-        "cars":"Cars",
-        "trains":"Trains",
-        "plains":"Plains",
-        "hats":"Hats",
-        "other":"Other",
-        "catName":"Category name",
-        "clean":"Clean filters"
+        "firstSlideTitle": "Our users' collections",
+        "secondSlideTitle": "User сollections",
+        "thirdSlideTitle": "Your element",
+        "firstSlideTxt": "Collections that are the best in their categories",
+        "secondSlideTxt": "Now you can always share your collections",
+        "thirdSlideTxt": "Save, delete, edit your elements at any time",
+        "tryFree": "Try it for free"
     },
-    "FilterItems":{
-        "addSettings":"Settings",
-        "searchValue":"Search value",
-        "searchField":"Enter the search value...",
-        "addFilter":"Advanced filtering",
+    "Filter": {
+        "filter": "Filter",
+        "category": "Category",
+        "calName": "Collection Name",
+        "imgOnly": "With img only",
+        "chseCategory": "Choose category",
+        "stamps": "Stamps",
+        "spoons": "Spoons",
+        "rings": "Rings",
+        "books": "Books",
+        "glasses": "Glasses",
+        "coins": "Coins",
+        "cars": "Cars",
+        "trains": "Trains",
+        "plains": "Plains",
+        "hats": "Hats",
+        "other": "Other",
+        "catName": "Category name",
+        "clean": "Clean filters"
+    },
+    "FilterItems": {
+        "addSettings": "Settings",
+        "searchValue": "Search value",
+        "searchField": "Enter the search value...",
+        "addFilter": "Advanced filtering",
         "filters": "Filters",
         "name": "Name",
         "description": "Description",
-        "about":"These items...",
-        "namePlaceHolder":"Items names..."
-    }, 
+        "about": "These items...",
+        "namePlaceHolder": "Items names..."
+    },
     "Search": {
-        "header":"Search",
-        "footer":"Search",
-        "schPlaceholder":"What do I want to find...?",
-        "searchResult":"Search results for query: ",
+        "header": "Search",
+        "footer": "Search",
+        "schPlaceholder": "What do I want to find...?",
+        "searchResult": "Search results for query: ",
         "notFound": "No results were found for your request"
     },
     "CrElem": {
-        "header":"Create Collection",
+        "header": "Create Collection",
         "name": "Collection name",
         "description": "Collection description",
         "image": "Collection image",
@@ -107,98 +107,111 @@
         "about": "This collection is about..."
     },
     "ModalColl": {
-        "headerCol":"Collection settings",
-        "headerItem":"Item settings",
-        "addTextField":"Add text field",
-        "addNumbField":"Add integer field",
-        "addCheckField":"Add logic field",
-        "addTtxAreaField":"Add multiline field",
-        "addDateField":"Add date field",
+        "headerCol": "Collection settings",
+        "headerItem": "Item settings",
+        "addTextField": "Add text field",
+        "addNumbField": "Add integer field",
+        "addCheckField": "Add logic field",
+        "addTtxAreaField": "Add multiline field",
+        "addDateField": "Add date field",
         "addField": "Add",
         "fieldName": "Enter field name",
-        "close":"Close"
+        "close": "Close"
     },
-    "CollCard":{
+    "CollCard": {
         "open": "Open"
     },
     "Private": {
-        "collections":"Collections",
-        "noCollections":"You don't have collection right now..."
+        "collections": "Collections",
+        "noCollections": "You don't have collection right now..."
     },
-    "Collection":{
-        "edit":"Edit",
-        "delete":"Delete",
-        "settings":"Setting", 
-        "addNewItem":"Create element",
-        "items":"Working with items", 
-        "cards":"Cards",
-        "table":"Tables"
+    "Collection": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "settings": "Setting",
+        "addNewItem": "Create element",
+        "items": "Working with items",
+        "cards": "Cards",
+        "table": "Tables"
     },
-    "TableCell":{
+    "TableCell": {
         "id": "Id",
-        "name":"Name",
-        "description":"Description",
-        "tags":"Tags",
-        "noElemt":"You don't have items right now..."
+        "name": "Name",
+        "description": "Description",
+        "tags": "Tags",
+        "noElemt": "You don't have items right now..."
     },
-    "ModalItem":{
-        "headerItem":"Item settings",
-        "name":"Item name",
-        "description":"Item description",
-        "itemManagement":"Element Control",
-        "itemTags":"Tags",
-        "tagsPlaceholder":"Tags..."
+    "ModalItem": {
+        "headerItem": "Item settings",
+        "name": "Item name",
+        "description": "Item description",
+        "itemManagement": "Element Control",
+        "itemTags": "Tags",
+        "tagsPlaceholder": "Tags..."
     },
-    "ItemTemplate":{
-        "edit":"Edit",
-        "delete":"Delete",
-        "settings":"Item settings",
+    "ItemTemplate": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "settings": "Item settings",
         "id": "Id",
-        "name":"Name",
-        "description":"Description",
-        "tags":"Tags",
-        "tagsPlaceholder":"Tags...",
-        "setting":"Settings",
-        "save":"Save",
-        "comments":"Comments",
+        "name": "Name",
+        "description": "Description",
+        "tags": "Tags",
+        "tagsPlaceholder": "Tags...",
+        "setting": "Settings",
+        "save": "Save",
+        "comments": "Comments",
         "post": "Post",
         "publicationDate": "Publication date(UTC):  ",
-        "commentPlholder":"Here you can leave your comment..."
+        "commentPlholder": "Here you can leave your comment..."
     },
-    "Additional":{
-        "description":"Item description",
-        "filter":"Filter"
+    "Additional": {
+        "description": "Item description",
+        "filter": "Filter"
     },
-    "Public":{
-        "lastItems":"List of recently added items",
-        "author":"Author",
-        "collName":"Collection name",
-        "itemName":"Item Name",
-        "tagsCloud":"Tags cloud",
+    "Public": {
+        "lastItems": "List of recently added items",
+        "author": "Author",
+        "collName": "Collection name",
+        "itemName": "Item Name",
+        "tagsCloud": "Tags cloud",
         "collLargest": "Largest collections",
-        "description":"Description",
-        "category":"Category",
-        "count":"Count",
-        "tags":"Tags",
-        "name":"Name",
-        "noTags":"There are no items with this tag",
-        "goToAuthor":"Go to the author",
-        "goToColl":"Go to the collection"
+        "description": "Description",
+        "category": "Category",
+        "count": "Count",
+        "tags": "Tags",
+        "name": "Name",
+        "noTags": "There are no items with this tag",
+        "goToAuthor": "Go to the author",
+        "goToColl": "Go to the collection"
     },
-    "Admin":{
-        "header":"Table with info about our users!",
-        "block":"Block",
-        "unblock":"Unblock",
-        "delete":"Delete",
-        "id":"Id",
-        "email":"Email",
-        "name":"Name",
-        "status":"Status",
-        "admin":"Admin",
-        "basic":"Basic"
+    "Admin": {
+        "header": "Table with info about our users!",
+        "block": "Block",
+        "unblock": "Unblock",
+        "delete": "Delete",
+        "id": "Id",
+        "email": "Email",
+        "name": "Name",
+        "status": "Status",
+        "admin": "Admin",
+        "basic": "Basic"
     },
-    "Jira":{
-        "header":"JIRA Tasks",
-        "noTasks": "You don't have tasks now!"
+    "Jira": {
+        "header": "JIRA Tasks",
+        "noTasks": "You don't have tasks now!",
+        "help": "Help JIRA",
+        "name": "Name",
+        "pageAddress": "Page address",
+        "description": "Description",
+        "collection": "Collection",
+        "collectionId": "Collection Id",
+        "priority": "Priority",
+        "openMenu": "Open menu to select",
+        "height": "Height",
+        "middle": "Middle",
+        "low": "Low",
+        "state": "state",
+        "stateOpen": "Open"
     }
 }

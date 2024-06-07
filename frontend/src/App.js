@@ -107,7 +107,7 @@ function App() {
                         i18n={i18n}
                         theme={theme}
                     ></MainContent>
-                    <Footer t={t}></Footer>
+                    <Footer headerState={headerState} t={t}></Footer>
                 </BrowserRouter>
             </Container>
         </Container>

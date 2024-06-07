@@ -20,8 +20,8 @@ function TableJira(props) {
         )
     }
 
-    function body() {
-        let body = props.data.map((el)=>{
+    function mainBody() {
+        let currentBody = props.data.map((el)=>{
             let line = el.map((el)=>{
                 return(
                 <tr>
@@ -39,16 +39,16 @@ function TableJira(props) {
         })
         return (
             <tbody>
-                {body}
+                {currentBody}
             </tbody>
         )
     }
 
     useEffect(()=>{
         let head =  header();
-        let body = body();
+        let body = mainBody();
         setTable(()=>{
-            [...head, ...body]
+            return [...head, ...body]
         })
     },[props.data])
 

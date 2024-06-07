@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Container from "react-bootstrap"
+import {Container} from "react-bootstrap"
 
 import { useParams, useNavigate, NavLink } from "react-router-dom";
 

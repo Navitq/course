@@ -1254,6 +1254,46 @@ io.on("connection", (socket) => {
             })
         );
     });
+
+    socket.on("get_user_jira_info", async (dataJSON) => {
+        if (!req.session.auth) {
+            return;
+        }
+        try {
+            let data = JSON.parse(dataJSON);
+
+            let result = await User.findAll({
+                where: {
+                    user_id: req.session.user_id,
+                },
+            });
+            console.log(data.col_id)
+
+            if (data.col_id != undefined) {
+                let coll = await Coll.findAll({
+                    attributes: ["col_id", "name"],
+                    where: {
+                        col_id: data.col_id,
+                    },
+                });
+                result[0].dataValues.col_id = coll[0].dataValues.col_id;
+                result[0].dataValues.name = coll[0].dataValues.name;
+            }        
+            socket.emit("got_user_jira_info", JSON.stringify(result[0]));
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    socket.on("create_ticket_jira", async (dataJSON) => {
+        try {
+            let data = JSON.parse(dataJSON);
+            
+            socket.emit("created_ticket_jira", JSON.stringify(result[0]));
+        } catch (err) {
+            console.log(err);
+        }
+    })
 });
 
 async function getAllUsersJIRA() {
@@ -1433,7 +1473,7 @@ async function findUserByQuery() {
 }
 
 server.listen(4000, async (req, res) => {
-    createUserJIRA("zzzzzzzzzzz@12321d.awd");
+    //createUserJIRA("zzzzzzzzzzz@12321d.awd");
     //getAllUsersJIRA();
     //deleteUserJIRA("712020:360fd4f5-a42e-47bd-b8ed-b11381c5e1d2");
     //getProjectsRolesJIRA()

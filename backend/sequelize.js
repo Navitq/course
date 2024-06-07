@@ -46,6 +46,10 @@ const User = sequelize.define("user", {
     session_id: {
         type: DataTypes.STRING,
     },
+    // jira_id: {
+    //     type: DataTypes.STRING,
+    //     allowNull: false,
+    // }
 });
 
 const Coll = sequelize.define("collection", {

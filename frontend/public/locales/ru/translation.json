@@ -198,6 +198,19 @@
     },
     "Jira":{
         "header":"Задания в JIRA",
-        "noTasks": "У вас нет заданий сейчас!"
+        "noTasks": "У вас нет заданий сейчас!",
+        "help":"Помощь JIRA",
+        "name":"Имя",
+        "pageAddress": "Адрес страницы",
+        "description": "Описание",
+        "collection": "Коллекция",
+        "collectionId": "Id Коллекции",
+        "priority": "Приоритет",
+        "openMenu": "Откройте меню для выбора",
+        "height" : "Высокий", 
+        "middle" : "Средний",
+        "low" : "Низкий",
+        "state": "Состояние",
+        "stateOpen": "Открыто"
     }
 }
