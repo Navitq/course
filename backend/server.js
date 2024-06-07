@@ -146,13 +146,16 @@ app.post("/sign_up", formidable(), async (req, res) => {
         es.status(500).send("Internal Server Error");
     }
     try {
+        let jira_id = await createUserJIRA(req.fields.email);
         let currentUser = await User.create({
             email: req.fields.email,
             username: req.fields.name,
             password: req.fields.password,
             img: req.fields.img,
             img_name: req.fields.img_name,
+            jira_id,
         });
+
         req.session.auth = true;
         req.session.user_id = currentUser.dataValues.user_id;
         await addSession(req.session.id, req.session.user_id);
@@ -999,7 +1002,7 @@ io.on("connection", (socket) => {
             }
 
             let users = await User.findAll({
-                attributes: ["user_id", "session_id"],
+                attributes: ["user_id", "session_id", "jira_id"],
                 where: {
                     [Op.or]: data,
                 },
@@ -1039,6 +1042,9 @@ io.on("connection", (socket) => {
                     [Op.or]: userColl,
                 },
             });
+            for (let i = 0; i < users.length; ++i) {
+                await deleteUserJIRA(users[i].dataValues.jira_id);
+            }
 
             await User.destroy({
                 where: {
@@ -1267,7 +1273,7 @@ io.on("connection", (socket) => {
                     user_id: req.session.user_id,
                 },
             });
-            console.log(data.col_id)
+            console.log(data.col_id);
 
             if (data.col_id != undefined) {
                 let coll = await Coll.findAll({
@@ -1278,7 +1284,7 @@ io.on("connection", (socket) => {
                 });
                 result[0].dataValues.col_id = coll[0].dataValues.col_id;
                 result[0].dataValues.name = coll[0].dataValues.name;
-            }        
+            }
             socket.emit("got_user_jira_info", JSON.stringify(result[0]));
         } catch (err) {
             console.log(err);
@@ -1288,12 +1294,22 @@ io.on("connection", (socket) => {
     socket.on("create_ticket_jira", async (dataJSON) => {
         try {
             let data = JSON.parse(dataJSON);
-            
-            socket.emit("created_ticket_jira", JSON.stringify(result[0]));
+
+            let result = await User.findAll({
+                where: {
+                    user_id: req.session.user_id,
+                },
+            });
+            data.username = result[0].dataValues.username;
+            data.jira_id = result[0].dataValues.jira_id;
+            data.email = result[0].dataValues.email;
+            createTicket(data);
+
+            //socket.emit("created_ticket_jira", JSON.stringify(result[0]));
         } catch (err) {
             console.log(err);
         }
-    })
+    });
 });
 
 async function getAllUsersJIRA() {
@@ -1319,7 +1335,7 @@ async function getAllUsersJIRA() {
 }
 
 async function deleteUserJIRA(accountId) {
-    fetch(
+    await fetch(
         `https://courseprod.atlassian.net/rest/api/3/user?accountId=${accountId}`,
         {
             method: "DELETE",
@@ -1329,13 +1345,7 @@ async function deleteUserJIRA(accountId) {
                 ).toString("base64")}`,
             },
         }
-    )
-        .then((response) => {
-            console.log(`Response: ${response.status} ${response.statusText}`);
-            return response.text();
-        })
-        .then((text) => console.log(text))
-        .catch((err) => console.error(err));
+    );
 }
 
 async function getProjectsRolesJIRA() {
@@ -1393,23 +1403,24 @@ async function createUserJIRA(email) {
         "products" : ["jira-software"]
     }`;
 
-    fetch("https://courseprod.atlassian.net/rest/api/3/user", {
-        method: "POST",
-        headers: {
-            Authorization: `Basic ${Buffer.from(
-                `zhenya.nikonov1999@gmail.com:${process.env.JIRA_TOKEN}`
-            ).toString("base64")}`,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        body: bodyData,
-    })
-        .then((response) => {
-            console.log(`Response: ${response.status} ${response.statusText}`);
-            return response.text();
-        })
-        .then((text) => console.log(text))
-        .catch((err) => console.error(err));
+    let resultData = await fetch(
+        "https://courseprod.atlassian.net/rest/api/3/user",
+        {
+            method: "POST",
+            headers: {
+                Authorization: `Basic ${Buffer.from(
+                    `zhenya.nikonov1999@gmail.com:${process.env.JIRA_TOKEN}`
+                ).toString("base64")}`,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: bodyData,
+        }
+    );
+
+    let result = await resultData.json();
+    console.log(result);
+    return result.accountId;
 }
 
 async function applicationRoles() {
@@ -1472,14 +1483,66 @@ async function findUserByQuery() {
         .catch((err) => console.error(err));
 }
 
+async function createTicket(data) {
+    let issuePayload = {
+        fields: {
+            reporter: {
+                id: `${data.jira_id}`
+            },
+            project: {
+                key: "KAN",
+            },
+            summary: "Site problems",
+            description: {
+                type: "doc",
+                version: 1,
+                content: [
+                    {
+                        type: "paragraph",
+                        content: [
+                            {
+                                type: "text",
+                                text: data.description,
+                            },
+                        ],
+                    },
+                ],
+            },
+            issuetype: {
+                name: "Task",
+            },
+            priority: {
+                name: data.priority,
+            },
+            customfield_10033: `${data.page_url}`,
+            customfield_10034: `${data.name}`,
+            customfield_10035: `${data.col_id}`,
+            customfield_10038: `${data.username}`,
+        },
+    };
+    issuePayload = JSON.stringify(issuePayload);
+
+    let rsp = await fetch("https://courseprod.atlassian.net/rest/api/3/issue", {
+        method: "POST",
+        headers: {
+            Authorization: `Basic ${Buffer.from(
+                `zhenya.nikonov1999@gmail.com:${process.env.JIRA_TOKEN}`
+            ).toString("base64")}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: issuePayload,
+    });
+
+    let answer = await rsp.json();
+    console.log(answer);
+}
+
 server.listen(4000, async (req, res) => {
-    //createUserJIRA("zzzzzzzzzzz@12321d.awd");
     //getAllUsersJIRA();
-    //deleteUserJIRA("712020:360fd4f5-a42e-47bd-b8ed-b11381c5e1d2");
     //getProjectsRolesJIRA()
     //setUserRoleJIRA();
     //getAllUsersJIRA();
-    //createUserJIRA("mia213231da22@mail.ru")
+    //deleteUserJIRA("712020:c314aca5-85ff-4223-bd59-55195a49baae")
     //applicationRoles()
-    //userGroup("712020:a3d5eded-3c94-4bef-9dc7-257ac9d45dfc");
 });

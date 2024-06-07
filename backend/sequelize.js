@@ -46,10 +46,10 @@ const User = sequelize.define("user", {
     session_id: {
         type: DataTypes.STRING,
     },
-    // jira_id: {
-    //     type: DataTypes.STRING,
-    //     allowNull: false,
-    // }
+    jira_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
 });
 
 const Coll = sequelize.define("collection", {
@@ -315,7 +315,7 @@ const Comment = sequelize.define("comment", {
 });
 
 (async () => {
-    // await sequelize.sync({ force: true });//{ force: true }
+    //await sequelize.sync({ force: true });//{ force: true }
     // let user = await User.build({ username: "1", email: "1@1", password: "1" });
     // await user.save();
     // sequelize.sync({ alter: true })

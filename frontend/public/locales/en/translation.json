@@ -208,10 +208,11 @@
         "collectionId": "Collection Id",
         "priority": "Priority",
         "openMenu": "Open menu to select",
-        "height": "Height",
-        "middle": "Middle",
+        "height": "High",
+        "middle": "Medium",
         "low": "Low",
         "state": "state",
-        "stateOpen": "Open"
+        "stateOpen": "Open",
+        "Highest": "Highest"
     }
 }

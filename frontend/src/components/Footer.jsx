@@ -222,28 +222,19 @@ function Footer(props) {
                         >
                             <Form.Label>{props.t("Jira.priority")}</Form.Label>
                             <Form.Select ref={selectRef}>
-                                <option value="low">
+                                <option value="Low">
                                     {props.t("Jira.low")}
                                 </option>
-                                <option value="middle">
+                                <option value="Medium">
                                     {props.t("Jira.middle")}
                                 </option>
-                                <option value="height">
+                                <option value="High">
                                     {props.t("Jira.height")}
                                 </option>
+                                <option value="Highest">
+                                    {props.t("Jira.Highest")}
+                                </option>
                             </Form.Select>
-                        </Form.Group>
-                        <Form.Group
-                            className="mb-3"
-                        >
-                            <Form.Label>{props.t("Jira.state")}</Form.Label>
-                            <Form.Control
-                                name="state"
-                                type="text"
-                                value={props.t("Jira.stateOpen")}
-                                readOnly
-                                className="font-weight-bold"
-                            ></Form.Control>
                         </Form.Group>
                         <Container className="d-flex justify-content-between px-0">
                             <Button variant="secondary" onClick={handleClose}>
