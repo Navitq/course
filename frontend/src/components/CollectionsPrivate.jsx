@@ -9,6 +9,8 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 
 import { v4 as uuidv4 } from "uuid";
 
+import { NavLink } from "react-router-dom";
+
 import CollCard from "./CollCard";
 import Filter from "./Filter";
 import CreateCal from "./CreateCal";
@@ -113,6 +115,17 @@ function CollectionsPrivate(props) {
                 showAnswer={showAnswer}
                 textAnswer={textAnswer}
             ></ModalAnswer>
+            <Container className="px-0 h5 mb-3">
+                <NavLink
+                    className="nav-link active text-decoration-underline"
+                    variant="primary"
+                    to={`/jira/${person.user_id}`}
+                    style={{ width: "fit-content" }}
+                    key={uuidv4()}
+                >
+                    <em>{props.t("Jira.supportRequest")}</em>
+                </NavLink>
+            </Container>
             <Row className="user__main">
                 <Col
                     xl={4}

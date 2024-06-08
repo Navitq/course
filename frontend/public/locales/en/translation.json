@@ -198,7 +198,7 @@
         "basic": "Basic"
     },
     "Jira": {
-        "header": "JIRA Tasks",
+        "header": "JIRA Tickets",
         "noTasks": "You don't have tasks now!",
         "help": "Help JIRA",
         "name": "Name",
@@ -213,6 +213,11 @@
         "low": "Low",
         "state": "state",
         "stateOpen": "Open",
-        "Highest": "Highest"
+        "Highest": "Highest",
+        "supportRequest": "Support tickets",
+        "noSupportRequest": "You do not have any support tickets",
+        "pageLink": "Page URL", 
+        "status":"Status",
+        "jiraLink": "JIRA link"
     }
 }

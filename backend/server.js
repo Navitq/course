@@ -1310,6 +1310,24 @@ io.on("connection", (socket) => {
             console.log(err);
         }
     });
+
+    socket.on("get_jira_tasks", async (dataJSON) => {
+        if (!req.session.auth) {
+            return;
+        }
+        try {
+            let result = await User.findAll({
+                attributes: ["jira_id"],
+                where: {
+                    user_id: req.session.user_id,
+                },
+            });
+            let data = await findUserIssue(result[0].dataValues.jira_id);
+            socket.emit("got_jira_tasks", JSON.stringify(data));
+        } catch (err) {
+            console.log(err);
+        }
+    });
 });
 
 async function getAllUsersJIRA() {
@@ -1484,42 +1502,81 @@ async function findUserByQuery() {
 }
 
 async function createTicket(data) {
-    let issuePayload = {
-        fields: {
-            reporter: {
-                id: `${data.jira_id}`
+    console.log(data);
+    let issuePayload;
+    if (data.collection) {
+        issuePayload = {
+            fields: {
+                reporter: {
+                    id: `${data.jira_id}`,
+                },
+                project: {
+                    key: "KAN",
+                },
+                summary: "Site problems",
+                description: {
+                    type: "doc",
+                    version: 1,
+                    content: [
+                        {
+                            type: "paragraph",
+                            content: [
+                                {
+                                    type: "text",
+                                    text: data.description,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                issuetype: {
+                    name: "Task",
+                },
+                priority: {
+                    name: data.priority,
+                },
+                customfield_10033: `${data.page_url}`,
+                customfield_10034: `${data.collection}`,
+                customfield_10035: `${data.col_id}`,
+                customfield_10038: `${data.username}`,
             },
-            project: {
-                key: "KAN",
+        };
+    } else {
+        issuePayload = {
+            fields: {
+                reporter: {
+                    id: `${data.jira_id}`,
+                },
+                project: {
+                    key: "KAN",
+                },
+                summary: "Site problems",
+                description: {
+                    type: "doc",
+                    version: 1,
+                    content: [
+                        {
+                            type: "paragraph",
+                            content: [
+                                {
+                                    type: "text",
+                                    text: data.description,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                issuetype: {
+                    name: "Task",
+                },
+                priority: {
+                    name: data.priority,
+                },
+                customfield_10033: `${data.page_url}`,
+                customfield_10038: `${data.username}`,
             },
-            summary: "Site problems",
-            description: {
-                type: "doc",
-                version: 1,
-                content: [
-                    {
-                        type: "paragraph",
-                        content: [
-                            {
-                                type: "text",
-                                text: data.description,
-                            },
-                        ],
-                    },
-                ],
-            },
-            issuetype: {
-                name: "Task",
-            },
-            priority: {
-                name: data.priority,
-            },
-            customfield_10033: `${data.page_url}`,
-            customfield_10034: `${data.name}`,
-            customfield_10035: `${data.col_id}`,
-            customfield_10038: `${data.username}`,
-        },
-    };
+        };
+    }
     issuePayload = JSON.stringify(issuePayload);
 
     let rsp = await fetch("https://courseprod.atlassian.net/rest/api/3/issue", {
@@ -1538,11 +1595,28 @@ async function createTicket(data) {
     console.log(answer);
 }
 
+async function findUserIssue(id) {
+    let responseData = await fetch(
+        `https://courseprod.atlassian.net/rest/api/3/search?jql=reporter=${id}`,
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Basic ${Buffer.from(
+                    `zhenya.nikonov1999@gmail.com:${process.env.JIRA_TOKEN}`
+                ).toString("base64")}`,
+                Accept: "application/json",
+            },
+        }
+    );
+    let response = await responseData.json();
+    return response;
+}
+
 server.listen(4000, async (req, res) => {
     //getAllUsersJIRA();
     //getProjectsRolesJIRA()
     //setUserRoleJIRA();
     //getAllUsersJIRA();
-    //deleteUserJIRA("712020:c314aca5-85ff-4223-bd59-55195a49baae")
+    //findUserIssue("557058:63c858c0-66c4-445c-836a-b7cf2b75a038")
     //applicationRoles()
 });

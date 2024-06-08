@@ -47,7 +47,7 @@ export default class MainContent extends Component {
 					<Route exact path="/tags/:tag" element={<TagPage theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
 					<Route exact path="/people/:user_id" element={<PersonalPage theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
 					<Route exact path="/search/:search_req" element={<SearchPage theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
-					<Route exact path="/jira/:user_id" element={<JiraTasks theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>}></Route>
+					<Route exact path="/jira/:user_id" element={this.props.headerState?<JiraTasks theme={this.props.theme} i18n={this.props.i18n} t={this.props.t}/>:<Navigate to="/sign_in"/>}></Route>
 					<Route path="*" element={<NotFound t={this.props.t}></NotFound>} ></Route>
 				</Routes >
 			</Container>

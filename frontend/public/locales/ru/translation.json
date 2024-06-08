@@ -197,7 +197,7 @@
         "basic":"Базовый"
     },
     "Jira":{
-        "header":"Задания в JIRA",
+        "header":"Тикеты в JIRA",
         "noTasks": "У вас нет заданий сейчас!",
         "help":"Помощь JIRA",
         "name":"Имя",
@@ -212,6 +212,11 @@
         "low" : "Низкий",
         "state": "Состояние",
         "stateOpen": "Открыто",
-        "Highest": "Наивысший"
+        "Highest": "Наивысший",
+        "supportRequest": "Обращения в службу поддержки",
+        "noSupportRequest": "У вас нет обращений в службу поддержки",
+        "pageLink": "URL Страницы",
+        "status":"Статус",
+        "jiraLink": "Ссылка на JIRA"
     }
 }
