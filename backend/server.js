@@ -1353,7 +1353,13 @@ async function getAllUsersJIRA() {
 }
 
 async function deleteUserJIRA(accountId) {
-    await fetch(
+
+    let allUsersIssue = await findUserIssue(accountId);
+    for(let i =0;i < allUsersIssue.issues.length;++i){
+        await deleteIssues(allUsersIssue.issues[i].id)
+    }
+
+    let result = await fetch(
         `https://courseprod.atlassian.net/rest/api/3/user?accountId=${accountId}`,
         {
             method: "DELETE",
@@ -1364,6 +1370,7 @@ async function deleteUserJIRA(accountId) {
             },
         }
     );
+    console.log(`Response: ${result.status} ${result.statusText}`);
 }
 
 async function getProjectsRolesJIRA() {
@@ -1612,11 +1619,22 @@ async function findUserIssue(id) {
     return response;
 }
 
+async function deleteIssues(issueIdOrKey) {
+    await fetch(`https://courseprod.atlassian.net/rest/api/3/issue/${issueIdOrKey}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Basic ${Buffer.from(
+                `zhenya.nikonov1999@gmail.com:${process.env.JIRA_TOKEN}`
+            ).toString("base64")}`,
+        },
+    });
+}
+
 server.listen(4000, async (req, res) => {
     //getAllUsersJIRA();
     //getProjectsRolesJIRA()
     //setUserRoleJIRA();
     //getAllUsersJIRA();
     //findUserIssue("557058:63c858c0-66c4-445c-836a-b7cf2b75a038")
-    //applicationRoles()
+    //deleteUserJIRA("557058:3fc1a4cb-daeb-445d-8d97-bf2c9699e5ea");
 });
