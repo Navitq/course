@@ -265,6 +265,17 @@ const Tag = sequelize.define("tag", {
     tag: DataTypes.STRING
 });
 
+const Token = sequelize.define("token", {
+    token: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    user_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
+});
+
 const Likes = sequelize.define("like", {
     item_id: DataTypes.STRING,
     user_id: DataTypes.STRING
@@ -311,8 +322,8 @@ const Comment = sequelize.define("comment", {
 });
 
 (async () => {
-    // await sequelize.sync({ force: true });//{ force: true }
-    // let user = await User.build({ username: "1", email: "1@1", password: "1" });
+    //await sequelize.sync();//{ force: true }
+    //let user = await User.build({ username: "1", email: "1@1", password: "1", status: 'admin' });
     // await user.save();
     // sequelize.sync({ alter: true })
 
@@ -326,5 +337,6 @@ module.exports = {
     Tag,
     sequelize,
     Op,
-    Comment
+    Comment,
+    Token
 };

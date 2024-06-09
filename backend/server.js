@@ -8,16 +8,18 @@ const { createServer } = require("http");
 const cookieParser = require("cookie-parser");
 const { emit } = require("process");
 const { writeFile, readFile } = require("fs");
-const cors = require('cors') 
+const cors = require("cors");
+const crypto = require("crypto");
 
-let corsOptions = { 
-    origin : ['http://94.237.37.190:8880'], 
-} 
+let corsOptions = {
+    origin: ["http://94.237.37.190:8880"],
+};
 
 const {
     User,
     Coll,
     sequelize,
+    Token,
     Op,
     Item,
     Comment,
@@ -36,8 +38,8 @@ const middlware = session({
 
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-app.use(cors(corsOptions)) 
- 
+app.use(cors(corsOptions));
+
 app.use(cookieParser("aaa2C44-4D44-WppQ38Siuyiuy"));
 
 app.use(middlware);
@@ -102,7 +104,7 @@ app.post("/sign_in", formidable(), async (req, res) => {
             },
         });
         if (result.length < 1) {
-            res.json({ auth: "passErr" });            
+            res.json({ auth: "passErr" });
             return;
         }
     } catch (err) {
@@ -276,7 +278,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_coll", async (data) => {
-
         try {
             let result = await Coll.findAll({
                 where: {
@@ -338,8 +339,8 @@ io.on("connection", (socket) => {
     }
 
     async function checkAccess(user_id, data) {
-        if(!user_id){
-            return false
+        if (!user_id) {
+            return false;
         }
         let result = await Coll.findAll({
             where: {
@@ -500,7 +501,7 @@ io.on("connection", (socket) => {
                 JSON.stringify(owner)
             );
         } catch (err) {
-            console.log(err)
+            console.log(err);
             socket.emit("got_item_info", JSON.stringify({ err: true }));
         }
     });
@@ -582,8 +583,8 @@ io.on("connection", (socket) => {
             let result = await Coll.findAll({
                 where: data,
             });
-            console.log(user_id)
-            if(user_id && req.session.user_id != user_id){
+            console.log(user_id);
+            if (user_id && req.session.user_id != user_id) {
                 socket.emit("got_person_coll", JSON.stringify(result));
             } else {
                 socket.emit("got_coll", JSON.stringify(result));
@@ -632,7 +633,6 @@ io.on("connection", (socket) => {
                 owner = { owner: true };
             }
 
-
             socket.emit(
                 "got_col_items",
                 JSON.stringify(resultColl),
@@ -640,7 +640,7 @@ io.on("connection", (socket) => {
                 JSON.stringify(owner)
             );
         } catch (err) {
-            console.log(err)
+            console.log(err);
             socket.emit("got_col_items", JSON.stringify({ err: true }));
         }
     });
@@ -1083,7 +1083,7 @@ io.on("connection", (socket) => {
             let items = null;
 
             if (language == "ru") {
-                console.log(11111111111111)
+                console.log(11111111111111);
                 items = await Item.findAll({
                     limit: 50,
                     attributes: {
@@ -1109,7 +1109,7 @@ io.on("connection", (socket) => {
                     },
                     order: [[sequelize.literal("rank"), "DESC"]],
                 });
-                console.log(items)
+                console.log(items);
             } else {
                 items = await Item.findAll({
                     limit: 50,
@@ -1120,7 +1120,7 @@ io.on("connection", (socket) => {
                                     "ts_rank",
                                     sequelize.col("item_search_english"),
                                     sequelize.literal(
-                                       `plainto_tsquery( 'english','${data}')`
+                                        `plainto_tsquery( 'english','${data}')`
                                     )
                                 ),
                                 "rank",
@@ -1227,7 +1227,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("get_like", async (itemIdJSON) => {
-        let itemId = JSON.parse(itemIdJSON)
+        let itemId = JSON.parse(itemIdJSON);
         let userLiked = false;
 
         let likes = await Likes.findAll({
@@ -1239,7 +1239,7 @@ io.on("connection", (socket) => {
             itemId.user_id = req.session.user_id;
             let user = await Likes.findAll({
                 where: {
-                    [Op.and]: [itemId]
+                    [Op.and]: [itemId],
                 },
             });
             if (user.length > 0) {
@@ -1254,6 +1254,24 @@ io.on("connection", (socket) => {
                 item_id: itemId.item_id,
             })
         );
+    });
+
+    socket.on("get_token", async () => {
+        if (!req.session.auth) {
+            return;
+        }
+        try {
+            let data = crypto.randomBytes(32).toString("base64url");
+
+            await Token.create({
+                token: data,
+                user_id: req.session.user_id,
+            });
+
+            socket.emit("got_token", data);
+        } catch (err) {
+            console.log(err);
+        }
     });
 });
 

@@ -196,5 +196,8 @@
         "status":"Status",
         "admin":"Admin",
         "basic":"Basic"
+    }, 
+    "Odoo": {
+        "generateToken": "Generate token"
     }
 }

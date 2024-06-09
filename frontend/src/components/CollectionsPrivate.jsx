@@ -6,6 +6,7 @@ import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
+import { Button } from "react-bootstrap";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -25,6 +26,7 @@ function CollectionsPrivate(props) {
 
     const [showAnswer, setShowAnswer] = useState(false);
     const [textAnswer, setTextAnswer] = useState("");
+    const [token, setToken] = useState("");
 
     let designChecker = useRef("1");
 
@@ -55,6 +57,10 @@ function CollectionsPrivate(props) {
 
     function closeAnswer(value) {
         setShowAnswer(value);
+    }
+
+    function generateToken() {
+        socket.emit("get_token");
     }
 
     useEffect(() => {
@@ -101,6 +107,10 @@ function CollectionsPrivate(props) {
             setCards(mewCards);
         });
 
+        socket.on("got_token", (data) => {
+            setToken(data);
+        });
+
         socket.emit("get_user_data");
         socket.emit("get_coll");
     }, []);
@@ -113,6 +123,14 @@ function CollectionsPrivate(props) {
                 showAnswer={showAnswer}
                 textAnswer={textAnswer}
             ></ModalAnswer>
+            <Container className="px-0 h5 mb-3 d-flex flex-column">
+                <div className="mb-2">
+                    <Button onClick={generateToken}>
+                        <em>{props.t("Odoo.generateToken")}</em>
+                    </Button>
+                </div>
+                <p style={{wordWrap: "break-word"}}>{token}</p>
+            </Container>
             <Row className="user__main">
                 <Col
                     xl={4}
