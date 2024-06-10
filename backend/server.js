@@ -11,6 +11,15 @@ const { writeFile, readFile } = require("fs");
 const cors = require("cors");
 const crypto = require("crypto");
 
+var fs = require('fs');
+var https = require('https');
+
+var privateKey  = fs.readFileSync('privkey.pem', 'utf8');
+var certificate = fs.readFileSync('fullchain.pem', 'utf8')
+
+var credentials = {key: privateKey, cert: certificate};
+
+
 let corsOptions = {
     origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com/"],
 };
@@ -45,6 +54,7 @@ app.use(cookieParser("aaa2C44-4D44-WppQ38Siuyiuy"));
 app.use(middlware);
 
 const server = createServer(app);
+var httpsServer = https.createServer(credentials, app);
 
 async function addSession(session_id, user_id) {
     await User.update(
@@ -1301,3 +1311,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(4000, async (req, res) => {});
+httpsServer.listen(4002);
+
