@@ -1,0 +1,260 @@
+<div>
+    <div>
+        <label for="token">Paste token here: </label>
+        <input name="token" type="text" id="get-server-data">
+    </div>
+    <div id="collections" class="collections__main">
+
+
+        <div>
+            <form onsubmit="saveData(event)" class="decor">
+                <div class="form-left-decoration"></div>
+                <div class="form-right-decoration"></div>
+                <div class="circle"></div>
+                <div class="form-inner">
+                    <label for="name">Collection name</label>
+                    <input value="${}" name="name" type="text" height="40px" placeholder="Collection name">
+                    <label for="description">Collection name</label>
+                    <textarea value="${}" name="description" placeholder="Collection description..." rows="7"></textarea>
+                    <p>Username: <span>${}</span></p>
+                    <p>Elements amount: <span>${}</span></p>
+                    <p>Category: <span>${}</span></p>
+                    <div>
+                        <input type="submit" value="Submit">
+                        <input type="delete" value="Delete">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+<script>
+    const mainToken = document.getElementById("get-server-data");
+    mainToken.addEventListener("input", createColl)
+    async function getData(token){
+        let form = new FormData();
+        form.append("token", token)
+        let responseData = await fetch("http://94.237.8.58/get_token_data", {
+            method: "post",
+            body: form
+        })
+        
+        let responseJSON = await responseData.json();
+        console.log(responseJSON)
+        let response = JSON.parse(responseJSON)
+        console.log(response)
+        return response;
+    }
+
+    function insertData(data){
+        collectionsContainer.innerHTML = '';
+        let collectionsContainer = document.getElementById('collections');
+        data.forEach(element => {
+            collectionsContainer.append(element);
+        });
+
+    }
+
+    function saveData(event){
+        event.preventDefault()
+        let fields = event.currentTarget.getElementsByClassName("collection__changeable-field");
+        let form = new FormData()
+        fields.forEach((el)=>{
+            form.append(el.name, el.value)
+        })
+        form.append("token", mainToken.value)
+        fetch("http://94.237.8.58/save_token_data", {
+            method: "post",
+            body: form
+        })
+    }
+
+    function deleteCollection(event){
+        event.preventDefault()
+        let form = new FormData()
+        form.append("col_id", e.currentTarget.dataset.colId)
+        fetch("http://94.237.8.58/delete_token_data", {
+            method: "post",
+            body: form
+        })
+        event.closest("div").remove()
+    }
+
+    function assembleColl(data){
+        let elements = data.map((el, index) => {
+            let container = document.createElement('div');
+
+            container.innerHTML =
+                `
+        <div>
+            <form onsubmit="saveData(event)" class="decor" data-col-id"${el.col_id}">
+                <div class="form-left-decoration"></div>
+                <div class="form-right-decoration"></div>
+                <div class="circle"></div>
+                <div class="form-inner">
+                    <label for="collection-name">Collection name</label>
+                    <input id="collection-name" class="collection__changeable-field" value="${el.name}" name="name" type="text" height="40px" placeholder="Collection name">
+                    <label for="collection__description">Collection name</label>
+                    <textarea id="collection__description" class="collection__changeable-field" value="${el.description}" name="description" placeholder="Collection description..." rows="7"></textarea>
+                    <p>Username: <span>${el.username}</span></p>
+                    <p>Elements amount: <span>${el.amount}</span></p>
+                    <p>Category: <span>${el.category}</span></p>
+                    <div>
+                        <input type="submit" value="Save">
+                        <input onclick="deleteCollection(event)" type="delete" value="Delete">
+                    </div>
+                </div>
+            </form>
+        </div>
+                `
+            return container;
+        })
+        return elements;
+    }
+
+    async function createColl(e){
+        if(e.currentTarget.value.length < 42 || e.currentTarget.value.length > 43){
+            
+            return
+        }
+
+        let serverData = await getData(e.currentTarget.value)
+
+        if(serverData == "null"){
+            return;
+        }
+
+        let createdItems = assembleColl(serverData)
+        insertData(createdItems)
+    }
+
+</script>
+
+<style>
+* {
+     box-sizing: border-box;
+}
+
+.collections__main{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+body {
+   background: #f69a73;
+}
+.decor {
+   position: relative;
+   max-width: 350px;
+   min-width: 250px;
+   margin-top: 30px;
+   background: white;
+   border-radius: 30px;
+}
+.form-left-decoration, .form-right-decoration {
+   content: "";
+   position: absolute;
+   width: 50px;
+   height: 20px;
+   background: #f69a73;
+   border-radius: 20px;
+}
+.form-left-decoration {
+   bottom: 60px;
+   left: -30px;
+}
+.form-right-decoration {
+   top: 60px;
+   right: -30px;
+}
+.form-left-decoration:before, .form-left-decoration:after, .form-right-decoration:before, .form-right-decoration:after {
+   content: "";
+   position: absolute;
+   width: 50px;
+   height: 20px;
+   border-radius: 30px;
+   background: white;
+}
+.form-left-decoration:before {
+   top: -20px;
+}
+.form-left-decoration:after {
+   top: 20px;
+   left: 10px;
+}
+.form-right-decoration:before {
+   top: -20px;
+   right: 0;
+}
+.form-right-decoration:after {
+   top: 20px;
+   right: 10px;
+}
+.circle {
+   position: absolute;
+   bottom: 80px;
+   left: -55px;
+   width: 20px;
+   height: 20px;
+   border-radius: 50%;
+   background: white;
+}
+.form-inner {
+   padding: 50px;
+}
+.form-inner input {
+   display: block;
+   width: 100%;
+   padding: 0 20px;
+   margin-bottom: 10px;
+   background: #E9EFF6;
+   line-height: 40px;
+   border-width: 0;
+   border-radius: 20px;
+   font-family: 'Roboto', sans-serif;
+}
+
+.form-inner textarea {
+   display: block;
+   width: 100%;
+   padding: 0 20px;
+   margin-bottom: 10px;
+   background: #E9EFF6;
+   border-width: 0;
+   border-radius: 20px;
+   font-family: 'Roboto', sans-serif;
+}
+
+.form-inner input[type="submit"] {
+   margin-top: 30px;
+   background: #f69a73;
+   border-bottom: 4px solid #d87d56;
+   color: white;
+   font-size: 14px;
+}
+
+.form-inner input[type="delete"] {
+   margin-top: 15px;
+   background: #1d9760;
+   border-bottom: 4px solid #1d9760;
+   color: white;
+   text-align: center;
+   font-size: 14px;
+}
+
+.form-inner textarea {
+   resize: none;
+}
+.form-inner h3 {
+   margin-top: 0;
+   font-family: 'Roboto', sans-serif;
+   font-weight: 500;
+   font-size: 24px;
+   color: #707981;
+}
+</style>

@@ -322,7 +322,7 @@ const Comment = sequelize.define("comment", {
 });
 
 (async () => {
-    //await sequelize.sync();//{ force: true }
+    // await sequelize.sync();//{ force: true }
     //let user = await User.build({ username: "1", email: "1@1", password: "1", status: 'admin' });
     // await user.save();
     // sequelize.sync({ alter: true })

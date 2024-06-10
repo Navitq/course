@@ -12,7 +12,7 @@ const cors = require("cors");
 const crypto = require("crypto");
 
 let corsOptions = {
-    origin: ["http://94.237.37.190:8880"],
+    origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com/"],
 };
 
 const {
@@ -127,8 +127,33 @@ app.post("/sign_in", formidable(), async (req, res) => {
     return;
 });
 
+app.post("/get_token_data", formidable(), async (req, res) => {
+    try {
+        let user = await Token.findAll({
+            where: {
+                token: req.fields.token,
+            }
+        });
+
+        if(user.length < 1){
+            res.status(401).send("Unauthorized");
+        }
+
+        let result = await Coll.findAll({
+            where: {
+                uuid: user[0].dataValues.user_id
+            },
+        });
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+        return;
+}
+})
+
 app.post("/sign_up", formidable(), async (req, res) => {
-    if (req.session.auth) {
+    if (req.session.auteth) {
         res.json({ auth: true });
         return;
     }
@@ -584,7 +609,7 @@ io.on("connection", (socket) => {
                 where: data,
             });
             console.log(user_id);
-            if (user_id && req.session.user_id != user_id) {
+            if (user_id) {
                 socket.emit("got_person_coll", JSON.stringify(result));
             } else {
                 socket.emit("got_coll", JSON.stringify(result));
