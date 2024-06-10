@@ -8,6 +8,10 @@
 # testing
 /coverage
 
+# https
+fullchain.pem
+privkey.pem
+
 # production
 /build
 
