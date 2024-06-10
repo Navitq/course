@@ -586,7 +586,7 @@ io.on("connection", (socket) => {
                 where: data,
             });
             console.log(user_id);
-            if (user_id && req.session.user_id != user_id) {
+            if (user_id ) {
                 socket.emit("got_person_coll", JSON.stringify(result));
             } else {
                 socket.emit("got_coll", JSON.stringify(result));
