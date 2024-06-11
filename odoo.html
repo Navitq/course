@@ -5,7 +5,7 @@
         <input name="token" type="text" id="get-server-data">
     </div>
 
-    <div class="collection__creat-butt">
+    <!-- <div class="collection__creat-butt">
         <button class="collection__creat-coll" onclick="changeWindowState(event)">Create Collection</button>
     </div>
 
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required" data-type="text">
                         <div class="row s_col_no_resize s_col_no_bgcolor">
                             <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="oyeqnysxh10b">
@@ -86,7 +86,7 @@
             </form>
 
 
-    </div>
+    </div> -->
 
     <div id="collections" class="collections__main">
 
@@ -120,9 +120,9 @@
     const fieldsManager = document.getElementById("collection__fields-container");
     mainToken.addEventListener("input", createColl)
 
-    async function changeWindowState(event){
-        fieldsManager.classList.toggle("collection__fields-container-h");
-    }
+    // async function changeWindowState(event){
+    //     fieldsManager.classList.toggle("collection__fields-container-h");
+    // }
 
     async function getData(token){
         let form = new FormData();
