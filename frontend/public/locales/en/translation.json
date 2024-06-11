@@ -215,7 +215,7 @@
         "low": "Low",
         "state": "state",
         "stateOpen": "Open",
-        "Highest": "Highest",
+        "highest": "Highest",
         "supportRequest": "Support tickets",
         "noSupportRequest": "You do not have any support tickets",
         "pageLink": "Page URL", 
