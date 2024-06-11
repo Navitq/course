@@ -14,6 +14,8 @@ const crypto = require("crypto");
 var fs = require('fs');
 var https = require('https');
 
+
+
 var privateKey  = fs.readFileSync('privkey.pem', 'utf8');
 var certificate = fs.readFileSync('fullchain.pem', 'utf8')
 
@@ -24,8 +26,11 @@ let corsOptions = {
     //origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com", "*"],
     origin: "*"
 };
+
 let corsOptions_2 = {
     //origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com", "*"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONAL'],
+    allowedHeaders: ['Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'],
     origin: "*"
 };
 
