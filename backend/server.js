@@ -68,7 +68,7 @@ app_2.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 
 app.use(cors(corsOptions));
-app_2.use(cors(corsOptions_2));
+app_2.use(cors());
 
 
 app.use(cookieParser("aaa2C44-4D44-WppQ38Siuyiuy"));
