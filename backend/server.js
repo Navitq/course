@@ -62,12 +62,7 @@ const middlware_2 = session({
     secret: "aaa2C44-4D44-WppQ38Siuyiuy",
 });
 
-app_2.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-  });
+
 
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app_2.use(express.urlencoded({ extended: true, limit: "50mb" }));
