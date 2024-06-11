@@ -139,7 +139,7 @@
             let responseData = await fetch("https://94.237.8.58:4002/get_token_data", {
                 method: "post",
                 body: form,
-                credentials: true,
+                credentials: "include",
             })
             let response = await responseData.json();
             console.log(response)
