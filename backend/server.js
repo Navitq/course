@@ -31,7 +31,7 @@ let corsOptions_2 = {
     //origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com", "*"],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONAL'],
     allowedHeaders: ['Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'],
-    origin: "https://itrcourse.odoo.com/",
+    origin: "V-lte_gLPjI-X_4qdswILMLfKPVoK0yskqWzpuBUcv4",
     credentials: true,
 };
 
@@ -74,7 +74,7 @@ app_2.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 
 app.use(cors(corsOptions));
-app_2.use(cors());
+app_2.use(cors(corsOptions_2));
 
 
 app.use(cookieParser("aaa2C44-4D44-WppQ38Siuyiuy"));
