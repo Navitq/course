@@ -24,6 +24,10 @@ let corsOptions = {
     //origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com", "*"],
     origin: "*"
 };
+let corsOptions_2 = {
+    //origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com", "*"],
+    origin: "*"
+};
 
 const {
     User,
@@ -39,23 +43,38 @@ const {
 const s3 = require("./s3.js");
 
 const app = express();
+const app_2 = express()
 
 const middlware = session({
     resave: false,
     saveUninitialized: false,
     secret: "aaa2C44-4D44-WppQ38Siuyiuy",
 });
+const middlware_2 = session({
+    resave: false,
+    saveUninitialized: false,
+    secret: "aaa2C44-4D44-WppQ38Siuyiuy",
+});
+
 
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app_2.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
 
 app.use(cors(corsOptions));
+app_2.use(cors(corsOptions_2));
+
 
 app.use(cookieParser("aaa2C44-4D44-WppQ38Siuyiuy"));
+app_2.use(cookieParser("aaa2C44-4D44-WppQ38Siuyiuy"));
+
 
 app.use(middlware);
+app_2.use(middlware_2);
+
 
 const server = createServer(app);
-var httpsServer = https.createServer(credentials, app);
+var httpsServer = https.createServer(credentials, app_2);
 
 async function addSession(session_id, user_id) {
     await User.update(
