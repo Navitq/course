@@ -142,7 +142,7 @@
             console.log(err)
             document.getElementsByClassName("collection__form")[0].reset()
         }
-        createColl({e:{currentTarget:mainToken}});
+        getUpdatedData(mainToken.value);
         document.getElementsByClassName("collection__form")[0].reset()
     }
 
@@ -277,6 +277,14 @@
         let createdItems = assembleColl(serverData)
         insertData(createdItems)
     }
+
+    async function getUpdatedData(value){
+        let serverData = await getData(value)
+        document.getElementsByClassName("collection__creat-butt")[0].style.display = "flex"
+        let createdItems = assembleColl(serverData)
+        insertData(createdItems)
+    }
+
 
 </script>
 
