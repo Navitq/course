@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
 const cookieParser = require("cookie-parser");
-const { emit } = require("process");
+const { emit, send } = require("process");
 const { writeFile, readFile } = require("fs");
 const cors = require("cors");
 const crypto = require("crypto");
@@ -176,19 +176,9 @@ async function checkAcess(data){
     return true;
 }
 
-
-function formObject(validatedForm) {
-    let data = {};
-    for (const value of validatedForm.entries()) {
-        data[`${value[0]}`] = value[1];
-    }
-    return data;
-}
-
 app_2.post("/create_token_data", formidable(),  async (req, res) => {
     try {
-        console.log(req.fields)
-        let data = formObject(req.fields)
+        data = req.fields
         if(!data.token){
             return;
         }
@@ -207,6 +197,7 @@ app_2.post("/create_token_data", formidable(),  async (req, res) => {
         data.user_id = user[0].dataValues.user_id;
         delete data.token;
         await Coll.create(data);
+        res.send(200)
     } catch(err){
         console.log(err)
         return

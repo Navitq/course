@@ -132,9 +132,6 @@
     async function sendCreatedColl(event){
         event.preventDefault()
         let formData = createForm(event.currentTarget);
-    
-        event.currentTarget.reset()
-
         try{
             await fetch("https://94.237.8.58:4002/create_token_data", {
                 method: "post",
@@ -143,7 +140,11 @@
         } catch (err) {
             return;
             console.log(err)
+            event.currentTarget.reset()
+
         }
+        event.currentTarget.reset()
+
     }
 
     function addField(event){
