@@ -25,7 +25,7 @@ function AboutUs(props) {
 
             <Ratio key={"16x9"} aspectRatio={"16x9"} className="mb-4">
                 <iframe
-                    src="https://www.youtube.com/embed/RKEEqbj80Wg?si=yk0uuSQxZJ8tTui3"
+                    src="https://www.youtube.com/embed/lv0UtYVKDZ4?si=h3VUcHd3kO6PUWzF"
                     title="YouTube video player"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
