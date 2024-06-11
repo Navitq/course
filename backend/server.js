@@ -169,7 +169,7 @@ async function checkAcess(data){
     return true;
 }
 
-app.post("/save_token_data", formidable(), async (req, res) => {
+app_2.post("/save_token_data", formidable(), async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -216,7 +216,7 @@ app.options("*",async (req, res) => {
 //     next();
 //   });
 
-app.post("/delete_token_data", formidable(), async (req, res) => {
+app_2.post("/delete_token_data", formidable(), async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -249,7 +249,7 @@ app.post("/delete_token_data", formidable(), async (req, res) => {
 })
 
 
-app.post("/get_token_data", formidable(), async (req, res) => {
+app_2.post("/get_token_data", formidable(), async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
