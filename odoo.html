@@ -36,7 +36,7 @@
     async function getData(token){
         let form = new FormData();
         form.append("token", token)
-        let responseData = await fetch("http://94.237.8.58:4000/get_token_data", {
+        let responseData = await fetch("https://94.237.8.58:4002/get_token_data", {
             method: "post",
             body: form
         })
@@ -65,7 +65,7 @@
             form.append(el.name, el.value)
         })
         form.append("token", mainToken.value)
-        fetch("http://94.237.8.58:4000/save_token_data", {
+        fetch("https://94.237.8.58:4002/save_token_data", {
             method: "post",
             body: form
         })
@@ -75,7 +75,7 @@
         event.preventDefault()
         let form = new FormData()
         form.append("col_id", e.currentTarget.dataset.colId)
-        fetch("http://94.237.8.58:4000/delete_token_data", {
+        fetch("https://94.237.8.58:4002/delete_token_data", {
             method: "post",
             body: form
         })

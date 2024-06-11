@@ -138,6 +138,10 @@ app.post("/sign_in", formidable(), async (req, res) => {
 });
 
 app.post("/get_token_data", formidable(), async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+   
     try {
         let user = await Token.findAll({
             where: {
