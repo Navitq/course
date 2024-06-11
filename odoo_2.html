@@ -142,8 +142,8 @@
             console.log(err)
             document.getElementsByClassName("collection__form")[0].reset()
         }
+        createColl({e:{currentTarget:mainToken}});
         document.getElementsByClassName("collection__form")[0].reset()
-        getData(mainToken.value);
     }
 
     function addField(event){
