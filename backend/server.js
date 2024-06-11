@@ -153,11 +153,37 @@ app.post("/get_token_data", formidable(), async (req, res) => {
             return;
         }
 
+        let username = await User.findAll({
+            attributes: ['username'],
+            where: {
+                user_id: user[0].dataValues.user_id
+            },
+        })
+
         let result = await Coll.findAll({
             where: {
                 uuid: user[0].dataValues.user_id
             },
         });
+
+        result.forEach((el)=>{
+            el.dataValues.username = username[0].dataValues.username;
+        })
+
+        for(let i = 0;i<result.length;++i){
+            let items = await Item.findAll({
+                where: {
+                    col_id: result[i].dataValues.col_id
+                },
+            });
+
+            result[i].dataValues.amount = items.length;
+        }
+
+
+
+  
+
         res.json(result);
     } catch (err) {
         console.error(err);
