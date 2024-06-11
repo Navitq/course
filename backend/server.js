@@ -185,9 +185,27 @@ function formObject(validatedForm) {
     return data;
 }
 
-app_2.post("/create_token_data",  async (req, res) => {
+app_2.post("/create_token_data", formidable(),  async (req, res) => {
+    console.log()
     let data = formObject(req.fields)
-    console.log(data)
+    if(!data.token){
+        return;
+    }
+    let access = await checkAcess(req.fields.token);
+    if(!access){
+        res.status(401).send("Unauthorized");
+        return;
+    }
+
+    let user = await Token.findAll({
+        where: {
+            token: req.fields.token,
+        }
+    });
+    
+    data.user_id = user[0].dataValues.user_id;
+    delete data.token;
+    await Coll.create(data);
 })
 
 app_2.post("/save_token_data", formidable(), async (req, res) => {
