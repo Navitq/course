@@ -182,11 +182,6 @@ app_2.post("/create_token_data", formidable(),  async (req, res) => {
         if(!data.token){
             return;
         }
-        let access = await checkAcess(req.fields.token);
-        if(!access){
-            res.status(401).send("Unauthorized");
-            return;
-        }
 
         let user = await Token.findAll({
             where: {
@@ -194,6 +189,11 @@ app_2.post("/create_token_data", formidable(),  async (req, res) => {
             }
         });
         
+        if(user.length < 1){
+            res.status(401).send("Unauthorized");
+            return;
+        }
+
         data.uuid = user[0].dataValues.user_id;
         delete data.token;
         await Coll.create(data);
