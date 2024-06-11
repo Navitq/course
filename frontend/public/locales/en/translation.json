@@ -218,6 +218,7 @@
         "noSupportRequest": "You do not have any support tickets",
         "pageLink": "Page URL", 
         "status":"Status",
-        "jiraLink": "JIRA link"
+        "jiraLink": "JIRA link",
+        "supportTeam": "Support service"
     }
 }

@@ -217,6 +217,7 @@
         "noSupportRequest": "У вас нет обращений в службу поддержки",
         "pageLink": "URL Страницы",
         "status":"Статус",
-        "jiraLink": "Ссылка на JIRA"
+        "jiraLink": "Ссылка на JIRA",
+        "supportTeam": "Служба поддержки"
     }
 }

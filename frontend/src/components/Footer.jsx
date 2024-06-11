@@ -141,7 +141,7 @@ function Footer(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>{props.t("ItemTemplate.Save")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={submitJIRA}>
@@ -238,10 +238,10 @@ function Footer(props) {
                         </Form.Group>
                         <Container className="d-flex justify-content-between px-0">
                             <Button variant="secondary" onClick={handleClose}>
-                                Close
+                                {props.t("ModalColl.close")}
                             </Button>
                             <Button variant="primary" type="submit">
-                                Save Changes
+                                {props.t("ItemTemplate.Save")}
                             </Button>
                         </Container>
                     </Form>
