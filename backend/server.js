@@ -187,7 +187,7 @@ function formObject(validatedForm) {
 
 app_2.post("/create_token_data", formidable(),  async (req, res) => {
     try {
-        console.log()
+        console.log(req.fields)
         let data = formObject(req.fields)
         if(!data.token){
             return;
