@@ -21,7 +21,7 @@ var credentials = {key: privateKey, cert: certificate};
 
 
 let corsOptions = {
-    origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com/"],
+    origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com/", "*"],
 };
 
 const {
