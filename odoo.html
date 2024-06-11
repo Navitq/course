@@ -76,16 +76,22 @@
         })
     }
 
-    function deleteCollection(event){
+    async function  deleteCollection(event){
         event.preventDefault()
         let form = new FormData()
-        form.append("col_id", e.currentTarget.dataset.colId)
-        form.append("token",mainToken.value)
-        fetch("https://94.237.8.58:4002/delete_token_data", {
-            method: "post",
-            body: form
-        })
-        event.closest("div").remove()
+        let formHTML = event.currentTarget.closest("form")
+        form.append("col_id", formHTML.dataset.colId)
+        form.append("token", mainToken.value)
+        try{
+            await fetch("https://94.237.8.58:4002/delete_token_data", {
+                method: "post",
+                body: form
+            })
+            formHTML.closest("div").remove()
+        } catch {
+            console.log(err)
+            return;
+        }
     }
 
     function assembleColl(data){
@@ -95,14 +101,14 @@
             container.innerHTML =
                 `
         <div>
-            <form onsubmit="saveData(event)" class="decor" data-col-id"${el.col_id}">
+            <form onsubmit="saveData(event)" class="decor" data-col-id="${el.col_id}">
                 <div class="form-left-decoration"></div>
                 <div class="form-right-decoration"></div>
                 <div class="circle"></div>
                 <div class="form-inner">
                     <label for="collection-name">Collection name</label>
                     <input maxlength="255" id="collection-name" class="collection__changeable-field" value="${el.name}" name="name" type="text" height="40px" placeholder="Collection name">
-                    <label for="collection__description">Collection name</label>
+                    <label for="collection__description">Collection description</label>
                     <textarea maxlength="1024" id="collection__description" class="collection__changeable-field" name="description" placeholder="Collection description..." rows="7">${el.description}</textarea>
                     <p>Username: <span>${el.username}</span></p>
                     <p>Elements amount: <span>${el.amount}</span></p>
@@ -148,7 +154,7 @@
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 35px;
 }
 
 body {

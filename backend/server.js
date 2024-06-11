@@ -149,6 +149,38 @@ async function checkAcess(data){
     return true;
 }
 
+app.post("/delete_token_data", formidable(), async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    try {
+        let access = await checkAcess(req.fields.token);
+        if(!access){
+            res.status(401).send("Unauthorized");
+            return;
+        }
+
+        let data = {
+            name: req.fields.name,
+            description: req.fields.description
+        }
+
+
+        await Coll.update(data, {
+            where: {
+                col_id: req.fields.col_id,
+            },
+        });
+
+        res.status(200).send("OK");
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+        return;
+    }
+})
+
 
 app.post("/delete_token_data", formidable(), async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
