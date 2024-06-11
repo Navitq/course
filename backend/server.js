@@ -148,9 +148,9 @@ app.post("/get_token_data", formidable(), async (req, res) => {
                 token: req.fields.token,
             }
         });
-
         if(user.length < 1){
             res.status(401).send("Unauthorized");
+            return;
         }
 
         let result = await Coll.findAll({
