@@ -194,7 +194,7 @@ app_2.post("/create_token_data", formidable(),  async (req, res) => {
             }
         });
         
-        data.user_id = user[0].dataValues.user_id;
+        data.uuid = user[0].dataValues.user_id;
         delete data.token;
         await Coll.create(data);
         res.send(200)
