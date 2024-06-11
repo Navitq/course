@@ -29,7 +29,7 @@ let corsOptions = {
 
 let corsOptions_2 = {
     //origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com", "*"],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONAL'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'],
     origin: ["https://itrcourse.odoo.com"],
     credentials: true,
@@ -240,10 +240,7 @@ app_2.post("/delete_token_data", formidable(), async (req, res) => {
 
 
 app_2.post("/get_token_data", formidable(), async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-    console.log(req.method)
+    
 
     try {
         let user = await Token.findAll({
