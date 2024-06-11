@@ -64,7 +64,7 @@
 
     function saveData(event){
         event.preventDefault()
-        let fields = event.currentTarget.getElementsByClassName("collection__changeable-field");
+        let fields = event.currentTarget.querySelectorAll(".collection__changeable-field");
         let form = new FormData()
         fields.forEach((el)=>{
             form.append(el.name, el.value)
