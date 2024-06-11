@@ -140,12 +140,10 @@
         } catch (err) {
             return;
             console.log(err)
-            event.currentTarget.reset()
-
+            document.getElementsByClassName("collection__form")[0].reset()
         }
-        event.currentTarget.reset()
-        getData();
-
+        document.getElementsByClassName("collection__form")[0].reset()
+        getData(mainToken.value);
     }
 
     function addField(event){
@@ -164,6 +162,7 @@
     }
 
     async function getData(token){
+ 
         let form = new FormData();
         form.append("token", token)
 
