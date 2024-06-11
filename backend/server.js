@@ -178,6 +178,9 @@ async function checkAcess(data){
 
 app_2.post("/save_token_data", formidable(), async (req, res) => {
      try {
+        if(!req.fields.token){
+            return;
+        }
         let access = await checkAcess(req.fields.token);
         if(!access){
             res.status(401).send("Unauthorized");
