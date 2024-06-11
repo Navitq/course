@@ -170,10 +170,7 @@ async function checkAcess(data){
 }
 
 app_2.post("/save_token_data", formidable(), async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-    try {
+     try {
         let access = await checkAcess(req.fields.token);
         if(!access){
             res.status(401).send("Unauthorized");
@@ -201,12 +198,6 @@ app_2.post("/save_token_data", formidable(), async (req, res) => {
     }
 })
 
-app.options("*",async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-   }
-)
 
 
 // app.use((req, res, next) => {
@@ -217,10 +208,7 @@ app.options("*",async (req, res) => {
 //   });
 
 app_2.post("/delete_token_data", formidable(), async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-    try {
+      try {
         let access = await checkAcess(req.fields.token);
         if(!access){
             res.status(401).send("Unauthorized");
