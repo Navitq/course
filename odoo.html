@@ -5,88 +5,73 @@
         <input name="token" type="text" id="get-server-data">
     </div>
 
-    <!-- <div class="collection__creat-butt">
+    <div class="collection__creat-butt">
         <button class="collection__creat-coll" onclick="changeWindowState(event)">Create Collection</button>
     </div>
 
     <div class="collection__fields-container-h collection__fields-container" id="collection__fields-container">
-
-        <form action="/website/form/" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-pre-fill="true" data-model_name="mail.mail" data-success-mode="redirect" data-success-page="/contactus-thank-you">
-                <div class="s_website_form_rows row s_col_no_bgcolor">
-                    
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required" data-type="char">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="obij2aulqyau">
-                                <span class="s_website_form_label_content o_default_snippet_text">Collection Name</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="text" name="name" required="1" data-fill-with="name" id="obij2aulqyau">
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="tel">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="ozp7022vqhe">
-                                <span class="s_website_form_label_content o_default_snippet_text">Номер телефона</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="tel" name="phone" data-fill-with="phone" id="ozp7022vqhe">
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="char">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="o291di1too2s">
-                                <span class="s_website_form_label_content o_default_snippet_text">Ваша компания</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="text" name="company" data-fill-with="commercial_company_name" id="o291di1too2s">
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_model_required" data-type="char">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="oqsf4m51acj">
-                                <span class="s_website_form_label_content o_default_snippet_text">Тема</span>
-                                <span class="s_website_form_mark o_default_snippet_text"> *</span>
-                            </label>
-                            <div class="col-sm">
-                                <input class="form-control s_website_form_input" type="text" name="subject" required="" id="oqsf4m51acj">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required" data-type="text">
-                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                            <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="oyeqnysxh10b">
-                                <span class="s_website_form_label_content o_default_snippet_text">Ваш вопрос</span>
-                                <span class="s_website_form_mark o_default_snippet_text"> *</span>
-                            </label>
-                            <div class="col-sm">
-                                <textarea class="form-control s_website_form_input" name="description" required="1" id="oyeqnysxh10b" rows="3">                                </textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_dnone"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px"><span class="s_website_form_label_content"></span></label><div class="col-sm"><input type="hidden" class="form-control s_website_form_input" name="email_to" value="info@yourcompany.example.com"><input type="hidden" value="1d4b0a1bd1d4c0802f9e3e7847c613f7f83a4fa699dec2934bc4403c75170042" class="form-control s_website_form_input s_website_form_custom" name="website_form_signature"></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="char"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="o6e6i5ya1b0o"><span class="s_website_form_label_content">Custom Text</span></label><div class="col-sm"><input class="form-control s_website_form_input" type="text" name="Custom Text" id="o6e6i5ya1b0o"></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="char"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="od41u572vajm"><span class="s_website_form_label_content">Custom Text</span></label><div class="col-sm"><input class="form-control s_website_form_input" type="text" name="Custom Text" id="od41u572vajm"></div></div></div><div data-name="Field" class="s_website_form_field mb-3 col-12 s_website_form_custom" data-type="char"><div class="row s_col_no_resize s_col_no_bgcolor"><label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="owlvneow1rjm"><span class="s_website_form_label_content">Custom Text</span></label><div class="col-sm"><input class="form-control s_website_form_input" type="text" name="Custom Text" id="owlvneow1rjm"></div></div></div><div class="mb-0 py-2 col-12 s_website_form_submit" data-name="Submit Button">
-                        <div style="width: 200px;" class="s_website_form_label"></div>
-                        <a href="#" role="button" class="btn btn-primary s_website_form_send o_default_snippet_text">Отправить</a>
-                        <span id="s_website_form_result"></span>
+        <form onsubmit="sendCreatedColl(event)">  
+            <h2>Collections creater</h2>
+            <div>
+                <h4>Main fields: </h4>
+                <div>
+                    <label >Collection name: </label>
+                    <input  name="name" type="text" required>
+                </div>
+                <div>
+                    <label >Collection description: </label>
+                    <textarea  name="description" type="text" required>
+                    </textarea>
+                </div>
+                <div>
+                    <div class="select-wrapper">
+                        <select id="collection__category-select">
+                            <option>stamps</option>
+                            <option>spoons</option>
+                            <option>rings</option>
+                            <option>books</option>
+                            <option>glasses</option>
+                            <option>coins</option>
+                            <option>cars</option>
+                            <option>trains</option>
+                            <option>plains</option>
+                            <option>hats</option>
+                            <option>other</option>
+                        </select>
+                        <div class="select-arrow"></div>
+                        <div class="select-arrow"></div>
                     </div>
                 </div>
-            </form>
-
-
-    </div> -->
+            </div>
+            <div>
+                <h4>Additional fields: </h4>
+            
+                <div>
+                    <p>Add text field: </p>
+                    <button data-type="text" onclick="addField(event)">Add</button>
+                </div>
+                <div>
+                    <p>Add integer field: </p>
+                    <button data-type="number" onclick="addField(event)">Add</button>
+                </div>
+                <div>
+                    <p>Add logic field: </p>
+                    <button data-type="checkbox" onclick="addField(event)">Add</button>
+                </div>
+                <div>
+                    <p>Add multiline field: </p>
+                    <button data-type="textarea" onclick="addField(event)">Add</button>
+                </div>
+                <div>
+                    <p>Add date field: </p>
+                    <button data-type="date" onclick="addField(event)">Add</button>
+                </div>
+            </div>
+            <div>
+                <button type="submit">Create collection</button>
+            </div>
+        </form>                
+    </div>
 
     <div id="collections" class="collections__main">
 
@@ -112,6 +97,8 @@
             </form>
         </div>
 
+       
+
 
     </div>
 </div>
@@ -120,9 +107,28 @@
     const fieldsManager = document.getElementById("collection__fields-container");
     mainToken.addEventListener("input", createColl)
 
-    // async function changeWindowState(event){
-    //     fieldsManager.classList.toggle("collection__fields-container-h");
-    // }
+    async function changeWindowState(event){
+        fieldsManager.classList.toggle("collection__fields-container-h");
+    }
+
+    async function sendCreatedColl(event){
+
+    }
+
+    function addField(event){
+        event.preventDefault()
+        let amount = document.getElementsByClassName(`collection__custom-${event.currentTarget.dataset.type}`).length
+        if(amount >= 3){
+            return;
+        }
+        let container = document.createElement('div');
+        container.innerHTML = `
+            <label>Enter field name</label>
+            <input type="text" class="collection__custom-${event.currentTarget.dataset.type}" name="${event.currentTarget.dataset.type + amount.length}">
+        `
+        let parentElement = event.currentTarget.closest("div")
+        var insertedElement = parentElement.insertBefore(container, event.currentTarget);
+    }
 
     async function getData(token){
         let form = new FormData();
@@ -203,9 +209,9 @@
                 <div class="form-right-decoration"></div>
                 <div class="circle"></div>
                 <div class="form-inner">
-                    <label for="collection-name">Collection name</label>
+                    <label >Collection name</label>
                     <input maxlength="255" id="collection-name" class="collection__changeable-field" value="${el.name}" name="name" type="text" height="40px" placeholder="Collection name">
-                    <label for="collection__description">Collection description</label>
+                    <label >Collection description</label>
                     <textarea maxlength="1024" id="collection__description" class="collection__changeable-field" name="description" placeholder="Collection description..." rows="7">${el.description}</textarea>
                     <p>Username: <span>${el.username}</span></p>
                     <p>Elements amount: <span>${el.amount}</span></p>
@@ -234,6 +240,7 @@
         if(serverData == null){
             return;
         }
+        console.log(document.getElementsByClassName("collection__creat-butt")[0])
         document.getElementsByClassName("collection__creat-butt")[0].style.display = "flex"
         let createdItems = assembleColl(serverData)
         insertData(createdItems)
@@ -397,6 +404,47 @@ body {
 
 .button2:hover {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.select-wrapper {
+    width: 300px;
+    position: relative;
+    height: 38px;
+    color: #444;
+    background: transparent;
+    border: 1px solid #bcbcbc;
+    border-radius: 0;
+}
+
+.select-wrapper > select {
+    width: 100%;
+    height: 37px;
+    background: transparent;
+    border: 0;
+    appearance: none;
+    z-index: 1;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.select-wrapper > select::-ms-expand{
+    display: none;
+}
+
+.select-arrow {
+    position: absolute;
+    z-index: -1;
+    border: 8px solid transparent;
+    border-bottom: 0;
+    right: 11px;
+}
+.select-arrow:nth-child(2) {
+    top: 15px;
+    border-top-color: #bdbdbd;
+}
+.select-arrow:nth-child(3) {
+    top: 13px;
+    border-top-color: #FFF;
 }
 
 </style>
