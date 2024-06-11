@@ -24,14 +24,14 @@ var credentials = {key: privateKey, cert: certificate};
 
 let corsOptions = {
     //origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com", "*"],
-    origin: "*"
+    origin:  ["https://itrcourse.odoo.com"],
 };
 
 let corsOptions_2 = {
     //origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com", "*"],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONAL'],
     allowedHeaders: ['Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'],
-    origin: "https://itrcourse.odoo.com",
+    origin: ["https://itrcourse.odoo.com"],
     credentials: true,
 };
 
