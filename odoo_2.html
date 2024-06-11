@@ -1,0 +1,540 @@
+<div class="collection__safety-warn">
+    <p>В связи с тем, что используемый сертификат является сертификатом SSL, а его браузер не считает безопасным, необходимо дать разрешение на работу с этим сайтом</p>
+    <a href="https://94.237.8.58:4002/get_token_data">Для дальнейшей работы с сайтом перейдите по ссылке</a>
+</div>
+<div>
+    
+    <div>
+        <label for="token">Paste token here: </label>
+        <input name="token" type="text" id="get-server-data">
+    </div>
+
+    <div class="collection__creat-butt">
+        <button class="collection__creat-coll" onclick="changeWindowState(event)">Create Collection</button>
+    </div>
+
+    <div class="collection__fields-container-h collection__fields-container" id="collection__fields-container">
+        <form onsubmit="sendCreatedColl(event)" class="collection__form">  
+            <h2>Collections creater</h2>
+            <div>
+                <h4>Main fields: </h4>
+                <div>
+                    <label >Collection name: </label>
+                    <input class="collection__form-field" name="name" type="text" required>
+                </div>
+                <div class="collection__lbl-desc">
+                    <label >Collection description: </label>
+                    <textarea class="collection__form-field"  name="description" type="text" required>
+                    </textarea>
+                </div>
+                <div>
+                    <div class="select-wrapper">
+                        <select id="collection__category-select">
+                            <option>stamps</option>
+                            <option>spoons</option>
+                            <option>rings</option>
+                            <option>books</option>
+                            <option>glasses</option>
+                            <option>coins</option>
+                            <option>cars</option>
+                            <option>trains</option>
+                            <option>plains</option>
+                            <option>hats</option>
+                            <option>other</option>
+                        </select>
+                        <div class="select-arrow"></div>
+                        <div class="select-arrow"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4>Additional fields: </h4>
+            
+                <div>
+                    <p>Add text field: </p>
+                    <button class="collection__btn" data-type="text" onclick="addField(event)">Add</button>
+                </div>
+                <div>
+                    <p>Add integer field: </p>
+                    <button class="collection__btn" data-type="number" onclick="addField(event)">Add</button>
+                </div>
+                <div>
+                    <p>Add logic field: </p>
+                    <button class="collection__btn" data-type="checkbox" onclick="addField(event)">Add</button>
+                </div>
+                <div>
+                    <p>Add multiline field: </p>
+                    <button class="collection__btn" data-type="textarea" onclick="addField(event)">Add</button>
+                </div>
+                <div>
+                    <p>Add date field: </p>
+                    <button class="collection__btn" data-type="date" onclick="addField(event)">Add</button>
+                </div>
+            </div>
+            <div class="collection__creat-btn">
+                <button class="collection__btn" type="submit">Create collection</button>
+            </div>
+        </form>                
+    </div>
+
+    <div id="collections" class="collections__main">
+
+
+        <div>
+            <form onsubmit="saveData(event)" class="decor">
+                <div class="form-left-decoration"></div>
+                <div class="form-right-decoration"></div>
+                <div class="circle"></div>
+                <div class="form-inner">
+                    <label for="name">Collection name</label>
+                    <input value="${}" name="name" type="text" height="40px" placeholder="Collection name">
+                    <label for="description">Collection name</label>
+                    <textarea value="${}" name="description" placeholder="Collection description..." rows="7"></textarea>
+                    <p>Username: <span>${}</span></p>
+                    <p>Elements amount: <span>${}</span></p>
+                    <p>Category: <span>${}</span></p>
+                    <div>
+                        <input type="submit" value="Submit">
+                        <input type="delete" value="Delete">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+       
+
+
+    </div>
+</div>
+<script>
+    const mainToken = document.getElementById("get-server-data");
+    const fieldsManager = document.getElementById("collection__fields-container");
+    mainToken.addEventListener("input", createColl)
+
+    async function changeWindowState(event){
+        fieldsManager.classList.toggle("collection__fields-container-h");
+    }
+
+    function createForm(form){
+        let invalidFormData = new FormData(createForm)
+        let validFormData = new FormData();
+        for (const value of invalidFormData.entries()) {
+            if (value[1] != "" && typeof value[1] != typeof {}) {
+                validatedForm.append(value[0], value[1]);
+            }
+        }
+        validatedForm.append("token", mainToken.value);
+        return validatedForm;
+    }
+
+    async function formObject(validatedForm) {
+        let data = {};
+        for (const value of validatedForm.entries()) {
+            data[`${value[0]}`] = value[1];
+        }
+        if (data.img) {
+            data.img_name = data.img.name;
+            let url = await createAndUploadImg(data.img);
+            data.img = url;
+        }
+        return data;
+    }
+
+    async function sendCreatedColl(event){
+        let formData = createForm(event.currentTarget);
+        let formObject = formObject(formData);
+        try{
+            await fetch("https://94.237.8.58:4002/create_token_data", {
+                method: "post",
+                body: JSON.stringify(formObject)
+            })
+        } catch (err) {
+            return;
+            console.log(err)
+        }
+
+    }
+
+    function addField(event){
+        event.preventDefault()
+        let amount = document.getElementsByClassName(`collection__custom-${event.currentTarget.dataset.type}`).length
+        if(amount >= 3){
+            return;
+        }
+        let container = document.createElement('div');
+        container.innerHTML = `
+            <label>Enter field name</label>
+            <input type="text" class="collection__custom-${event.currentTarget.dataset.type}" name="${event.currentTarget.dataset.type + amount.length}">
+        `
+        let parentElement = event.currentTarget.closest("div")
+        var insertedElement = parentElement.insertBefore(container, event.currentTarget);
+    }
+
+    async function getData(token){
+        let form = new FormData();
+        form.append("token", token)
+
+        try {
+
+            let responseData = await fetch("https://94.237.8.58:4002/get_token_data", {
+                method: "post",
+                body: form
+            })
+            let response = await responseData.json();
+            console.log(response)
+            return response;
+        } catch(err){
+            if(err){
+                return null
+            }
+        }
+    }
+
+    function insertData(data){
+        let collectionsContainer = document.getElementById('collections');
+        collectionsContainer.innerHTML = '';
+        data.forEach(element => {
+            collectionsContainer.append(element);
+        });
+
+    }
+
+    async function saveData(event){
+        event.preventDefault()
+        let fields = event.currentTarget.querySelectorAll(".collection__changeable-field");
+        let form = new FormData()
+        fields.forEach((el)=>{
+            form.append(el.name, el.value)
+        })
+        form.append("token", mainToken.value);
+        form.append("col_id", event.currentTarget.dataset.colId)
+        try{
+            await fetch("https://94.237.8.58:4002/save_token_data", {
+                method: "post",
+                body: form
+            })
+        } catch (err) {
+            return;
+            console.log(err)
+        }
+    }
+
+    async function  deleteCollection(event){
+        event.preventDefault()
+        let form = new FormData()
+        let formHTML = event.currentTarget.closest("form")
+        form.append("col_id", formHTML.dataset.colId)
+        form.append("token", mainToken.value)
+        try{
+            await fetch("https://94.237.8.58:4002/delete_token_data", {
+                method: "post",
+                body: form
+            })
+            formHTML.closest("div").remove()
+        } catch {
+            console.log(err)
+            return;
+        }
+    }
+
+    function assembleColl(data){
+        let elements = data.map((el, index) => {
+            let container = document.createElement('div');
+
+            container.innerHTML =
+                `
+        <div>
+            <form onsubmit="saveData(event)" class="decor" data-col-id="${el.col_id}">
+                <div class="form-left-decoration"></div>
+                <div class="form-right-decoration"></div>
+                <div class="circle"></div>
+                <div class="form-inner">
+                    <label >Collection name</label>
+                    <input maxlength="255" id="collection-name" class="collection__changeable-field" value="${el.name}" name="name" type="text" height="40px" placeholder="Collection name">
+                    <label >Collection description</label>
+                    <textarea maxlength="1024" id="collection__description" class="collection__changeable-field" name="description" placeholder="Collection description..." rows="7">${el.description}</textarea>
+                    <p>Username: <span>${el.username}</span></p>
+                    <p>Elements amount: <span>${el.amount}</span></p>
+                    <p>Category: <span>${el.category}</span></p>
+                    <div>
+                        <input type="submit" value="Save">
+                        <input onclick="deleteCollection(event)" type="delete" value="Delete">
+                    </div>
+                </div>
+            </form>
+        </div>
+                `
+            return container;
+        })
+        return elements;
+    }
+
+    async function createColl(e){
+        if(e.currentTarget.value.length < 42 || e.currentTarget.value.length > 43){
+            
+            return
+        }
+
+        let serverData = await getData(e.currentTarget.value)
+
+        if(serverData == null){
+            return;
+        }
+        console.log(document.getElementsByClassName("collection__creat-butt")[0])
+        document.getElementsByClassName("collection__creat-butt")[0].style.display = "flex"
+        let createdItems = assembleColl(serverData)
+        insertData(createdItems)
+    }
+
+</script>
+
+<style>
+
+.collection__fields-container-h {
+    display: flex;
+    justify-content: center;
+    display: none;
+}
+
+.collection__form-field {
+    border-radius: 4px;
+    margin-top: 8px;
+    border: solid 1px black;
+}
+
+.collection__lbl-desc{
+    margin-bottom: 8px;
+}
+
+.collection__form{
+    background-color: #f6c196;
+    border: solid 2px black;
+    border-radius: 15px;
+    padding: 10px;
+    margin-top: 30px;
+}
+
+.collection__creat-btn {
+    margin-top: 10px;
+}
+
+.collection__btn {
+    border-radius: 5px;
+    border: solid black 1px;
+}
+
+.collection__safety-warn >a {
+    text-decoration: none;
+    color: #1e288c;
+}
+
+.collection__safety-warn {
+    font-size: 24px;
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 10px;
+    border: solid black 1px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.collection__safety-warn >p {
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+* {
+     box-sizing: border-box;
+}
+
+.collections__main{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 35px;
+}
+
+body {
+   background: #f69a73;
+}
+.decor {
+   position: relative;
+   max-width: 350px;
+   min-width: 250px;
+   margin-top: 30px;
+   background: white;
+   border-radius: 30px;
+}
+.form-left-decoration, .form-right-decoration {
+   content: "";
+   position: absolute;
+   width: 50px;
+   height: 20px;
+   background: #f69a73;
+   border-radius: 20px;
+}
+.form-left-decoration {
+   bottom: 60px;
+   left: -30px;
+}
+.form-right-decoration {
+   top: 60px;
+   right: -30px;
+}
+.form-left-decoration:before, .form-left-decoration:after, .form-right-decoration:before, .form-right-decoration:after {
+   content: "";
+   position: absolute;
+   width: 50px;
+   height: 20px;
+   border-radius: 30px;
+   background: white;
+}
+.form-left-decoration:before {
+   top: -20px;
+}
+.form-left-decoration:after {
+   top: 20px;
+   left: 10px;
+}
+.form-right-decoration:before {
+   top: -20px;
+   right: 0;
+}
+.form-right-decoration:after {
+   top: 20px;
+   right: 10px;
+}
+.circle {
+   position: absolute;
+   bottom: 80px;
+   left: -55px;
+   width: 20px;
+   height: 20px;
+   border-radius: 50%;
+   background: white;
+}
+.form-inner {
+   padding: 50px;
+}
+.form-inner input {
+   display: block;
+   width: 100%;
+   padding: 0 20px;
+   margin-bottom: 10px;
+   background: #E9EFF6;
+   line-height: 40px;
+   border-width: 0;
+   border-radius: 20px;
+   font-family: 'Roboto', sans-serif;
+}
+
+.form-inner textarea {
+   display: block;
+   width: 100%;
+   padding: 10px 20px;
+   margin-bottom: 10px;
+   background: #E9EFF6;
+   border-width: 0;
+   border-radius: 20px;
+   font-family: 'Roboto', sans-serif;
+}
+
+.form-inner input[type="submit"] {
+   margin-top: 30px;
+   background: #f69a73;
+   border-bottom: 4px solid #d87d56;
+   color: white;
+   font-size: 14px;
+   cursor: pointer;
+}
+
+.form-inner input[type="delete"] {
+   margin-top: 15px;
+   background: #1d9760;
+   border-bottom: 4px solid #1d9760;
+   color: white;
+   text-align: center;
+   font-size: 14px;
+   cursor: pointer;
+}
+
+.form-inner textarea {
+   resize: none;
+}
+.form-inner h3 {
+   margin-top: 0;
+   font-family: 'Roboto', sans-serif;
+   font-weight: 500;
+   font-size: 24px;
+   color: #707981;
+}
+
+.collection__creat-coll {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    margin-top: 10px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    justify-content: end;
+}
+.collection__creat-butt{
+    display: none;
+    justify-content: end;
+}
+
+.button2:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.select-wrapper {
+    width: 300px;
+    position: relative;
+    height: 38px;
+    color: #444;
+    background: transparent;
+    border: 1px solid #bcbcbc;
+    border-radius: 0;
+}
+
+.select-wrapper > select {
+    width: 100%;
+    height: 37px;
+    background: transparent;
+    border: 0;
+    appearance: none;
+    z-index: 1;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+.select-wrapper > select::-ms-expand{
+    display: none;
+}
+
+.select-arrow {
+    position: absolute;
+    z-index: -1;
+    border: 8px solid transparent;
+    border-bottom: 0;
+    right: 11px;
+}
+.select-arrow:nth-child(2) {
+    top: 15px;
+    border-top-color: #bdbdbd;
+}
+.select-arrow:nth-child(3) {
+    top: 13px;
+    border-top-color: #FFF;
+}
+
+</style>

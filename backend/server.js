@@ -176,6 +176,10 @@ async function checkAcess(data){
     return true;
 }
 
+app_2.post("/create_token_data",  async (req, res) => {
+    console.log(req.body)
+})
+
 app_2.post("/save_token_data", formidable(), async (req, res) => {
      try {
         if(!req.fields.token){
