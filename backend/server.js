@@ -140,11 +140,10 @@ app.post("/sign_in", formidable(), async (req, res) => {
 async function checkAcess(data){
     let user = await Token.findAll({
         where: {
-            token: req.fields.token,
+            token: data,
         }
     });
     if(user.length < 1){
-        res.status(401).send("Unauthorized");
         return false;
     }
     return true;
