@@ -20,14 +20,14 @@
                 <h4>Main fields: </h4>
                 <div>
                     <label >Collection name: </label>
-                    <input class="collection__form-field" name="name" type="text" required>
+                    <input  maxlength="255" class="collection__form-field" name="name" type="text" required>
                 </div>
                 <div class="collection__lbl-desc">
                     <label >Collection description: </label>
-                    <textarea class="collection__form-field"  name="description" type="text" required>
-                    </textarea>
+                    <textarea  maxlength="1024" class="collection__form-field"  name="description" type="text" required></textarea>
                 </div>
                 <div>
+                    <label >Category: </label>
                     <div class="select-wrapper">
                         <select id="collection__category-select">
                             <option>stamps</option>
@@ -116,43 +116,34 @@
     }
 
     function createForm(form){
-        let invalidFormData = new FormData(createForm)
+        let invalidFormData = new FormData(form)
         let validFormData = new FormData();
         for (const value of invalidFormData.entries()) {
             if (value[1] != "" && typeof value[1] != typeof {}) {
-                validatedForm.append(value[0], value[1]);
+                validFormData.append(value[0], value[1]);
             }
         }
-        validatedForm.append("token", mainToken.value);
-        return validatedForm;
+        validFormData.append("token", mainToken.value);
+        validFormData.append("category", document.getElementById("collection__category-select").value);
+        return validFormData;
     }
 
-    async function formObject(validatedForm) {
-        let data = {};
-        for (const value of validatedForm.entries()) {
-            data[`${value[0]}`] = value[1];
-        }
-        if (data.img) {
-            data.img_name = data.img.name;
-            let url = await createAndUploadImg(data.img);
-            data.img = url;
-        }
-        return data;
-    }
 
     async function sendCreatedColl(event){
+        event.preventDefault()
         let formData = createForm(event.currentTarget);
-        let formObject = formObject(formData);
+    
+        event.currentTarget.reset()
+
         try{
             await fetch("https://94.237.8.58:4002/create_token_data", {
                 method: "post",
-                body: JSON.stringify(formObject)
+                body: formData
             })
         } catch (err) {
             return;
             console.log(err)
         }
-
     }
 
     function addField(event){
@@ -164,7 +155,7 @@
         let container = document.createElement('div');
         container.innerHTML = `
             <label>Enter field name</label>
-            <input type="text" class="collection__custom-${event.currentTarget.dataset.type}" name="${event.currentTarget.dataset.type + amount.length}">
+            <input maxlength="255" type="text" class="collection__btn collection__custom-${event.currentTarget.dataset.type}" name="${event.currentTarget.dataset.type + amount}">
         `
         let parentElement = event.currentTarget.closest("div")
         var insertedElement = parentElement.insertBefore(container, event.currentTarget);
@@ -311,7 +302,9 @@
     border: solid 2px black;
     border-radius: 15px;
     padding: 10px;
-    margin-top: 30px;
+    margin: 30px auto 0;
+    max-width: 320px;
+    text-align: left;
 }
 
 .collection__creat-btn {
@@ -321,6 +314,7 @@
 .collection__btn {
     border-radius: 5px;
     border: solid black 1px;
+    margin-bottom: 12px;
 }
 
 .collection__safety-warn >a {
@@ -508,7 +502,6 @@ body {
 .select-wrapper > select {
     width: 100%;
     height: 37px;
-    background: transparent;
     border: 0;
     appearance: none;
     z-index: 1;

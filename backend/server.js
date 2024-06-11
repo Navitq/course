@@ -176,8 +176,18 @@ async function checkAcess(data){
     return true;
 }
 
+
+function formObject(validatedForm) {
+    let data = {};
+    for (const value of validatedForm.entries()) {
+        data[`${value[0]}`] = value[1];
+    }
+    return data;
+}
+
 app_2.post("/create_token_data",  async (req, res) => {
-    console.log(req.body)
+    let data = formObject(req.fields)
+    console.log(data)
 })
 
 app_2.post("/save_token_data", formidable(), async (req, res) => {
