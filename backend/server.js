@@ -21,7 +21,7 @@ var credentials = {key: privateKey, cert: certificate};
 
 
 let corsOptions = {
-    origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com/],
+    origin: ["http://94.237.37.190:8880", "https://itrcourse.odoo.com/"],
 };
 
 const {
@@ -151,7 +151,7 @@ async function checkAcess(data){
 
 app.post("/save_token_data", formidable(), async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
     try {
         let access = await checkAcess(req.fields.token);
@@ -182,7 +182,7 @@ app.post("/save_token_data", formidable(), async (req, res) => {
 })
 
 app.options("*",async (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://itrcourse.odoo.com/')
+    res.header('Access-Control-Allow-Origin', '*')
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
    }
@@ -231,7 +231,7 @@ app.post("/delete_token_data", formidable(), async (req, res) => {
 
 app.post("/get_token_data", formidable(), async (req, res) => {
     res.header('Access-Control-Allow-Origin', 'https://itrcourse.odoo.com/')
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
     console.log(req.method)
 
