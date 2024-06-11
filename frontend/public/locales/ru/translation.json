@@ -218,6 +218,7 @@
         "pageLink": "URL Страницы",
         "status":"Статус",
         "jiraLink": "Ссылка на JIRA",
-        "supportTeam": "Служба поддержки"
+        "supportTeam": "Служба поддержки",
+        "supportTm": "Служба поддержки"
     }
 }
