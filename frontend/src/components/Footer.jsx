@@ -141,7 +141,7 @@ function Footer(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{props.t("ItemTemplate.Save")}</Modal.Title>
+                    <Modal.Title>{props.t("Jira.supportTeam")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={submitJIRA}>
@@ -241,7 +241,7 @@ function Footer(props) {
                                 {props.t("ModalColl.close")}
                             </Button>
                             <Button variant="primary" type="submit">
-                                {props.t("ItemTemplate.Save")}
+                                {props.t("ItemTemplate.save")}
                             </Button>
                         </Container>
                     </Form>
