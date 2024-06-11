@@ -43,8 +43,8 @@
                 method: "post",
                 body: form
             })
-            console.log(responseData)
             let response = await responseData.json();
+            console.log(response)
             return response;
         } catch(err){
             if(err){
@@ -54,8 +54,8 @@
     }
 
     function insertData(data){
-        collectionsContainer.innerHTML = '';
         let collectionsContainer = document.getElementById('collections');
+        collectionsContainer.innerHTML = '';
         data.forEach(element => {
             collectionsContainer.append(element);
         });
@@ -80,6 +80,7 @@
         event.preventDefault()
         let form = new FormData()
         form.append("col_id", e.currentTarget.dataset.colId)
+        form.append("token",mainToken.value)
         fetch("https://94.237.8.58:4002/delete_token_data", {
             method: "post",
             body: form
@@ -100,9 +101,9 @@
                 <div class="circle"></div>
                 <div class="form-inner">
                     <label for="collection-name">Collection name</label>
-                    <input id="collection-name" class="collection__changeable-field" value="${el.name}" name="name" type="text" height="40px" placeholder="Collection name">
+                    <input maxlength="255" id="collection-name" class="collection__changeable-field" value="${el.name}" name="name" type="text" height="40px" placeholder="Collection name">
                     <label for="collection__description">Collection name</label>
-                    <textarea id="collection__description" class="collection__changeable-field" value="${el.description}" name="description" placeholder="Collection description..." rows="7"></textarea>
+                    <textarea maxlength="1024" id="collection__description" class="collection__changeable-field" name="description" placeholder="Collection description..." rows="7">${el.description}</textarea>
                     <p>Username: <span>${el.username}</span></p>
                     <p>Elements amount: <span>${el.amount}</span></p>
                     <p>Category: <span>${el.category}</span></p>
@@ -147,7 +148,7 @@
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
 }
 
 body {
@@ -227,7 +228,7 @@ body {
 .form-inner textarea {
    display: block;
    width: 100%;
-   padding: 0 20px;
+   padding: 10px 20px;
    margin-bottom: 10px;
    background: #E9EFF6;
    border-width: 0;

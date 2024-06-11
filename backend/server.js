@@ -137,6 +137,53 @@ app.post("/sign_in", formidable(), async (req, res) => {
     return;
 });
 
+async function checkAcess(data){
+    let user = await Token.findAll({
+        where: {
+            token: req.fields.token,
+        }
+    });
+    if(user.length < 1){
+        res.status(401).send("Unauthorized");
+        return false;
+    }
+    return true;
+}
+
+
+app.post("/get_token_data", formidable(), async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    try {
+        let access = await checkAcess(req.fields.token);
+        if(user.length < 1){
+            res.status(401).send("Unauthorized");
+            return;
+        }
+
+        await Item.destroy({
+            where: {
+                col_id: req.fields.col_id,
+            },
+        });
+
+        await Coll.destroy({
+            where: {
+                col_id: req.fields.col_id,
+            },
+        });
+
+        res.status(200).send("OK");
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+        return;
+    }
+})
+
+
 app.post("/get_token_data", formidable(), async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
@@ -179,11 +226,6 @@ app.post("/get_token_data", formidable(), async (req, res) => {
 
             result[i].dataValues.amount = items.length;
         }
-
-
-
-  
-
         res.json(result);
     } catch (err) {
         console.error(err);
@@ -450,6 +492,8 @@ io.on("connection", (socket) => {
         }
         return admin;
     }
+
+   
 
     socket.on("delete_col_data", async (dataJSON) => {
         let data = JSON.parse(dataJSON);
