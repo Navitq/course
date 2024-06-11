@@ -184,7 +184,7 @@ app.post("/save_token_data", formidable(), async (req, res) => {
 
 app.post("/delete_token_data", formidable(), async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
     try {
         let access = await checkAcess(req.fields.token);
